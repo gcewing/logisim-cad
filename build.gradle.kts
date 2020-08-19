@@ -74,19 +74,19 @@ tasks {
         jarTask = "shadowJar"
         bundleJRE = false
         highResolutionCapable = true
-        appName = "Logisim-evolution"
+        appName = "LogisimE"
         appStyle = "universalJavaApplicationStub"
         bundleIdentifier = "com.cburch.logisim"
-        creatorCode = "????"
+        creatorCode = "LSMe"
         icon = "src/main/resources/resources/logisim/img/Logisim-evolution.icns"
         // backgroundImage = "src/main/resources/resources/logisim/img/logisim-icon-128.png"
         // javaProperties.put("apple.laf.useScreenMenuBar", "true")
-        bundleExtras.put("CFBundleDisplayName", "Logisim-evolution")
+        bundleExtras.put("CFBundleDisplayName", "LogisimE")
         bundleExtras.put(
             "CFBundleDocumentTypes",
             arrayOf(
                 mapOf(
-                    "LSItemContentTypes" to arrayOf("com.cburch.logisim.circ"),
+                    "LSItemContentTypes" to arrayOf("com.cburch.logisim.ecirc"),
                     "CFBundleTypeName" to "Logisim-evolution circuit file",
                     "LSHandlerRank" to "Owner",
                     "CFBundleTypeRole" to "Editor",
@@ -98,13 +98,13 @@ tasks {
             "UTExportedTypeDeclarations",
             arrayOf(
                 mapOf(
-                    "UTTypeIdentifier" to "com.cburch.logisim.circ",
+                    "UTTypeIdentifier" to "com.cburch.logisim.ecirc",
                     "UTTypeDescription" to "Logisim-evolution circuit file",
                     "UTTypeConformsTo" to arrayOf("public.data"),
                     "UTTypeIconFile" to "Logisim-evolution.icns",
                     "UTTypeTagSpecification" to
                     mapOf(
-                        "public.filename-extension" to arrayOf("circ"),
+                        "public.filename-extension" to arrayOf("ecirc"),
                         "public.mime-type" to arrayOf("application-prs.cburch.logisim")
                     )
                 )

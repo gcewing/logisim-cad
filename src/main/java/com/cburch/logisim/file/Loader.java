@@ -134,7 +134,7 @@ public class Loader implements LibraryLoader {
     }
   }
 
-  public static final String LOGISIM_EXTENSION = ".circ";
+  public static final String LOGISIM_EXTENSION = ".ecirc";
 
   public static final FileFilter LOGISIM_FILTER = new LogisimFileFilter();
 
