@@ -494,7 +494,7 @@ public class SelectTool extends AbstractTool {
           int minX = Integer.MAX_VALUE;
           int minY = Integer.MAX_VALUE;
           for (CanvasObject o : canvas.getSelection().getSelected()) {
-            for (Handle handle : o.getHandles(null)) {
+            for (Handle handle : o.getHandlesForSnapping()) {
               int x = handle.getX();
               int y = handle.getY();
               if (x < minX) minX = x;
