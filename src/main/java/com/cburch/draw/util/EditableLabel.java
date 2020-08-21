@@ -58,6 +58,7 @@ public class EditableLabel implements Cloneable {
   private int width;
   private int ascent;
   private int descent;
+  private int margin;
 
   public EditableLabel(int x, int y, String text, Font font) {
     this.x = x;
@@ -143,7 +144,7 @@ public class EditableLabel implements Cloneable {
   public boolean contains(int qx, int qy) {
     float x0 = getLeftX();
     float y0 = getBaseY();
-    return (qx >= x0 && qx < x0 + width && qy >= y0 - ascent && qy < y0 + descent);
+    return (qx >= x0 && qx < x0 + width + 2 * margin && qy >= y0 - ascent && qy < y0 + descent);
   }
 
   @Override
@@ -183,7 +184,7 @@ public class EditableLabel implements Cloneable {
   public Bounds getBounds() {
     int x0 = (int) getLeftX();
     int y0 = (int) getBaseY() - ascent;
-    int w = width;
+    int w = width + 2 * margin;
     int h = ascent + descent;
     return Bounds.create(x0, y0, w, h);
   }
@@ -205,12 +206,16 @@ public class EditableLabel implements Cloneable {
       case LEFT:
         return x;
       case CENTER:
-        return x - width / 2.0f;
+        return x - width / 2.0f - margin;
       case RIGHT:
-        return x - width;
+        return x - width - 2 * margin;
       default:
         return x;
     }
+  }
+  
+  public int getMargin() {
+    return margin;
   }
 
   public String getText() {
@@ -247,7 +252,7 @@ public class EditableLabel implements Cloneable {
     g.setFont(font);
     g.setColor(color);
     computeDimensions(g);
-    float x0 = getLeftX();
+    float x0 = getLeftX() + margin;
     float y0 = getBaseY();
     ((Graphics2D) g).drawString(text, x0, y0);
   }
@@ -272,6 +277,10 @@ public class EditableLabel implements Cloneable {
   public void setLocation(int x, int y) {
     this.x = x;
     this.y = y;
+  }
+  
+  public void setMargin(int m) {
+    margin = m;
   }
 
   public void setText(String value) {

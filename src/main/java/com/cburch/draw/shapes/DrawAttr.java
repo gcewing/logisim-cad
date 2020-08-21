@@ -121,10 +121,13 @@ public class DrawAttr {
   public static final Attribute<Integer> CORNER_RADIUS =
       Attributes.forIntegerRange("rx", S.getter("attrRx"), 1, 1000);
 
+  public static final Attribute<Integer> MARGIN =
+    Attributes.forInteger("margin", S.getter("attrMargin"));
+
   public static final List<Attribute<?>> ATTRS_TEXT // for text
-      = createAttributes(new Attribute[] {FONT, HALIGNMENT, VALIGNMENT, FILL_COLOR});
+      = createAttributes(new Attribute[] {FONT, HALIGNMENT, VALIGNMENT, FILL_COLOR, MARGIN});
   public static final List<Attribute<?>> ATTRS_TEXT_TOOL // for text tool
-      = createAttributes(new Attribute[] {FONT, HALIGNMENT, VALIGNMENT, TEXT_DEFAULT_FILL});
+      = createAttributes(new Attribute[] {FONT, HALIGNMENT, VALIGNMENT, TEXT_DEFAULT_FILL, MARGIN});
   public static final List<Attribute<?>> ATTRS_STROKE // for line, polyline
       = createAttributes(new Attribute[] {STROKE_WIDTH, STROKE_COLOR});
 
