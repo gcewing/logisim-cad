@@ -60,6 +60,8 @@ public interface CanvasObject {
 
   public abstract List<Handle> getHandles(HandleGesture gesture);
 
+  public List<Handle> getHandlesForSnapping();
+
   public abstract <V> V getValue(Attribute<V> attr);
 
   public void insertHandle(Handle desired, Handle previous);

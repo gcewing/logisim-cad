@@ -125,6 +125,10 @@ public abstract class AbstractCanvasObject implements AttributeSet, CanvasObject
   }
 
   public abstract List<Handle> getHandles(HandleGesture gesture);
+  
+  public List<Handle> getHandlesForSnapping() {
+    return getHandles(null);
+  }
 
   protected Location getRandomPoint(Bounds bds, Random rand) {
     int x = bds.getX();
