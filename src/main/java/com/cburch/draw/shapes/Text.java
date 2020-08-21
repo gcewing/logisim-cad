@@ -106,33 +106,8 @@ public class Text extends AbstractCanvasObject {
   
   @Override
   public List<Handle> getHandlesForSnapping() {
-    Bounds bds = getBounds();
-    int x = 0, y = 0;
-    switch (label.getHorizontalAlignment()) {
-      case EditableLabel.LEFT:
-        x = bds.getX();
-        break;
-      case EditableLabel.CENTER:
-        x = bds.getCenterX();
-        break;
-      case EditableLabel.RIGHT:
-        x = bds.getX() + bds.getWidth();
-        break;
-    }
-    switch (label.getVerticalAlignment()) {
-      case EditableLabel.TOP:
-        y = bds.getY();
-        break;
-      case EditableLabel.MIDDLE:
-        y = bds.getCenterY();
-        break;
-      case EditableLabel.BASELINE:
-        y = label.getY();
-        break;
-      case EditableLabel.BOTTOM:
-        y = bds.getY() + bds.getHeight();
-        break;
-    }
+    int x = label.getX();
+    int y = label.getY();
     return UnmodifiableList.create(
         new Handle[] {
           new Handle(this, x, y),
