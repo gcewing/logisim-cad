@@ -56,9 +56,13 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.lang.Math;
 import javax.swing.JPopupMenu;
 
 public class AppearanceCanvas extends Canvas implements CanvasPaneContents, ActionDispatcher {
+
+  public static int snapSize = 5;
+
   private class Listener implements CanvasModelListener, PropertyChangeListener {
     public void modelChanged(CanvasModelEvent event) {
       computeSize(false);
@@ -350,23 +354,19 @@ public class AppearanceCanvas extends Canvas implements CanvasPaneContents, Acti
     }
     return null;
   }
-
+  
+  private int snap(int v) {
+    return snapSize * Math.round((v / (float)snapSize));
+  }
+  
   @Override
   public int snapX(int x) {
-    if (x < 0) {
-      return -((-x + 5) / 10 * 10);
-    } else {
-      return (x + 5) / 10 * 10;
-    }
+    return snap(x);
   }
 
   @Override
   public int snapY(int y) {
-    if (y < 0) {
-      return -((-y + 5) / 10 * 10);
-    } else {
-      return (y + 5) / 10 * 10;
-    }
+    return snap(y);
   }
 
   @Override
