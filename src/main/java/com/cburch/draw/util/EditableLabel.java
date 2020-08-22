@@ -58,6 +58,7 @@ public class EditableLabel implements Cloneable {
   private int width;
   private int ascent;
   private int descent;
+  private int margin;
 
   public EditableLabel(int x, int y, String text, Font font) {
     this.x = x;
@@ -143,7 +144,7 @@ public class EditableLabel implements Cloneable {
   public boolean contains(int qx, int qy) {
     float x0 = getLeftX();
     float y0 = getBaseY();
-    return (qx >= x0 && qx < x0 + width && qy >= y0 - ascent && qy < y0 + descent);
+    return (qx >= x0 && qx < x0 + width + 2 * margin && qy >= y0 - ascent && qy < y0 + descent);
   }
 
   @Override
@@ -183,7 +184,7 @@ public class EditableLabel implements Cloneable {
   public Bounds getBounds() {
     int x0 = (int) getLeftX();
     int y0 = (int) getBaseY() - ascent;
-    int w = width;
+    int w = width + 2 * margin;
     int h = ascent + descent;
     return Bounds.create(x0, y0, w, h);
   }
@@ -203,16 +204,38 @@ public class EditableLabel implements Cloneable {
   private float getLeftX() {
     switch (horzAlign) {
       case LEFT:
-        return x;
+        return x - margin;
       case CENTER:
-        return x - width / 2.0f;
+        return x - width / 2.0f - margin;
       case RIGHT:
-        return x - width;
+        return x - width - margin;
       default:
         return x;
     }
   }
-
+  
+  public int getMargin() {
+    return margin;
+  }
+  
+  public int getSnapX() {
+    int sx;
+    switch (horzAlign) {
+      case LEFT:
+        sx = x - margin;
+        break;
+      case CENTER:
+        sx = x;
+        break;
+      case RIGHT:
+        sx = x + margin;
+        break;
+      default:
+        sx = x;
+    }
+    return sx;  
+  }
+  
   public String getText() {
     return text;
   }
@@ -247,7 +270,7 @@ public class EditableLabel implements Cloneable {
     g.setFont(font);
     g.setColor(color);
     computeDimensions(g);
-    float x0 = getLeftX();
+    float x0 = getLeftX() + margin;
     float y0 = getBaseY();
     ((Graphics2D) g).drawString(text, x0, y0);
   }
@@ -265,13 +288,45 @@ public class EditableLabel implements Cloneable {
     if (value != LEFT && value != CENTER && value != RIGHT) {
       throw new IllegalArgumentException("argument must be LEFT, CENTER, or RIGHT");
     }
+    int sx = getSnapX();
     horzAlign = value;
     dimsKnown = false;
+    setSnapX(sx);
   }
 
   public void setLocation(int x, int y) {
     this.x = x;
     this.y = y;
+  }
+  
+  public void setMargin(int m) {
+    switch (horzAlign) {
+      case LEFT:
+        x = x - margin + m;
+        break;
+      case CENTER:
+        break;
+      case RIGHT:
+        x = x + margin - m;
+        break;
+    }
+    margin = m;
+  }
+
+  public void setSnapX(int sx) {
+    switch (horzAlign) {
+      case LEFT:
+        x = sx + margin;
+        break;
+      case CENTER:
+        x = sx;
+        break;
+      case RIGHT:
+        x = sx - margin;
+        break;
+      default:
+        x = sx;
+    }
   }
 
   public void setText(String value) {

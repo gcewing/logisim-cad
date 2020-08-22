@@ -49,17 +49,19 @@ import org.w3c.dom.Element;
 
 public class Text extends AbstractCanvasObject {
   private EditableLabel label;
+  private int margin;
 
-  private Text(int x, int y, int halign, int valign, String text, Font font, Color color) {
+  private Text(int x, int y, int halign, int valign, String text, Font font, Color color, int margin) {
     label = new EditableLabel(x, y, text, font);
     label.setColor(color);
     label.setHorizontalAlignment(halign);
     label.setVerticalAlignment(valign);
+    label.setMargin(margin);
   }
 
   public Text(int x, int y, String text) {
     this(
-        x, y, EditableLabel.LEFT, EditableLabel.BASELINE, text, DrawAttr.DEFAULT_FONT, Color.BLACK);
+        x, y, EditableLabel.LEFT, EditableLabel.BASELINE, text, DrawAttr.DEFAULT_FONT, Color.BLACK, 1);
   }
 
   @Override
@@ -106,7 +108,7 @@ public class Text extends AbstractCanvasObject {
   
   @Override
   public List<Handle> getHandlesForSnapping() {
-    int x = label.getX();
+    int x = label.getSnapX();
     int y = label.getY();
     return UnmodifiableList.create(
         new Handle[] {
@@ -162,6 +164,8 @@ public class Text extends AbstractCanvasObject {
         v = DrawAttr.VALIGN_MIDDLE;
       }
       return (V) v;
+    } else if (attr == DrawAttr.MARGIN) {
+      return (V) Integer.valueOf(label.getMargin());
     } else {
       return null;
     }
@@ -213,6 +217,8 @@ public class Text extends AbstractCanvasObject {
     } else if (attr == DrawAttr.VALIGNMENT) {
       Integer intVal = (Integer) ((AttributeOption) value).getValue();
       label.setVerticalAlignment(intVal.intValue());
+    } else if (attr == DrawAttr.MARGIN) {
+      label.setMargin(((Integer)value).intValue());
     }
   }
 }
