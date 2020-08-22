@@ -707,4 +707,7 @@ public class AppPreferences {
       create(new PrefMonitorBoolean("FirstTimeStartup", true));
   public static final PrefMonitor<Boolean> AutomaticUpdateCheck =
       create(new PrefMonitorBoolean("AutomaticUpdateCheck", false));
+
+  public static final PrefMonitor<Boolean> REVERSE_SNAPPING_MODIFIER =
+      create(new PrefMonitorBoolean("ReverseSnappingModifier", false));
 }

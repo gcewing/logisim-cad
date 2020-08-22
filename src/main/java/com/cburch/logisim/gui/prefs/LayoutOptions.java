@@ -59,6 +59,7 @@ class LayoutOptions extends OptionsPanel {
           new PrefBoolean(AppPreferences.ADD_SHOW_GHOSTS, S.getter("layoutAddShowGhosts")),
           new PrefBoolean(AppPreferences.NAMED_CIRCUIT_BOXES_FIXED_SIZE,S.getter("layoutNamedCircuitBoxesFixedSize")),
           new PrefBoolean(AppPreferences.NEW_INPUT_OUTPUT_SHAPES, S.getter("layoutUseNewInputOutputSymbols")),
+          new PrefBoolean(AppPreferences.REVERSE_SNAPPING_MODIFIER, S.getter("layoutReverseSnappingModifier")),
         };
 
     for (int i = 0; i < 2; i++) {

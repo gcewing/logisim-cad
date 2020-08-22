@@ -67,7 +67,7 @@ abstract class RectangularTool extends AbstractTool {
         return Bounds.EMPTY_BOUNDS;
       }
 
-      boolean ctrlDown = (mods & MouseEvent.CTRL_DOWN_MASK) != 0;
+      boolean ctrlDown = shouldSnap(mods);
       if (ctrlDown) {
         x0 = canvas.snapX(x0);
         y0 = canvas.snapY(y0);

@@ -31,8 +31,10 @@ package com.cburch.draw.tools;
 import com.cburch.draw.canvas.Canvas;
 import com.cburch.draw.canvas.CanvasTool;
 import com.cburch.logisim.data.Attribute;
+import com.cburch.logisim.prefs.AppPreferences;
 import java.awt.Cursor;
 import java.awt.Graphics;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.List;
@@ -51,6 +53,17 @@ public abstract class AbstractTool extends CanvasTool {
       new PolyTool(true, attrs),
     };
   }
+  
+  public boolean shouldSnap(MouseEvent e) {
+    return shouldSnap(e.getModifiersEx());
+  }
+  
+  public boolean shouldSnap(int mods) {
+    boolean snap = (mods & InputEvent.CTRL_DOWN_MASK) != 0;
+    if (AppPreferences.REVERSE_SNAPPING_MODIFIER.get())
+      snap = !snap;
+    return snap;
+  }    
 
   /** This is because a popup menu may result from the subsequent mouse release */
   @Override

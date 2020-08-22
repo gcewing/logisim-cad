@@ -161,7 +161,7 @@ public class PolyTool extends AbstractTool {
     lastMouseX = mx;
     lastMouseY = my;
     int mods = e.getModifiersEx();
-    if ((mods & InputEvent.CTRL_DOWN_MASK) != 0) {
+    if (shouldSnap(mods)) {
       mx = canvas.snapX(mx);
       my = canvas.snapY(my);
     }
@@ -227,7 +227,7 @@ public class PolyTool extends AbstractTool {
       } else {
         newLast = Location.create(mx, my);
       }
-      if ((mods & MouseEvent.CTRL_DOWN_MASK) != 0) {
+      if (shouldSnap(mods)) {
         int lastX = newLast.getX();
         int lastY = newLast.getY();
         lastX = canvas.snapX(lastX);

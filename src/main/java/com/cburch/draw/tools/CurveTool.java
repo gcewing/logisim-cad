@@ -137,7 +137,7 @@ public class CurveTool extends AbstractTool {
     lastMouseY = my;
     mouseDown = true;
     int mods = e.getModifiersEx();
-    if ((mods & InputEvent.CTRL_DOWN_MASK) != 0) {
+    if (shouldSnap(mods)) {
       mx = canvas.snapX(mx);
       my = canvas.snapY(my);
     }
@@ -190,7 +190,7 @@ public class CurveTool extends AbstractTool {
     lastMouseY = my;
 
     boolean shiftDown = (mods & MouseEvent.SHIFT_DOWN_MASK) != 0;
-    boolean ctrlDown = (mods & MouseEvent.CTRL_DOWN_MASK) != 0;
+    boolean ctrlDown = shouldSnap(mods);
     boolean altDown = (mods & MouseEvent.ALT_DOWN_MASK) != 0;
     Curve ret = null;
     switch (state) {
