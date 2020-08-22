@@ -85,7 +85,7 @@ public class CurveTool extends AbstractTool {
 
   @Override
   public List<Attribute<?>> getAttributes() {
-    return DrawAttr.getFillAttributes(attrs.getValue(DrawAttr.PAINT_TYPE));
+    return DrawAttr.getCurveAttributes(attrs.getValue(DrawAttr.PAINT_TYPE));
   }
 
   @Override

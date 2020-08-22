@@ -34,12 +34,14 @@ import com.cburch.draw.model.CanvasObject;
 import com.cburch.draw.model.Handle;
 import com.cburch.draw.model.HandleGesture;
 import com.cburch.logisim.data.Attribute;
+import com.cburch.logisim.data.AttributeOption;
 import com.cburch.logisim.data.Bounds;
 import com.cburch.logisim.data.Location;
 import com.cburch.logisim.util.UnmodifiableList;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.geom.QuadCurve2D;
+import java.awt.Shape;
+import java.awt.geom.Path2D;
 import java.util.List;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -48,18 +50,21 @@ public class Curve extends FillableCanvasObject {
   private static double[] toArray(Location loc) {
     return new double[] {loc.getX(), loc.getY()};
   }
-
+  
   private Location p0;
   private Location p1;
   private Location p2;
 
   private Bounds bounds;
+  
+  private AttributeOption shape;
 
   public Curve(Location end0, Location end1, Location ctrl) {
     this.p0 = end0;
     this.p1 = ctrl;
     this.p2 = end1;
     bounds = CurveUtil.getBounds(toArray(p0), toArray(p1), toArray(p2));
+    shape = DrawAttr.CURVE_BEZIER;
   }
 
   @Override
@@ -93,7 +98,7 @@ public class Curve extends FillableCanvasObject {
       }
     }
     if (type != DrawAttr.PAINT_STROKE) {
-      QuadCurve2D curve = getCurve(null);
+      Shape curve = getCurve(null);
       if (curve.contains(loc.getX(), loc.getY())) {
         return true;
       }
@@ -103,7 +108,7 @@ public class Curve extends FillableCanvasObject {
 
   @Override
   public List<Attribute<?>> getAttributes() {
-    return DrawAttr.getFillAttributes(getPaintType());
+    return DrawAttr.getCurveAttributes(getPaintType());
   }
 
   @Override
@@ -115,14 +120,29 @@ public class Curve extends FillableCanvasObject {
     return p1;
   }
 
-  private QuadCurve2D getCurve(HandleGesture gesture) {
+  private Shape getCurve(HandleGesture gesture) {
     Handle[] p = getHandleArray(gesture);
-    return new QuadCurve2D.Double(
-        p[0].getX(), p[0].getY(), p[1].getX(), p[1].getY(), p[2].getX(), p[2].getY());
+    return curveForCoords(p[0].getX(), p[0].getY(), p[1].getX(), p[1].getY(), p[2].getX(), p[2].getY());
+  }
+  
+  private Shape curveForCoords(double x1, double y1, double x2, double y2, double x3, double y3) {
+    Path2D c = new Path2D.Double();
+    c.moveTo(x1, y1);
+    if (shape == DrawAttr.CURVE_ARC) {
+      double k = 0.551915024494; // https://spencermortensen.com/articles/bezier-circle/
+      double x4 = x1 + k * (x2 - x1);
+      double y4 = y1 + k * (y2 - y1);
+      double x5 = x3 + k * (x2 - x3);
+      double y5 = y3 + k * (y2 - y3);
+      c.curveTo(x4, y4, x5, y5, x3, y3);
+    }
+    else
+      c.quadTo(x2, y2, x3, y3);
+    return c;
   }
 
-  public QuadCurve2D getCurve2D() {
-    return new QuadCurve2D.Double(p0.getX(), p0.getY(), p1.getX(), p1.getY(), p2.getX(), p2.getY());
+  public Shape getCurve2D() {
+    return getCurve(null);
   }
 
   @Override
@@ -198,6 +218,15 @@ public class Curve extends FillableCanvasObject {
   }
 
   @Override
+  @SuppressWarnings("unchecked")
+  public <V> V getValue(Attribute<V> attr) {
+    if (attr == DrawAttr.CURVE_SHAPE)
+      return (V) shape;
+    else
+      return super.getValue(attr);
+  }
+
+  @Override
   public boolean matches(CanvasObject other) {
     if (other instanceof Curve) {
       Curve that = (Curve) other;
@@ -241,7 +270,7 @@ public class Curve extends FillableCanvasObject {
 
   @Override
   public void paint(Graphics g, HandleGesture gesture) {
-    QuadCurve2D curve = getCurve(gesture);
+    Shape curve = getCurve(gesture);
     if (setForFill(g)) {
       ((Graphics2D) g).fill(curve);
     }
@@ -262,4 +291,13 @@ public class Curve extends FillableCanvasObject {
     p2 = p2.translate(dx, dy);
     bounds = bounds.translate(dx, dy);
   }
+
+  @Override
+  public void updateValue(Attribute<?> attr, Object value) {
+    if (attr == DrawAttr.CURVE_SHAPE)
+      shape = (AttributeOption)value;
+    else
+      super.updateValue(attr, value);
+  }
+
 }

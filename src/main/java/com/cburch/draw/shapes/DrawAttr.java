@@ -64,6 +64,16 @@ public class DrawAttr {
     }
   }
 
+  public static List<Attribute<?>> getCurveAttributes(AttributeOption paint) {
+    if (paint.equals(PAINT_STROKE)) {
+      return ATTRS_CURVE_STROKE;
+    } else if (paint.equals(PAINT_FILL)) {
+      return ATTRS_CURVE_FILL;
+    } else {
+      return ATTRS_CURVE_BOTH;
+    }
+  }
+
   public static final Font DEFAULT_FONT = new Font("SansSerif", Font.PLAIN, 12);
   public static final Font DEFAULT_FIXED_PICH_FONT = new Font("Courier 10 Pitch", Font.PLAIN, 12);
   public static final Font DEFAULT_NAME_FONT = new Font("Courier 10 Pitch", Font.BOLD, 14);
@@ -122,7 +132,20 @@ public class DrawAttr {
       Attributes.forIntegerRange("rx", S.getter("attrRx"), 1, 1000);
 
   public static final Attribute<Integer> MARGIN =
-    Attributes.forInteger("margin", S.getter("attrMargin"));
+      Attributes.forInteger("margin", S.getter("attrMargin"));
+  
+  // Curve rendering options
+  public static final AttributeOption CURVE_BEZIER =
+    new AttributeOption("bezier", S.getter("curveShapeBezier")); // Render as quadratic bezier
+    
+  public static final AttributeOption CURVE_ARC =
+    new AttributeOption("arc", S.getter("curveShapeArc")); // Render as elliptical arc
+    
+  public static final Attribute<AttributeOption> CURVE_SHAPE =
+      Attributes.forOption(
+          "curveShape",
+          S.getter("attrCurveShape"),
+          new AttributeOption[] {CURVE_BEZIER, CURVE_ARC});
 
   public static final List<Attribute<?>> ATTRS_TEXT // for text
       = createAttributes(new Attribute[] {FONT, HALIGNMENT, VALIGNMENT, FILL_COLOR, MARGIN});
@@ -149,4 +172,15 @@ public class DrawAttr {
   private static final List<Attribute<?>> ATTRS_RRECT_BOTH =
       createAttributes(
           new Attribute[] {PAINT_TYPE, STROKE_WIDTH, STROKE_COLOR, FILL_COLOR, CORNER_RADIUS});
+
+  // attribute lists for curve
+  private static final List<Attribute<?>> ATTRS_CURVE_STROKE =
+      createAttributes(new Attribute[] {PAINT_TYPE, STROKE_WIDTH, STROKE_COLOR, CURVE_SHAPE});
+
+  private static final List<Attribute<?>> ATTRS_CURVE_FILL =
+      createAttributes(new Attribute[] {PAINT_TYPE, FILL_COLOR, CURVE_SHAPE});
+
+  private static final List<Attribute<?>> ATTRS_CURVE_BOTH =
+      createAttributes(
+          new Attribute[] {PAINT_TYPE, STROKE_WIDTH, STROKE_COLOR, FILL_COLOR, CURVE_SHAPE});
 }

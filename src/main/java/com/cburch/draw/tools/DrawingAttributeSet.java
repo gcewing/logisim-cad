@@ -122,7 +122,8 @@ public class DrawingAttributeSet implements AttributeSet, Cloneable {
             DrawAttr.FILL_COLOR,
             DrawAttr.TEXT_DEFAULT_FILL,
             DrawAttr.CORNER_RADIUS,
-            DrawAttr.MARGIN
+            DrawAttr.MARGIN,
+            DrawAttr.CURVE_SHAPE
           });
 
   static final List<Object> DEFAULTS_ALL =
@@ -131,7 +132,8 @@ public class DrawingAttributeSet implements AttributeSet, Cloneable {
             DrawAttr.DEFAULT_FONT, DrawAttr.HALIGN_CENTER, DrawAttr.VALIGN_MIDDLE,
             DrawAttr.PAINT_STROKE, Integer.valueOf(1), Color.BLACK,
             Color.WHITE, Color.BLACK, Integer.valueOf(10),
-            Integer.valueOf(DrawAttr.DEFAULT_FONT.getSize() / 3)
+            Integer.valueOf(DrawAttr.DEFAULT_FONT.getSize() / 3),
+            DrawAttr.CURVE_BEZIER
           });
 
   private EventSourceWeakSupport<AttributeListener> listeners;
