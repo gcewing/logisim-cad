@@ -108,7 +108,7 @@ public class Text extends AbstractCanvasObject {
   
   @Override
   public List<Handle> getHandlesForSnapping() {
-    int x = label.getX();
+    int x = label.getSnapX();
     int y = label.getY();
     return UnmodifiableList.create(
         new Handle[] {
