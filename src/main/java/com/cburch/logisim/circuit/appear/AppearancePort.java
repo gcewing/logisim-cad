@@ -33,11 +33,14 @@ import static com.cburch.logisim.circuit.Strings.S;
 import com.cburch.draw.model.CanvasObject;
 import com.cburch.draw.model.Handle;
 import com.cburch.draw.model.HandleGesture;
+import com.cburch.logisim.data.Attribute;
+import com.cburch.logisim.data.AttributeOption;
 import com.cburch.logisim.data.Bounds;
 import com.cburch.logisim.data.Location;
 import com.cburch.logisim.instance.Instance;
 import com.cburch.logisim.instance.StdAttr;
 import com.cburch.logisim.std.wiring.Pin;
+import com.cburch.logisim.std.wiring.PinAttributes;
 import com.cburch.logisim.util.UnmodifiableList;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -52,10 +55,13 @@ public class AppearancePort extends AppearanceElement {
   public static final Color COLOR = Color.BLUE;
 
   private Instance pin;
+  
+  private AttributeOption pinNumberLocation;
 
   public AppearancePort(Location location, Instance pin) {
     super(location);
     this.pin = pin;
+    pinNumberLocation = PinAttributes.PINNO_NE;
   }
 
   @Override
@@ -65,6 +71,11 @@ public class AppearancePort extends AppearanceElement {
     } else {
       return super.isInCircle(loc, OUTPUT_RADIUS);
     }
+  }
+  
+  @Override
+  public List<Attribute<?>> getAttributes() {
+    return PinAttributes.APPEARANCE_ATTRIBUTES;
   }
 
   @Override
@@ -101,6 +112,15 @@ public class AppearancePort extends AppearanceElement {
 
   public Instance getPin() {
     return pin;
+  }
+
+  @Override
+  @SuppressWarnings("unchecked")
+  public <V> V getValue(Attribute<V> attr) {
+    if (attr == PinAttributes.PIN_NUMBER_LOCATION)
+      return (V) pinNumberLocation;
+    else
+      return null;
   }
 
   private boolean isInput() {
@@ -141,6 +161,12 @@ public class AppearancePort extends AppearanceElement {
 
   void setPin(Instance value) {
     pin = value;
+  }
+
+  @Override
+  protected void updateValue(Attribute<?> attr, Object value) {
+    if (attr == PinAttributes.PIN_NUMBER_LOCATION)
+      pinNumberLocation = (AttributeOption) value;
   }
 
   @Override
