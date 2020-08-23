@@ -33,6 +33,8 @@ import static com.cburch.logisim.circuit.Strings.S;
 import com.cburch.draw.model.CanvasObject;
 import com.cburch.draw.model.Handle;
 import com.cburch.draw.model.HandleGesture;
+import com.cburch.draw.shapes.SvgCreator;
+import com.cburch.draw.util.TextMetrics;
 import com.cburch.logisim.data.Attribute;
 import com.cburch.logisim.data.AttributeOption;
 import com.cburch.logisim.data.Bounds;
@@ -43,6 +45,7 @@ import com.cburch.logisim.std.wiring.Pin;
 import com.cburch.logisim.std.wiring.PinAttributes;
 import com.cburch.logisim.util.UnmodifiableList;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.util.List;
 import org.w3c.dom.Document;
@@ -157,7 +160,45 @@ public class AppearancePort extends AppearanceElement {
       g.drawOval(x - r, y - r, 2 * r, 2 * r);
     }
     g.fillOval(x - MINOR_RADIUS, y - MINOR_RADIUS, 2 * MINOR_RADIUS, 2 * MINOR_RADIUS);
+    paintPinNumber(g);
   }
+  
+  private static final Font pinNumberFont = new Font("SansSerif", Font.PLAIN, 9);
+  private static final Color pinNumberColor = Color.black;
+  private static final int pinNumberMargin = 3;
+  private static final int pinNumberLeading = 0;
+  
+  public void paintPinNumber(Graphics g) {
+    Location loc = getLocation();
+    int x0 = loc.getX();
+    int y0 = loc.getY();
+    String pinNo = pin.getAttributeValue(PinAttributes.PIN_NUMBER);
+    AttributeOption opt = pinNumberLocation;
+    g.setFont(pinNumberFont);
+    g.setColor(pinNumberColor);
+    TextMetrics tm = new TextMetrics(g, pinNo);
+    int width = tm.width;
+    int ascent = tm.ascent;
+    int descent = tm.descent;
+    int x, y;
+    if (opt == PinAttributes.PINNO_NE) {
+      x = x0 + pinNumberMargin;
+      y = y0 - descent - pinNumberLeading;
+    }
+    else if (opt == PinAttributes.PINNO_NW) {
+      x = x0 - pinNumberMargin - width + 1;
+      y = y0 - descent - pinNumberLeading;
+    }
+    else if (opt == PinAttributes.PINNO_SE) {
+      x = x0 + pinNumberMargin;
+      y = y0 + ascent + pinNumberLeading;
+    }
+    else {
+      x = x0 - pinNumberMargin - width + 1;
+      y = y0 + ascent + pinNumberLeading;
+    }
+    g.drawString(pinNo, x, y);
+  }    
 
   void setPin(Instance value) {
     pin = value;
@@ -173,7 +214,7 @@ public class AppearancePort extends AppearanceElement {
   public Element toSvgElement(Document doc) {
     Location loc = getLocation();
     Location pinLoc = pin.getLocation();
-    Element ret = doc.createElement("circ-port");
+    Element ret = SvgCreator.createShapeElement(doc, "circ-port", this);
     int r = isInput() ? INPUT_RADIUS : OUTPUT_RADIUS;
     ret.setAttribute("x", "" + (loc.getX() - r));
     ret.setAttribute("y", "" + (loc.getY() - r));

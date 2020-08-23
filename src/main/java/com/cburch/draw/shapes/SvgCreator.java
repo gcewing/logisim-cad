@@ -42,7 +42,7 @@ public class SvgCreator {
     return a.getRed() == b.getRed() && a.getGreen() == b.getGreen() && a.getBlue() == b.getBlue();
   }
   
-  protected static Element createShapeElement(Document doc, String shapeName, AbstractCanvasObject shape) {
+  public static Element createShapeElement(Document doc, String shapeName, AbstractCanvasObject shape) {
     Element elt = doc.createElement(shapeName);
     for (Attribute a : shape.getAttributes()) {
       String attrName = a.getName();

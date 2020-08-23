@@ -335,7 +335,6 @@ public class SelectTool extends AbstractTool {
       clicked = getObjectAt(canvas.getModel(), e.getX(), e.getY(), false);
     }
     if (clicked != null) {
-      System.out.printf("SelectTool.mousePressed: Clicked %s\n", clicked.toString());
       if (shift && selection.isSelected(clicked)) {
         selection.setSelected(clicked, false);
         curAction = IDLE;

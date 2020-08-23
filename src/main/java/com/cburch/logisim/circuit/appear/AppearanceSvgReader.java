@@ -65,7 +65,9 @@ public class AppearanceSvgReader {
           Location.create(Integer.parseInt(pinStr[0].trim()), Integer.parseInt(pinStr[1].trim()));
       Instance pin = pins.get(pinLoc);
       if (pin == null) return null;
-      return new AppearancePort(loc, pin);
+      AbstractCanvasObject ret = new AppearancePort(loc, pin);
+      SvgReader.parseShapeAttributes(ret, elt);
+      return ret;
     } else if (name.startsWith("visible-")) {
       String pathstr = elt.getAttribute("path");
       if (pathstr == null || pathstr.length() == 0) return null;

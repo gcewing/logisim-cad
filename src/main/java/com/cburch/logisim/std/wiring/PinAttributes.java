@@ -58,7 +58,7 @@ public class PinAttributes extends ProbeAttributes {
   }
 	
 	public static final Attribute<String> PIN_NUMBER =
-	  Attributes.forString("pinNo", S.getter("pinPinNumber"));
+	  Attributes.forString("logisim-pin-number", S.getter("pinPinNumber"));
 
   public static final AttributeOption PINNO_NE =
     new AttributeOption("ne", S.getter("pinPinNumberNortheast"));
@@ -71,7 +71,7 @@ public class PinAttributes extends ProbeAttributes {
 
 	public static final Attribute<AttributeOption> PIN_NUMBER_LOCATION =
     Attributes.forOption(
-      "pinNumberLocation",
+      "logisim-pin-number-location",
       S.getter("pinPinNumberLocation"),
       new AttributeOption[] {PINNO_NE, PINNO_NW, PINNO_SE, PINNO_SW});
 

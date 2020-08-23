@@ -282,6 +282,10 @@ public class CircuitAppearance extends Drawing {
       }
     }
     for (CanvasObject shape : getObjectsFromBottom()) {
+      if (shape instanceof AppearancePort) {
+        AppearancePort port = (AppearancePort) shape;
+        port.paintPinNumber(g);
+      }
       if (!(shape instanceof AppearanceElement)) {
         Graphics dup = g.create();
         if (shape instanceof DynamicElement) {
