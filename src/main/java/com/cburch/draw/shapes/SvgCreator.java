@@ -30,6 +30,7 @@ package com.cburch.draw.shapes;
 
 import com.cburch.draw.model.AbstractCanvasObject;
 import com.cburch.draw.model.Handle;
+import com.cburch.logisim.data.Attribute;
 import com.cburch.logisim.data.Location;
 import java.awt.Color;
 import java.awt.Font;
@@ -40,9 +41,19 @@ public class SvgCreator {
   public static boolean colorMatches(Color a, Color b) {
     return a.getRed() == b.getRed() && a.getGreen() == b.getGreen() && a.getBlue() == b.getBlue();
   }
+  
+  protected static Element createShapeElement(Document doc, String shapeName, AbstractCanvasObject shape) {
+    Element elt = doc.createElement(shapeName);
+    for (Attribute a : shape.getAttributes()) {
+      String attrName = a.getName();
+      if (attrName.startsWith("logisim-"))
+        elt.setAttribute(attrName, shape.getValue(a).toString());
+    }
+    return elt;
+  }
 
   public static Element createCurve(Document doc, Curve curve) {
-    Element elt = doc.createElement("path");
+    Element elt = createShapeElement(doc, "path", curve);
     Location e0 = curve.getEnd0();
     Location e1 = curve.getEnd1();
     Location ct = curve.getControl();
@@ -55,7 +66,7 @@ public class SvgCreator {
   }
 
   public static Element createLine(Document doc, Line line) {
-    Element elt = doc.createElement("line");
+    Element elt = createShapeElement(doc, "line", line);
     Location v1 = line.getEnd0();
     Location v2 = line.getEnd1();
     elt.setAttribute("x1", "" + v1.getX());
@@ -71,7 +82,7 @@ public class SvgCreator {
     double y = oval.getY();
     double width = oval.getWidth();
     double height = oval.getHeight();
-    Element elt = doc.createElement("ellipse");
+    Element elt = createShapeElement(doc, "ellipse", oval);
     elt.setAttribute("cx", "" + (x + width / 2));
     elt.setAttribute("cy", "" + (y + height / 2));
     elt.setAttribute("rx", "" + (width / 2));
@@ -82,12 +93,13 @@ public class SvgCreator {
 
   public static Element createPoly(Document doc, Poly poly) {
     Element elt;
-    if (poly.isClosed()) {
-      elt = doc.createElement("polygon");
-    } else {
-      elt = doc.createElement("polyline");
-    }
-
+    String name;
+    if (poly.isClosed())
+      name = "polygon";
+    else
+      name = "polyline";
+    elt = createShapeElement(doc, name, poly);
+    
     StringBuilder points = new StringBuilder();
     boolean first = true;
     for (Handle h : poly.getHandles(null)) {
@@ -106,7 +118,7 @@ public class SvgCreator {
   }
 
   private static Element createRectangular(Document doc, Rectangular rect) {
-    Element elt = doc.createElement("rect");
+    Element elt = createShapeElement(doc, "rect", rect);
     elt.setAttribute("x", "" + rect.getX());
     elt.setAttribute("y", "" + rect.getY());
     elt.setAttribute("width", "" + rect.getWidth());
@@ -124,7 +136,7 @@ public class SvgCreator {
   }
 
   public static Element createText(Document doc, Text text) {
-    Element elt = doc.createElement("text");
+    Element elt = createShapeElement(doc, "text", text);
     Location loc = text.getLocation();
     Font font = text.getValue(DrawAttr.FONT);
     Color fill = text.getValue(DrawAttr.FILL_COLOR);

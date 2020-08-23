@@ -197,6 +197,14 @@ public class SvgReader {
         ret.setValue(DrawAttr.FILL_COLOR, getColor(color, opacity));
       }
     }
+    for (Attribute a : attrs) {
+      String attrName = a.getName();
+      if (attrName.startsWith("logisim-")) {
+        String value = elt.getAttribute(attrName);
+        if (!value.equals(""))
+          ret.setValue(a, a.parse(value));
+      }
+    }
     return ret;
   }
 

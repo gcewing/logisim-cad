@@ -143,7 +143,7 @@ public class DrawAttr {
     
   public static final Attribute<AttributeOption> CURVE_SHAPE =
       Attributes.forOption(
-          "curveShape",
+          "logisim-curve-shape",
           S.getter("attrCurveShape"),
           new AttributeOption[] {CURVE_BEZIER, CURVE_ARC});
 
