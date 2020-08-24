@@ -46,3 +46,9 @@ instead of a quadratic bezier curve.
 This feature is partially backwards-compatible. Standard Logisim-evolution will
 render the arc as a quadratic bezier having the same control points, which will
 look approximately right but a bit wonky.
+
+### Pin numbers and port labels
+
+A pin number can be assigned to an input or output. Both the pin label and the
+pin number can be automatically shown next to the port on the circuit symbol,
+with options for positioning.
