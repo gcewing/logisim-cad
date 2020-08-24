@@ -312,7 +312,7 @@ class XmlReader {
           }
         } catch (RuntimeException e) {
           addError(
-              S.fmt("fileAppearanceError", sub.getTagName()), context + "." + sub.getTagName());
+              S.fmt("fileAppearanceError", sub.getTagName()), context + "." + sub.getTagName() + ": " + e);
         }
       }
       if (!shapes.isEmpty()) {

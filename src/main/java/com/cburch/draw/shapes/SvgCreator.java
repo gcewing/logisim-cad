@@ -42,12 +42,12 @@ public class SvgCreator {
     return a.getRed() == b.getRed() && a.getGreen() == b.getGreen() && a.getBlue() == b.getBlue();
   }
   
-  protected static Element createShapeElement(Document doc, String shapeName, AbstractCanvasObject shape) {
+  public static Element createShapeElement(Document doc, String shapeName, AbstractCanvasObject shape) {
     Element elt = doc.createElement(shapeName);
     for (Attribute a : shape.getAttributes()) {
       String attrName = a.getName();
       if (attrName.startsWith("logisim-"))
-        elt.setAttribute(attrName, shape.getValue(a).toString());
+        elt.setAttribute(attrName, a.toStandardString(shape.getValue(a)));
     }
     return elt;
   }

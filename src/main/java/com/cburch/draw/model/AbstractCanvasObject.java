@@ -244,7 +244,7 @@ public abstract class AbstractCanvasObject implements AttributeSet, CanvasObject
     Object old = getValue(attr);
     boolean same = old == null ? value == null : old.equals(value);
     if (!same) {
-      updateValue(attr, value);
+      putValue(attr, value);
       AttributeEvent e = new AttributeEvent(this, attr, value, old);
       for (AttributeListener listener : listeners) {
         listener.attributeValueChanged(e);
@@ -255,6 +255,10 @@ public abstract class AbstractCanvasObject implements AttributeSet, CanvasObject
   public abstract Element toSvgElement(Document doc);
 
   public abstract void translate(int dx, int dy);
+
+  protected <V> void putValue(Attribute<V> attr, V value) {
+    updateValue(attr, value);
+  }
 
   protected abstract void updateValue(Attribute<?> attr, Object value);
 }

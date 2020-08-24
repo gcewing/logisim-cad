@@ -197,15 +197,20 @@ public class SvgReader {
         ret.setValue(DrawAttr.FILL_COLOR, getColor(color, opacity));
       }
     }
+    parseShapeAttributes(ret, elt);
+    return ret;
+  }
+
+  public static void parseShapeAttributes(AbstractCanvasObject shape, Element elt) {
+    List<Attribute<?>> attrs = shape.getAttributes();
     for (Attribute a : attrs) {
       String attrName = a.getName();
       if (attrName.startsWith("logisim-")) {
         String value = elt.getAttribute(attrName);
         if (!value.equals(""))
-          ret.setValue(a, a.parse(value));
+          shape.setValue(a, a.parse(value));
       }
     }
-    return ret;
   }
 
   private static AbstractCanvasObject createText(Element elt) {
