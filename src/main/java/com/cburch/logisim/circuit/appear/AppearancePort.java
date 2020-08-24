@@ -35,8 +35,10 @@ import com.cburch.draw.model.Handle;
 import com.cburch.draw.model.HandleGesture;
 import com.cburch.draw.shapes.SvgCreator;
 import com.cburch.draw.util.TextMetrics;
+import com.cburch.logisim.circuit.appear.PortAttributes;
 import com.cburch.logisim.data.Attribute;
 import com.cburch.logisim.data.AttributeOption;
+import com.cburch.logisim.data.Direction;
 import com.cburch.logisim.data.Bounds;
 import com.cburch.logisim.data.Location;
 import com.cburch.logisim.instance.Instance;
@@ -57,14 +59,40 @@ public class AppearancePort extends AppearanceElement {
   private static final int MINOR_RADIUS = 2;
   public static final Color COLOR = Color.BLUE;
 
+  private static final Font defaultLabelFont = new Font("SansSerif", Font.PLAIN, 12);
+  private static final Color defaultLabelColor = Color.black;
+  private static final Font defaultPinLabelFont = new Font("SansSerif", Font.PLAIN, 9);
+  private static final Color defaultPinLabelColor = Color.black;
+  private static final Font defaultPinNumberFont = new Font("SansSerif", Font.PLAIN, 9);
+  private static final Color defaultPinNumberColor = Color.black;
+  private static final int labelMargin = 4;
+  private static final int labelLeading = 0;
+  private static final int pinNumberMargin = 3;
+  private static final int pinNumberLeading = 0;
+  
   private Instance pin;
   
-  private AttributeOption pinNumberLocation;
+  private Direction facing;
+  private boolean showLabel;
+  private Font labelFont;
+  private Color labelColor;
+  private boolean showPinNumber;
+  private AttributeOption pinNumberPosition;
+  private Font pinNumberFont;
+  private Color pinNumberColor;
 
   public AppearancePort(Location location, Instance pin) {
     super(location);
     this.pin = pin;
-    pinNumberLocation = PinAttributes.PINNO_NE;
+    boolean out = pin.getAttributeValue(Pin.ATTR_TYPE);
+    facing = out ? Direction.EAST : Direction.WEST;
+    showLabel = true;
+    labelFont = defaultLabelFont;
+    labelColor = defaultLabelColor;
+    showPinNumber = true;
+    pinNumberPosition = PortAttributes.PINNO_ABOVE_LEFT;
+    pinNumberFont = defaultPinNumberFont;
+    pinNumberColor = defaultPinNumberColor;
   }
 
   @Override
@@ -78,7 +106,7 @@ public class AppearancePort extends AppearanceElement {
   
   @Override
   public List<Attribute<?>> getAttributes() {
-    return PinAttributes.APPEARANCE_ATTRIBUTES;
+    return PortAttributes.PORT_ATTRIBUTES;
   }
 
   @Override
@@ -120,10 +148,27 @@ public class AppearancePort extends AppearanceElement {
   @Override
   @SuppressWarnings("unchecked")
   public <V> V getValue(Attribute<V> attr) {
-    if (attr == PinAttributes.PIN_NUMBER_LOCATION)
-      return (V) pinNumberLocation;
-    else
-      return null;
+    if (attr == PortAttributes.PIN_FACING)
+      return (V) facing;
+    if (attr == StdAttr.LABEL)
+      return (V) pin.getAttributeValue(attr);
+    if (attr == PortAttributes.PIN_SHOW_LABEL)
+      return (V) (Boolean) showLabel;
+    if (attr == PortAttributes.PIN_LABEL_FONT)
+      return (V) labelFont;
+    if (attr == PortAttributes.PIN_LABEL_COLOR)
+      return (V) labelColor;
+    if (attr == PinAttributes.PIN_NUMBER)
+      return (V) pin.getAttributeValue(attr);
+    if (attr == PortAttributes.PIN_SHOW_NUMBER)
+      return (V) (Boolean) showPinNumber;
+    if (attr == PortAttributes.PIN_NUMBER_POSITION)
+      return (V) pinNumberPosition;
+    if (attr == PortAttributes.PIN_NUMBER_FONT)
+      return (V) pinNumberFont;
+    if (attr == PortAttributes.PIN_NUMBER_COLOR)
+      return (V) pinNumberColor;
+    return null;
   }
 
   private boolean isInput() {
@@ -160,44 +205,73 @@ public class AppearancePort extends AppearanceElement {
       g.drawOval(x - r, y - r, 2 * r, 2 * r);
     }
     g.fillOval(x - MINOR_RADIUS, y - MINOR_RADIUS, 2 * MINOR_RADIUS, 2 * MINOR_RADIUS);
+    paintLabel(g);
     paintPinNumber(g);
   }
   
-  private static final Font pinNumberFont = new Font("SansSerif", Font.PLAIN, 9);
-  private static final Color pinNumberColor = Color.black;
-  private static final int pinNumberMargin = 3;
-  private static final int pinNumberLeading = 0;
+  public void paintLabel(Graphics g) {
+    if (showLabel) {
+      Location loc = getLocation();
+      int x0 = loc.getX();
+      int y0 = loc.getY();
+      String label = pin.getAttributeValue(StdAttr.LABEL);
+      g.setFont(labelFont);
+      g.setColor(labelColor);
+      TextMetrics tm = new TextMetrics(g, label);
+      int width = tm.width;
+      int ascent = tm.ascent;
+      int descent = tm.descent;
+      int x, y;
+      if (facing == Direction.WEST)
+        x = x0 + labelMargin;
+      else if (facing == Direction.EAST)
+        x = x0 - labelMargin - width;
+      else
+        x = x0 - width / 2;
+      if (facing == Direction.SOUTH)
+        y = y0 - labelLeading - descent;
+      else if (facing == Direction.NORTH)
+        y = y0 + labelLeading + ascent;
+      else
+        y = y0 + (ascent + descent) / 2 - descent;
+      g.drawString(label, x, y);
+    }
+  }
   
   public void paintPinNumber(Graphics g) {
-    Location loc = getLocation();
-    int x0 = loc.getX();
-    int y0 = loc.getY();
-    String pinNo = pin.getAttributeValue(PinAttributes.PIN_NUMBER);
-    AttributeOption opt = pinNumberLocation;
-    g.setFont(pinNumberFont);
-    g.setColor(pinNumberColor);
-    TextMetrics tm = new TextMetrics(g, pinNo);
-    int width = tm.width;
-    int ascent = tm.ascent;
-    int descent = tm.descent;
-    int x, y;
-    if (opt == PinAttributes.PINNO_NE) {
-      x = x0 + pinNumberMargin;
-      y = y0 - descent - pinNumberLeading;
+    if (showPinNumber) {
+      Location loc = getLocation();
+      int x0 = loc.getX();
+      int y0 = loc.getY();
+      String pinNo = pin.getAttributeValue(PinAttributes.PIN_NUMBER);
+      AttributeOption pos = pinNumberPosition;
+      g.setFont(pinNumberFont);
+      g.setColor(pinNumberColor);
+      TextMetrics tm = new TextMetrics(g, pinNo);
+      int width = tm.width;
+      int ascent = tm.ascent;
+      int descent = tm.descent;
+      int x, y, f;
+      if (facing == Direction.EAST)
+        f = 0xd;
+      else if (facing == Direction.WEST)
+        f = 0x1;
+      else if (facing == Direction.NORTH)
+        f = 0x4;
+      else
+        f = 0x7;
+      if (pos == PortAttributes.PINNO_ABOVE_LEFT)
+        f >>= 1;
+      if ((f & 0x4) != 0)
+        x = x0 + pinNumberMargin;
+      else
+        x = x0 - pinNumberMargin - width + 1;
+      if ((f & 0x1) != 0)
+        y = y0 + ascent + pinNumberLeading;
+      else
+        y = y0 - descent - pinNumberLeading;
+      g.drawString(pinNo, x, y);
     }
-    else if (opt == PinAttributes.PINNO_NW) {
-      x = x0 - pinNumberMargin - width + 1;
-      y = y0 - descent - pinNumberLeading;
-    }
-    else if (opt == PinAttributes.PINNO_SE) {
-      x = x0 + pinNumberMargin;
-      y = y0 + ascent + pinNumberLeading;
-    }
-    else {
-      x = x0 - pinNumberMargin - width + 1;
-      y = y0 + ascent + pinNumberLeading;
-    }
-    g.drawString(pinNo, x, y);
   }    
 
   void setPin(Instance value) {
@@ -205,9 +279,25 @@ public class AppearancePort extends AppearanceElement {
   }
 
   @Override
-  protected void updateValue(Attribute<?> attr, Object value) {
-    if (attr == PinAttributes.PIN_NUMBER_LOCATION)
-      pinNumberLocation = (AttributeOption) value;
+  protected <V> void putValue(Attribute<V> attr, V value) {
+    if (attr == StdAttr.LABEL || attr == PinAttributes.PIN_NUMBER)
+      pin.getAttributeSet().setValue(attr, value);
+    else if (attr == PortAttributes.PIN_FACING)
+      facing = (Direction) value;
+    else if (attr == PortAttributes.PIN_SHOW_LABEL)
+      showLabel = (Boolean) value;
+    else if (attr == PortAttributes.PIN_LABEL_FONT)
+      labelFont = (Font) value;
+    else if (attr == PortAttributes.PIN_LABEL_COLOR)
+      labelColor = (Color) value;
+    else if (attr == PortAttributes.PIN_SHOW_NUMBER)
+      showPinNumber = (Boolean) value;
+    else if (attr == PortAttributes.PIN_NUMBER_POSITION)
+      pinNumberPosition = (AttributeOption) value;
+    else if (attr == PortAttributes.PIN_NUMBER_FONT)
+      pinNumberFont = (Font) value;
+    else if (attr == PortAttributes.PIN_NUMBER_COLOR)
+      pinNumberColor = (Color) value;
   }
 
   @Override

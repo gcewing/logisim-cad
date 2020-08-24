@@ -47,7 +47,7 @@ public class SvgCreator {
     for (Attribute a : shape.getAttributes()) {
       String attrName = a.getName();
       if (attrName.startsWith("logisim-"))
-        elt.setAttribute(attrName, shape.getValue(a).toString());
+        elt.setAttribute(attrName, a.toStandardString(shape.getValue(a)));
     }
     return elt;
   }

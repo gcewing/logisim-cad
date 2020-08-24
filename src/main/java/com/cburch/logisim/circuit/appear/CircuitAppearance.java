@@ -284,6 +284,7 @@ public class CircuitAppearance extends Drawing {
     for (CanvasObject shape : getObjectsFromBottom()) {
       if (shape instanceof AppearancePort) {
         AppearancePort port = (AppearancePort) shape;
+        port.paintLabel(g);
         port.paintPinNumber(g);
       }
       if (!(shape instanceof AppearanceElement)) {

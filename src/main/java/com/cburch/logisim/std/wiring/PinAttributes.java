@@ -36,8 +36,11 @@ import com.cburch.logisim.data.Attribute;
 import com.cburch.logisim.data.AttributeOption;
 import com.cburch.logisim.data.Attributes;
 import com.cburch.logisim.data.BitWidth;
+import com.cburch.logisim.data.Direction;
 import com.cburch.logisim.instance.StdAttr;
 
+import java.awt.Color;
+import java.awt.Font;
 import java.util.Arrays;
 import java.util.List;
 
@@ -58,24 +61,8 @@ public class PinAttributes extends ProbeAttributes {
   }
 	
 	public static final Attribute<String> PIN_NUMBER =
-	  Attributes.forString("logisim-pin-number", S.getter("pinPinNumber"));
+	  Attributes.forString("logisim-pin-number", S.getter("pinNumberAttr"));
 
-  public static final AttributeOption PINNO_NE =
-    new AttributeOption("ne", S.getter("pinPinNumberNortheast"));
-  public static final AttributeOption PINNO_NW =
-    new AttributeOption("nw", S.getter("pinPinNumberNorthwest"));
-  public static final AttributeOption PINNO_SE =
-    new AttributeOption("se", S.getter("pinPinNumberSoutheast"));
-  public static final AttributeOption PINNO_SW =
-    new AttributeOption("sw", S.getter("pinPinNumberSouthwest"));
-
-	public static final Attribute<AttributeOption> PIN_NUMBER_LOCATION =
-    Attributes.forOption(
-      "logisim-pin-number-location",
-      S.getter("pinPinNumberLocation"),
-      new AttributeOption[] {PINNO_NE, PINNO_NW, PINNO_SE, PINNO_SW});
-
-	
   public static final Attribute<String> ATTR_DUMMY = new DummyAttr("type");
   public static PinAttributes instance = new PinAttributes();
 
@@ -94,12 +81,6 @@ public class PinAttributes extends ProbeAttributes {
             PIN_NUMBER,
             ATTR_DUMMY
           });
-
-  public static final List<Attribute<?>> APPEARANCE_ATTRIBUTES =
-      Arrays.asList(
-          new Attribute<?>[] {
-              PIN_NUMBER_LOCATION
-          });    
 
   BitWidth width = BitWidth.ONE;
   boolean threeState = false; // true;
