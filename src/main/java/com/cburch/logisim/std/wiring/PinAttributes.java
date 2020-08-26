@@ -69,7 +69,7 @@ public class PinAttributes extends ProbeAttributes {
   // Port attributes
 
   public static final Attribute<Direction> PORT_FACING =
-      Attributes.forDirection("logisim-port-facing", S.getter("portFacingAttr"));
+      Attributes.forDirection("a-port-facing", S.getter("portFacingAttr"));
 
   // Pin attributes used by port
 
