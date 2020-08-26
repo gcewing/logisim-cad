@@ -60,11 +60,49 @@ public class PinAttributes extends ProbeAttributes {
     public boolean isHidden() {return true;}
   }
 	
-	public static final Attribute<String> PIN_NUMBER =
-	  Attributes.forString("logisim-pin-number", S.getter("pinNumberAttr"));
-
   public static final Attribute<String> ATTR_DUMMY = new DummyAttr("type");
   public static PinAttributes instance = new PinAttributes();
+
+	public static final Attribute<String> PIN_NUMBER =
+	  Attributes.forString("pin-number", S.getter("pinNumberAttr"));
+
+  // Port attributes
+
+  public static final Attribute<Direction> PORT_FACING =
+      Attributes.forDirection("logisim-port-facing", S.getter("portFacingAttr"));
+
+  // Pin attributes used by port
+
+  public static final Attribute<Boolean> PORT_SHOW_LABEL =
+    Attributes.forBoolean("port-show-label", S.getter("portShowLabelAttr"));
+
+  public static final Attribute<Boolean> PORT_SHOW_PIN_NUMBER =
+    Attributes.forBoolean("port-show-pin-number", S.getter("portShowPinNumberAttr"));
+
+  public static final AttributeOption PINNO_ABOVE_LEFT =
+    new AttributeOption("above-left", S.getter("pinNumberAboveLeftOption"));
+  public static final AttributeOption PINNO_BELOW_RIGHT =
+    new AttributeOption("below-right", S.getter("pinNumberBelowRightOption"));
+
+	public static final Attribute<AttributeOption> PIN_NUMBER_POSITION =
+    Attributes.forOption(
+      "pin-number-position",
+      S.getter("pinNumberPositionAttr"),
+      new AttributeOption[] {PINNO_ABOVE_LEFT, PINNO_BELOW_RIGHT});
+
+  public static final Attribute<Font> PORT_LABEL_FONT =
+      Attributes.forFont("port-label-font", S.getter("portLabelFontAttr"));
+
+  public static final Attribute<Color> PORT_LABEL_COLOR =
+      Attributes.forColor("port-label-color", S.getter("portLabelColorAttr"));
+
+  public static final Attribute<Font> PIN_NUMBER_FONT =
+      Attributes.forFont("pin-number-font", S.getter("pinNumberFontAttr"));
+
+  public static final Attribute<Color> PIN_NUMBER_COLOR =
+      Attributes.forColor("pin-number-color", S.getter("pinNumberColorAttr"));
+
+  // Attributes editable via pin
 
   private static final List<Attribute<?>> ATTRIBUTES =
       Arrays.asList(
@@ -75,19 +113,60 @@ public class PinAttributes extends ProbeAttributes {
             Pin.ATTR_TRISTATE,
             Pin.ATTR_PULL,
             StdAttr.LABEL,
+            PIN_NUMBER,
             StdAttr.LABEL_FONT,
             RadixOption.ATTRIBUTE,
             PROBEAPPEARANCE,
-            PIN_NUMBER,
-            ATTR_DUMMY
+//             ATTR_DUMMY,
+            PORT_SHOW_LABEL,
+            PORT_LABEL_FONT,
+            PORT_LABEL_COLOR,
+            PORT_SHOW_PIN_NUMBER,
+            PIN_NUMBER_POSITION,
+            PIN_NUMBER_FONT,
+            PIN_NUMBER_COLOR
           });
+
+  // Attributes editable via port
+
+  public static final List<Attribute<?>> PORT_ATTRIBUTES =
+      Arrays.asList(
+          new Attribute<?>[] {
+              PORT_FACING,
+              StdAttr.LABEL,
+              PIN_NUMBER,
+              PORT_SHOW_LABEL,
+              PORT_LABEL_FONT,
+              PORT_LABEL_COLOR,
+              PORT_SHOW_PIN_NUMBER,
+              PIN_NUMBER_POSITION,
+              PIN_NUMBER_FONT,
+              PIN_NUMBER_COLOR
+          });    
+
+  // Pin attributes
 
   BitWidth width = BitWidth.ONE;
   boolean threeState = false; // true;
   int type = EndData.INPUT_ONLY;
   Object pull = Pin.PULL_NONE;
   AttributeOption Appearance = ProbeAttributes.APPEAR_EVOLUTION_NEW;
-  String pinNumber = "";
+
+  // Port attributes
+
+  static final Font defaultPortLabelFont = new Font("SansSerif", Font.PLAIN, 12);
+  static final Color defaultPortLabelColor = Color.black;
+  static final Font defaultPinNumberFont = new Font("SansSerif", Font.PLAIN, 9);
+  static final Color defaultPinNumberColor = Color.black;
+
+  public boolean portShowLabel = true;
+  public Font portLabelFont = defaultPortLabelFont;
+  public Color portLabelColor = defaultPortLabelColor;
+  public String pinNumber = "";
+  public boolean portShowPinNumber = true;
+  public AttributeOption pinNumberPosition = PINNO_ABOVE_LEFT;
+  public Font pinNumberFont = defaultPinNumberFont;
+  public Color pinNumberColor = defaultPinNumberColor;
 
   public PinAttributes() {}
 
@@ -111,6 +190,13 @@ public class PinAttributes extends ProbeAttributes {
     if (attr == PROBEAPPEARANCE) return (V) Appearance;
     if (attr == PIN_NUMBER) return (V) pinNumber;
     if (attr == ATTR_DUMMY) return (V) "nochange";
+    if (attr == PORT_SHOW_LABEL) return (V) (Boolean) portShowLabel;
+    if (attr == PORT_LABEL_FONT) return (V) portLabelFont;
+    if (attr == PORT_LABEL_COLOR) return (V) portLabelColor;
+    if (attr == PORT_SHOW_PIN_NUMBER) return (V) (Boolean) portShowPinNumber;
+    if (attr == PIN_NUMBER_POSITION) return (V) pinNumberPosition;
+    if (attr == PIN_NUMBER_FONT) return (V) pinNumberFont;
+    if (attr == PIN_NUMBER_COLOR) return (V) pinNumberColor;
     return super.getValue(attr);
   }
 
@@ -125,15 +211,15 @@ public class PinAttributes extends ProbeAttributes {
   @SuppressWarnings("unchecked")
   @Override
   public <V> void setValue(Attribute<V> attr, V value) {
-	if (attr == ATTR_DUMMY) {
-	  if (value.equals("output")) {
-	    if (type != EndData.OUTPUT_ONLY) {
-	      type = EndData.OUTPUT_ONLY;
-	      fireAttributeValueChanged((Attribute<V>)Pin.ATTR_TYPE,(V)Boolean.valueOf(type == EndData.OUTPUT_ONLY),null);
-	      return;
-	    }
-	  }
-	} else if (attr == StdAttr.WIDTH) {
+    if (attr == ATTR_DUMMY) {
+      if (value.equals("output")) {
+        if (type != EndData.OUTPUT_ONLY) {
+          type = EndData.OUTPUT_ONLY;
+          fireAttributeValueChanged((Attribute<V>)Pin.ATTR_TYPE,(V)Boolean.valueOf(type == EndData.OUTPUT_ONLY),null);
+          return;
+        }
+      }
+    } else if (attr == StdAttr.WIDTH) {
       BitWidth NewWidth = (BitWidth) value;
       if (width == NewWidth) return;
       width = (BitWidth) value;
@@ -160,9 +246,24 @@ public class PinAttributes extends ProbeAttributes {
         super.setValue(RadixOption.ATTRIBUTE, RadixOption.RADIX_2);
       } else super.setValue(attr, value);
       return;
-    } else if (attr == PIN_NUMBER) {
+    }
+    else if (attr == PIN_NUMBER)
       pinNumber = (String) value;
-    } else {
+    else if (attr == PORT_SHOW_LABEL)
+      portShowLabel = (Boolean) value;
+    else if (attr == PORT_LABEL_FONT)
+      portLabelFont = (Font) value;
+    else if (attr == PORT_LABEL_COLOR)
+      portLabelColor = (Color) value;
+    else if (attr == PORT_SHOW_PIN_NUMBER)
+      portShowPinNumber = (Boolean) value;
+    else if (attr == PIN_NUMBER_POSITION)
+      pinNumberPosition = (AttributeOption) value;
+    else if (attr == PIN_NUMBER_FONT)
+      pinNumberFont = (Font) value;
+    else if (attr == PIN_NUMBER_COLOR)
+      pinNumberColor = (Color) value;
+    else {
       super.setValue(attr, value);
       return;
     }
