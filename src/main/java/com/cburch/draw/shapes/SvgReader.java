@@ -205,7 +205,7 @@ public class SvgReader {
     List<Attribute<?>> attrs = shape.getAttributes();
     for (Attribute a : attrs) {
       String attrName = a.getName();
-      if (attrName.startsWith("logisim-")) {
+      if (attrName.startsWith("a-")) {
         String value = elt.getAttribute(attrName);
         if (!value.equals(""))
           shape.setValue(a, a.parse(value));
