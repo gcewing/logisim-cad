@@ -64,7 +64,7 @@ public class PinAttributes extends ProbeAttributes {
   public static PinAttributes instance = new PinAttributes();
 
 	public static final Attribute<String> PIN_NUMBER =
-	  Attributes.forString("logisim-pin-number", S.getter("pinNumberAttr"));
+	  Attributes.forString("pin-number", S.getter("pinNumberAttr"));
 
   // Port attributes
 
@@ -74,10 +74,10 @@ public class PinAttributes extends ProbeAttributes {
   // Pin attributes used by port
 
   public static final Attribute<Boolean> PORT_SHOW_LABEL =
-    Attributes.forBoolean("logisim-port-show-label", S.getter("portShowLabelAttr"));
+    Attributes.forBoolean("port-show-label", S.getter("portShowLabelAttr"));
 
   public static final Attribute<Boolean> PORT_SHOW_PIN_NUMBER =
-    Attributes.forBoolean("logisim-port-show-pin-number", S.getter("portShowPinNumberAttr"));
+    Attributes.forBoolean("port-show-pin-number", S.getter("portShowPinNumberAttr"));
 
   public static final AttributeOption PINNO_ABOVE_LEFT =
     new AttributeOption("above-left", S.getter("pinNumberAboveLeftOption"));
@@ -86,21 +86,21 @@ public class PinAttributes extends ProbeAttributes {
 
 	public static final Attribute<AttributeOption> PIN_NUMBER_POSITION =
     Attributes.forOption(
-      "logisim-pin-number-position",
+      "pin-number-position",
       S.getter("pinNumberPositionAttr"),
       new AttributeOption[] {PINNO_ABOVE_LEFT, PINNO_BELOW_RIGHT});
 
   public static final Attribute<Font> PORT_LABEL_FONT =
-      Attributes.forFont("logisim-port-label-font", S.getter("portLabelFontAttr"));
+      Attributes.forFont("port-label-font", S.getter("portLabelFontAttr"));
 
   public static final Attribute<Color> PORT_LABEL_COLOR =
-      Attributes.forColor("logisim-port-label-color", S.getter("portLabelColorAttr"));
+      Attributes.forColor("port-label-color", S.getter("portLabelColorAttr"));
 
   public static final Attribute<Font> PIN_NUMBER_FONT =
-      Attributes.forFont("logisim-pin-number-font", S.getter("pinNumberFontAttr"));
+      Attributes.forFont("pin-number-font", S.getter("pinNumberFontAttr"));
 
   public static final Attribute<Color> PIN_NUMBER_COLOR =
-      Attributes.forColor("logisim-pin-number-color", S.getter("pinNumberColorAttr"));
+      Attributes.forColor("pin-number-color", S.getter("pinNumberColorAttr"));
 
   // Attributes editable via pin
 
