@@ -30,11 +30,14 @@ package com.cburch.logisim.comp;
 
 import com.cburch.logisim.circuit.Circuit;
 import com.cburch.logisim.circuit.CircuitState;
+import com.cburch.logisim.circuit.Wire;
 import com.cburch.logisim.circuit.WireSet;
 import com.cburch.logisim.data.AttributeSet;
+import com.cburch.logisim.data.BitWidth;
 import com.cburch.logisim.data.Bounds;
 import com.cburch.logisim.data.Direction;
 import com.cburch.logisim.data.Location;
+import com.cburch.logisim.file.Options;
 import com.cburch.logisim.instance.InstancePainter;
 import com.cburch.logisim.prefs.AppPreferences;
 import com.cburch.logisim.util.GraphicsUtil;
@@ -56,6 +59,54 @@ public class ComponentDrawContext {
   private boolean printView;
   private WireSet highlightedWires;
   private InstancePainter instancePainter;
+  
+  private int strokeWidth = Wire.WIDTH;
+  private int pinRadius;
+  private boolean hideAbuttedPorts;
+  
+  public int getStrokeWidth() {
+    return strokeWidth;
+  }
+  
+  public double getPinRadius() {
+    return pinRadius;
+  }
+
+  public int getWireWidth() {
+    return getStrokeWidth();
+  }
+  
+  public int getBusWidth() {
+    return strokeWidth + (Wire.WIDTH_BUS - Wire.WIDTH);
+  }
+
+  public int getHighlightedWireWidth() {
+    return strokeWidth + (Wire.HIGHLIGHTED_WIDTH - Wire.WIDTH);
+  }
+
+  public int getHighlightedBusWidth() {
+    return strokeWidth + (Wire.HIGHLIGHTED_WIDTH_BUS - Wire.WIDTH);
+  }
+
+  public int getWireWidth(BitWidth w) {
+    return (w.getWidth() > 1) ? getBusWidth() : getWireWidth();
+  }
+
+  public int getHighlightedWireWidth(BitWidth w) {
+    return (w.getWidth() > 1) ? getHighlightedBusWidth() : getHighlightedWireWidth();
+  }
+
+  public int getWireWidth(BitWidth w, boolean highlighted) {
+    return highlighted ? getHighlightedWireWidth(w) : getWireWidth(w);
+  }
+
+  public double getJunctionWidth(BitWidth w, boolean highlighted) {
+    return getWireWidth(w, highlighted) + (Wire.WIRE_JUNCTION_WIDTH - Wire.WIDTH);
+  }
+  
+  public boolean getHideAbuttedPorts() {
+    return hideAbuttedPorts;
+  }
 
   public ComponentDrawContext(
       java.awt.Component dest,
@@ -83,13 +134,19 @@ public class ComponentDrawContext {
     this.printView = printView;
     this.highlightedWires = WireSet.EMPTY;
     this.instancePainter = new InstancePainter(this, null);
+    if (circuit != null) {
+      AttributeSet projAttrs = circuit.getProject().getOptions().getAttributeSet();
+      this.strokeWidth = projAttrs.getValue(Options.ATTR_STROKE_WIDTH);
+      this.hideAbuttedPorts = projAttrs.getValue(Options.ATTR_HIDE_ABUTTED_PORTS);
+    }
+    this.pinRadius = (strokeWidth < 2) ? 2 : strokeWidth;
   }
 
   //
   // helper methods
   //
   public void drawBounds(Component comp) {
-    GraphicsUtil.switchToWidth(g, 2);
+    GraphicsUtil.switchToWidth(g, getStrokeWidth());
     g.setColor(Color.BLACK);
     Bounds bds = comp.getBounds();
     g.drawRect(bds.getX(), bds.getY(), bds.getWidth(), bds.getHeight());
@@ -99,7 +156,7 @@ public class ComponentDrawContext {
   public void drawClock(Component comp, int i, Direction dir) {
     Color curColor = g.getColor();
     g.setColor(Color.BLACK);
-    GraphicsUtil.switchToWidth(g, 2);
+    GraphicsUtil.switchToWidth(g, getStrokeWidth());
 
     EndData e = comp.getEnd(i);
     Location pt = e.getLocation();
@@ -126,15 +183,15 @@ public class ComponentDrawContext {
   }
 
   public void drawClockSymbol(Component comp, int xpos, int ypos) {
-    GraphicsUtil.switchToWidth(g, 2);
+    GraphicsUtil.switchToWidth(g, getStrokeWidth());
     g.drawLine(xpos, ypos - 4, xpos + 8, ypos);
     g.drawLine(xpos, ypos + 4, xpos + 8, ypos);
     GraphicsUtil.switchToWidth(g, 1);
   }
 
   public void drawDongle(int x, int y) {
-    GraphicsUtil.switchToWidth(g, 2);
-    g.drawOval(x - 4, y - 4, 9, 9);
+    GraphicsUtil.switchToWidth(g, getStrokeWidth());
+    g.drawOval(x - 5, y - 5, 10, 10);
   }
 
   public void drawHandle(int x, int y) {
@@ -159,60 +216,58 @@ public class ComponentDrawContext {
     drawHandle(right, bot);
     drawHandle(left, top);
   }
-
-  public void drawPin(Component comp, int i) {
-    EndData e = comp.getEnd(i);
-    Location pt = e.getLocation();
-    Color curColor = g.getColor();
-    if (getShowState()) {
-      CircuitState state = getCircuitState();
-      g.setColor(state.getValue(pt).getColor());
-    } else {
-      g.setColor(Color.BLACK);
-    }
-    g.fillOval(pt.getX() - PIN_OFFS, pt.getY() - PIN_OFFS, PIN_RAD, PIN_RAD);
-    g.setColor(curColor);
+  
+  protected boolean shouldDrawPin(Location pt, Component comp) {
+    if (hideAbuttedPorts)
+      return !circuit.isConnected(pt, comp);
+    else
+      return !circuit.isConnectedToWire(pt);
   }
 
-  public void drawPin(Component comp, int i, String label, Direction dir) {
-    Color curColor = g.getColor();
-    if (i < 0 || i >= comp.getEnds().size()) return;
-    EndData e = comp.getEnd(i);
+  protected void drawPin(Component comp, EndData e, String label, Direction dir) {
     Location pt = e.getLocation();
     int x = pt.getX();
     int y = pt.getY();
-    if (getShowState()) {
-      CircuitState state = getCircuitState();
-      g.setColor(state.getValue(pt).getColor());
-    } else {
-      g.setColor(Color.BLACK);
-    }
-    g.fillOval(x - PIN_OFFS, y - PIN_OFFS, PIN_RAD, PIN_RAD);
-    g.setColor(curColor);
-    if (dir == Direction.EAST) {
-      GraphicsUtil.drawText(g, label, x + 3, y, GraphicsUtil.H_LEFT, GraphicsUtil.V_CENTER);
-    } else if (dir == Direction.WEST) {
-      GraphicsUtil.drawText(g, label, x - 3, y, GraphicsUtil.H_RIGHT, GraphicsUtil.V_CENTER);
-    } else if (dir == Direction.SOUTH) {
-      GraphicsUtil.drawText(g, label, x, y - 3, GraphicsUtil.H_CENTER, GraphicsUtil.V_BASELINE);
-    } else if (dir == Direction.NORTH) {
-      GraphicsUtil.drawText(g, label, x, y + 3, GraphicsUtil.H_CENTER, GraphicsUtil.V_TOP);
-    }
-  }
-
-  public void drawPins(Component comp) {
-    Color curColor = g.getColor();
-    for (EndData e : comp.getEnds()) {
-      Location pt = e.getLocation();
+    if (shouldDrawPin(pt, comp)) {
+      Color curColor = g.getColor();
       if (getShowState()) {
         CircuitState state = getCircuitState();
         g.setColor(state.getValue(pt).getColor());
       } else {
         g.setColor(Color.BLACK);
       }
-      g.fillOval(pt.getX() - PIN_OFFS, pt.getY() - PIN_OFFS, PIN_RAD, PIN_RAD);
+      GraphicsUtil.fillCenteredCircle(g, x, y, getPinRadius());
+      g.setColor(curColor);
     }
-    g.setColor(curColor);
+    if (label != null) {
+      if (dir == Direction.EAST) {
+        GraphicsUtil.drawText(g, label, x + 3, y, GraphicsUtil.H_LEFT, GraphicsUtil.V_CENTER);
+      } else if (dir == Direction.WEST) {
+        GraphicsUtil.drawText(g, label, x - 3, y, GraphicsUtil.H_RIGHT, GraphicsUtil.V_CENTER);
+      } else if (dir == Direction.SOUTH) {
+        GraphicsUtil.drawText(g, label, x, y - 3, GraphicsUtil.H_CENTER, GraphicsUtil.V_BASELINE);
+      } else if (dir == Direction.NORTH) {
+        GraphicsUtil.drawText(g, label, x, y + 3, GraphicsUtil.H_CENTER, GraphicsUtil.V_TOP);
+      }
+    }
+  }
+
+  public void drawPin(Component comp, int i) {
+    EndData e = comp.getEnd(i);
+    drawPin(comp, e, null, null);
+  }
+
+  public void drawPin(Component comp, int i, String label, Direction dir) {
+    if (i >= 0 && i < comp.getEnds().size()) {
+      EndData e = comp.getEnd(i);
+      drawPin(comp, e, label, dir);
+    }
+  }
+
+  public void drawPins(Component comp) {
+    for (EndData e : comp.getEnds()) {
+      drawPin(comp, e, null, null);
+    }
   }
 
   public void drawRectangle(Component comp) {
@@ -232,7 +287,7 @@ public class ComponentDrawContext {
 
   public void drawRectangle(
       ComponentFactory source, int x, int y, int width, int height, String label) {
-    GraphicsUtil.switchToWidth(g, 2);
+    GraphicsUtil.switchToWidth(g, getStrokeWidth());
     g.drawRect(x + 1, y + 1, width - 1, height - 1);
     if (label != null && !label.equals("")) {
       FontMetrics fm = base.getFontMetrics(g.getFont());
@@ -246,7 +301,7 @@ public class ComponentDrawContext {
   }
 
   public void drawRectangle(int x, int y, int width, int height, String label) {
-    GraphicsUtil.switchToWidth(g, 2);
+    GraphicsUtil.switchToWidth(g, getStrokeWidth());
     g.drawRect(x, y, width, height);
     if (label != null && !label.equals("")) {
       FontMetrics fm = base.getFontMetrics(g.getFont());
@@ -316,7 +371,7 @@ public class ComponentDrawContext {
   }
 
   public void drawRoundBounds(Component comp, Bounds bds, Color color) {
-    GraphicsUtil.switchToWidth(g, 2);
+    GraphicsUtil.switchToWidth(g, getStrokeWidth());
     if (color != null && !color.equals(Color.WHITE)) {
       g.setColor(color);
       g.fillRoundRect(bds.getX(), bds.getY(), bds.getWidth(), bds.getHeight(), 10, 10);

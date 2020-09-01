@@ -208,7 +208,7 @@ public class Multiplier extends InstanceFactory {
     Location loc = painter.getLocation();
     int x = loc.getX();
     int y = loc.getY();
-    GraphicsUtil.switchToWidth(g, 2);
+    GraphicsUtil.switchToWidth(g, painter.getStrokeWidth());
     g.setColor(Color.BLACK);
     g.drawLine(x - 15, y - 5, x - 5, y + 5);
     g.drawLine(x - 15, y + 5, x - 5, y - 5);

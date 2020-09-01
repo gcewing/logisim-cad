@@ -267,7 +267,7 @@ public class PortIO extends InstanceFactory {
     Bounds bds = painter.getBounds().expand(-1);
 
     Graphics g = painter.getGraphics();
-    GraphicsUtil.switchToWidth(g, 2);
+    GraphicsUtil.switchToWidth(g, painter.getStrokeWidth());
     g.setColor(Color.darkGray);
     g.fillRect(bds.getX(), bds.getY(), bds.getWidth(), bds.getHeight());
     GraphicsUtil.switchToWidth(g, 1);

@@ -285,7 +285,7 @@ public class CircuitAppearance extends Drawing {
       if (!(shape instanceof AppearanceElement)) {
         Graphics dup = g.create();
         if (shape instanceof DynamicElement) {
-          ((DynamicElement) shape).paintDynamic(dup, state);
+          ((DynamicElement) shape).paintDynamic(dup, state, painter);
           if (shape instanceof DynamicElementWithPoker)
             ((DynamicElementWithPoker)shape).setAnchor(offset);
         }

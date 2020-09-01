@@ -202,13 +202,19 @@ class ControlledBuffer extends InstanceFactory {
     Graphics g = painter.getGraphics();
 
     // draw control wire
-    GraphicsUtil.switchToWidth(g, 3);
+    GraphicsUtil.switchToWidth(g, painter.getWireWidth());
     Location pt0 = painter.getInstance().getPortLocation(2);
     Location pt1;
+    int d =
+      !isInverter
+        ? 6
+      : painter.getAttributeValue(NotGate.ATTR_SIZE) == NotGate.SIZE_NARROW
+        ? 8
+      : 4;
     if (painter.getAttributeValue(ATTR_CONTROL) == LEFT_HANDED) {
-      pt1 = pt0.translate(face, 0, 6);
+      pt1 = pt0.translate(face, 0, d);
     } else {
-      pt1 = pt0.translate(face, 0, -6);
+      pt1 = pt0.translate(face, 0, -d);
     }
     if (painter.getShowState()) {
       g.setColor(painter.getPortValue(2).getColor());
@@ -243,9 +249,9 @@ class ControlledBuffer extends InstanceFactory {
     if (isInverter) {
       PainterShaped.paintNot(painter);
     } else {
-      GraphicsUtil.switchToWidth(g, 2);
+      GraphicsUtil.switchToWidth(g, painter.getStrokeWidth());
       int d = isInverter ? 10 : 0;
-      int[] xp = new int[] {-d, -19 - d, -19 - d, -d};
+      int[] xp = new int[] {-d, -20 - d, -20 - d, -d};
       int[] yp = new int[] {0, -7, 7, 0};
       g.drawPolyline(xp, yp, 4);
       // if (isInverter) g.drawOval(-9, -4, 9, 9);

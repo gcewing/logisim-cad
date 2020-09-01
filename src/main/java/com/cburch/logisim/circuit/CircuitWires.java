@@ -47,6 +47,8 @@ import com.cburch.logisim.util.IteratorUtil;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Stroke;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Line2D;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -435,13 +437,13 @@ class CircuitWires {
       }
     }
   }
-
+  
   void draw(ComponentDrawContext context, Collection<Component> hidden) {
     boolean showState = context.getShowState();
     CircuitState state = context.getCircuitState();
     Graphics2D g = (Graphics2D) context.getGraphics();
     g.setColor(Color.BLACK);
-    GraphicsUtil.switchToWidth(g, Wire.WIDTH);
+    GraphicsUtil.switchToWidth(g, context.getWireWidth());
     WireSet highlighted = context.getHighlightedWires();
 
     BundleMap bmap = getBundleMap();
@@ -461,8 +463,8 @@ class CircuitWires {
           g.setColor(Color.BLACK);
         }
         if (highlighted.containsWire(w)) {
-          if (wb.isBus()) width = Wire.HIGHLIGHTED_WIDTH_BUS;
-          else width = Wire.HIGHLIGHTED_WIDTH;
+          if (wb.isBus()) width = context.getHighlightedBusWidth();
+          else width = context.getHighlightedWireWidth();
           GraphicsUtil.switchToWidth(g, width);
           g.drawLine(s.getX(), s.getY(), t.getX(), t.getY());
 
@@ -472,10 +474,11 @@ class CircuitWires {
           g.drawLine(s.getX(), s.getY(), t.getX(), t.getY());
           g.setStroke(oldStroke);
         } else {
-          if (wb.isBus()) width = Wire.WIDTH_BUS;
-          else width = Wire.WIDTH;
+          if (wb.isBus()) width = context.getBusWidth();
+          else width = context.getWireWidth();
           GraphicsUtil.switchToWidth(g, width);
-          g.drawLine(s.getX(), s.getY(), t.getX(), t.getY());
+          g.draw(new Line2D.Double(s.getX(), s.getY(), t.getX(), t.getY()));
+//           g.drawLine(s.getX(), s.getY(), t.getX(), t.getY());
         }
         /* The following part is used by the FPGA-commanders DRC to highlight a wire with DRC
          * problems (KTT1)
@@ -506,20 +509,8 @@ class CircuitWires {
             } else {
               g.setColor(Color.BLACK);
             }
-            int radius;
-            if (highlighted.containsLocation(loc)) {
-              radius =
-                  wb.isBus()
-                      ? (int) (Wire.HIGHLIGHTED_WIDTH_BUS * Wire.DOT_MULTIPLY_FACTOR)
-                      : (int) (Wire.HIGHLIGHTED_WIDTH * Wire.DOT_MULTIPLY_FACTOR);
-            } else {
-              radius =
-                  wb.isBus()
-                      ? (int) (Wire.WIDTH_BUS * Wire.DOT_MULTIPLY_FACTOR)
-                      : (int) (Wire.WIDTH * Wire.DOT_MULTIPLY_FACTOR);
-            }
-            radius = (int) (radius * Wire.DOT_MULTIPLY_FACTOR);
-            g.fillOval(loc.getX() - radius, loc.getY() - radius, radius * 2, radius * 2);
+            int w;
+            fillJunction(g, context, loc, wb, highlighted);
           }
         }
       }
@@ -538,12 +529,12 @@ class CircuitWires {
             g.setColor(Color.BLACK);
           }
           if (highlighted.containsWire(w)) {
-            GraphicsUtil.switchToWidth(g, Wire.WIDTH + 2);
+            GraphicsUtil.switchToWidth(g, context.getWireWidth() + 2);
             g.drawLine(s.getX(), s.getY(), t.getX(), t.getY());
-            GraphicsUtil.switchToWidth(g, Wire.WIDTH);
+            GraphicsUtil.switchToWidth(g, context.getWireWidth());
           } else {
-            if (wb.isBus()) GraphicsUtil.switchToWidth(g, Wire.WIDTH_BUS);
-            else GraphicsUtil.switchToWidth(g, Wire.WIDTH);
+            if (wb.isBus()) GraphicsUtil.switchToWidth(g, context.getBusWidth());
+            else GraphicsUtil.switchToWidth(g, context.getWireWidth());
             g.drawLine(s.getX(), s.getY(), t.getX(), t.getY());
           }
         }
@@ -569,19 +560,18 @@ class CircuitWires {
               } else {
                 g.setColor(Color.BLACK);
               }
-              int radius;
-              if (highlighted.containsLocation(loc)) {
-                radius = wb.isBus() ? Wire.HIGHLIGHTED_WIDTH_BUS : Wire.HIGHLIGHTED_WIDTH;
-              } else {
-                radius = wb.isBus() ? Wire.WIDTH_BUS : Wire.WIDTH;
-              }
-              radius = (int) (radius * Wire.DOT_MULTIPLY_FACTOR);
-              g.fillOval(loc.getX() - radius, loc.getY() - radius, radius * 2, radius * 2);
+              fillJunction(g, context, loc, wb, highlighted);
             }
           }
         }
       }
     }
+  }
+
+  private void fillJunction(Graphics2D g, ComponentDrawContext context, Location loc, WireBundle wb, WireSet highlighted) {
+    double s = context.getJunctionWidth(wb.getWidth(), highlighted.containsLocation(loc));
+    double r = 0.5 * s;
+    g.fill(new Ellipse2D.Double(loc.getX() - r, loc.getY() - r, s, s));
   }
 
   // void ensureComputed() {

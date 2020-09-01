@@ -139,7 +139,7 @@ public class WiringTool extends Tool {
       int y1 = e1.getY();
 
       g.setColor(Color.BLACK);
-      GraphicsUtil.switchToWidth(g, 3);
+      GraphicsUtil.switchToWidth(g, context.getWireWidth());
       if (direction == HORIZONTAL) {
         if (x0 != x1) g.drawLine(x0, y0, x1, y0);
         if (y0 != y1) g.drawLine(x1, y0, x1, y1);

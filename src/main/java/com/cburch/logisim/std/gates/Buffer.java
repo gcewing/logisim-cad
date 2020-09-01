@@ -212,7 +212,7 @@ class Buffer extends InstanceFactory {
       ((Graphics2D) g).rotate(rotate);
     }
 
-    GraphicsUtil.switchToWidth(g, 2);
+    GraphicsUtil.switchToWidth(g, painter.getStrokeWidth());
     Object shape = painter.getGateShape();
     if (shape == AppPreferences.SHAPE_RECTANGULAR) {
       g.drawRect(-19, -9, 18, 18);

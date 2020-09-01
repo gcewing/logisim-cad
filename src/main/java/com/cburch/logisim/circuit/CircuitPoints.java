@@ -143,6 +143,16 @@ class CircuitPoints {
     }
     return Arrays.asList(ret);
   }
+  
+  boolean isConnectedToWire(Location loc) {
+    LocationData locData = map.get(loc);
+    if (loc == null)
+      return false;
+    for (Component o : locData.components)
+      if (o instanceof Wire)
+        return true;
+    return false;
+  }
 
   int getComponentCount(Location loc) {
     LocationData locData = map.get(loc);

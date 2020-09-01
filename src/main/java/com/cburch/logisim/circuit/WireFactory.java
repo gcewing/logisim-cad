@@ -74,7 +74,7 @@ class WireFactory extends AbstractComponentFactory {
     int len = attrs.getValue(Wire.len_attr).intValue();
 
     g.setColor(color);
-    GraphicsUtil.switchToWidth(g, 3);
+    GraphicsUtil.switchToWidth(g, context.getWireWidth());
     if (dir == Wire.VALUE_HORZ) {
       g.drawLine(x, y, x + len, y);
     } else {

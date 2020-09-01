@@ -326,7 +326,7 @@ abstract class AbstractFlipFlop extends InstanceFactory {
     Location loc = painter.getLocation();
     int x = loc.getX();
     int y = loc.getY();
-    GraphicsUtil.switchToWidth(g, 2);
+    GraphicsUtil.switchToWidth(g, painter.getStrokeWidth());
     g.drawRect(x, y, 40, 60);
     if (painter.getShowState()) {
       StateData myState = (StateData) painter.getData();
@@ -358,7 +358,7 @@ abstract class AbstractFlipFlop extends InstanceFactory {
     if (Trigger.equals(StdAttr.TRIG_RISING) || Trigger.equals(StdAttr.TRIG_HIGH)) {
       g.fillRect(x - 10, y + 49, 10, 3);
     } else {
-      GraphicsUtil.switchToWidth(g, 2);
+      GraphicsUtil.switchToWidth(g, painter.getStrokeWidth());
       g.drawOval(x - 10, y + 45, 10, 10);
       GraphicsUtil.switchToWidth(g, 1);
     }
@@ -367,7 +367,7 @@ abstract class AbstractFlipFlop extends InstanceFactory {
     g.fillRect(x + 40, y + 9, 10, 3);
     GraphicsUtil.drawCenteredText(g, "Q", x + 31, y + 10);
     painter.drawPort(n + 1);
-    GraphicsUtil.switchToWidth(g, 2);
+    GraphicsUtil.switchToWidth(g, painter.getStrokeWidth());
     g.drawOval(x + 40, y + 45, 10, 10);
     GraphicsUtil.switchToWidth(g, 1);
     painter.drawPort(n + 2);

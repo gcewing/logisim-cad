@@ -109,8 +109,10 @@ public class BitSelector extends InstanceFactory {
 
   @Override
   public void paintGhost(InstancePainter painter) {
+    Graphics g = painter.getGraphics();
+    GraphicsUtil.switchToWidth(g, painter.getStrokeWidth());
     Plexers.drawTrapezoid(
-        painter.getGraphics(), painter.getBounds(), painter.getAttributeValue(StdAttr.FACING), 9);
+        g, painter.getBounds(), painter.getAttributeValue(StdAttr.FACING), 9);
   }
 
   @Override
@@ -118,6 +120,7 @@ public class BitSelector extends InstanceFactory {
     Graphics g = painter.getGraphics();
     Direction facing = painter.getAttributeValue(StdAttr.FACING);
 
+    GraphicsUtil.switchToWidth(g, painter.getStrokeWidth());
     Plexers.drawTrapezoid(g, painter.getBounds(), facing, 9);
     Bounds bds = painter.getBounds();
     g.setColor(Color.BLACK);

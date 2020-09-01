@@ -143,7 +143,7 @@ public class Led extends InstanceFactory implements DynamicElementProvider {
   public void paintGhost(InstancePainter painter) {
     Graphics g = painter.getGraphics();
     Bounds bds = painter.getBounds();
-    GraphicsUtil.switchToWidth(g, 2);
+    GraphicsUtil.switchToWidth(g, painter.getStrokeWidth());
     g.drawOval(bds.getX() + 1, bds.getY() + 1, bds.getWidth() - 2, bds.getHeight() - 2);
   }
 
@@ -163,7 +163,7 @@ public class Led extends InstanceFactory implements DynamicElementProvider {
       g.fillOval(bds.getX(), bds.getY(), bds.getWidth(), bds.getHeight());
     }
     g.setColor(Color.BLACK);
-    GraphicsUtil.switchToWidth(g, 2);
+    GraphicsUtil.switchToWidth(g, painter.getStrokeWidth());
     g.drawOval(bds.getX(), bds.getY(), bds.getWidth(), bds.getHeight());
     GraphicsUtil.switchToWidth(g, 1);
     painter.drawLabel();

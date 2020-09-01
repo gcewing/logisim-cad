@@ -82,7 +82,7 @@ public class Joystick extends InstanceFactory {
       Graphics g = painter.getGraphics();
       g.setColor(Color.WHITE);
       g.fillRect(x - 20, y, 10, 10);
-      GraphicsUtil.switchToWidth(g, 3);
+      GraphicsUtil.switchToWidth(g, painter.getWireWidth());
       g.setColor(Color.BLACK);
       int dx = state.xPos;
       int dy = state.yPos;
@@ -164,7 +164,7 @@ public class Joystick extends InstanceFactory {
   @Override
   public void paintGhost(InstancePainter painter) {
     Graphics g = painter.getGraphics();
-    GraphicsUtil.switchToWidth(g, 2);
+    GraphicsUtil.switchToWidth(g, painter.getStrokeWidth());
     g.drawRoundRect(-30, -10, 30, 30, 8, 8);
   }
 

@@ -126,7 +126,7 @@ public class TransmissionGate extends InstanceFactory {
     Graphics2D g = (Graphics2D) painter.getGraphics().create();
     g.rotate(radians, bds.getX() + 20, bds.getY() + 20);
     g.translate(bds.getX(), bds.getY());
-    GraphicsUtil.switchToWidth(g, Wire.WIDTH);
+    GraphicsUtil.switchToWidth(g, painter.getWireWidth());
 
     Color gate0 = g.getColor();
     Color gate1 = gate0;
@@ -151,14 +151,14 @@ public class TransmissionGate extends InstanceFactory {
 
     g.setColor(gate0);
     g.drawLine(20, 38, 20, 40);
-    GraphicsUtil.switchToWidth(g, 2);
+    GraphicsUtil.switchToWidth(g, painter.getStrokeWidth());
     g.drawOval(17, 32, 6, 6);
     g.drawLine(11, 31, 29, 31);
-    GraphicsUtil.switchToWidth(g, Wire.WIDTH);
+    GraphicsUtil.switchToWidth(g, painter.getWireWidth());
 
     g.setColor(gate1);
     g.drawLine(20, 7, 20, 0);
-    GraphicsUtil.switchToWidth(g, 2);
+    GraphicsUtil.switchToWidth(g, painter.getStrokeWidth());
     g.drawLine(11, 9, 29, 9);
 
     g.setColor(platform);

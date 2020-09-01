@@ -44,6 +44,7 @@ import com.cburch.logisim.data.BitWidth;
 import com.cburch.logisim.data.Bounds;
 import com.cburch.logisim.data.Location;
 import com.cburch.logisim.fpga.designrulecheck.Netlist;
+import com.cburch.logisim.file.Options;
 import com.cburch.logisim.tools.CustomHandles;
 import com.cburch.logisim.util.Cache;
 import com.cburch.logisim.util.GraphicsUtil;
@@ -81,8 +82,7 @@ public final class Wire implements Component, AttributeSet, CustomHandles, Itera
   public static final int HIGHLIGHTED_WIDTH_BUS = 5;
   public static final Stroke HIGHLIGHTED_STROKE =
       new BasicStroke(3, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] {7}, 0);
-  public static final double DOT_MULTIPLY_FACTOR =
-      1.35; /* multiply factor for the intersection points */
+  public static final double WIRE_JUNCTION_WIDTH = 6;
   public static final AttributeOption VALUE_HORZ =
       new AttributeOption("horz", S.getter("wireDirectionHorzOption"));
   public static final AttributeOption VALUE_VERT =
@@ -170,7 +170,7 @@ public final class Wire implements Component, AttributeSet, CustomHandles, Itera
   public void draw(ComponentDrawContext context) {
     CircuitState state = context.getCircuitState();
     Graphics g = context.getGraphics();
-    GraphicsUtil.switchToWidth(g, WIDTH);
+    GraphicsUtil.switchToWidth(g, context.getWireWidth());
     g.setColor(state.getValue(e0).getColor());
     g.drawLine(e0.getX(), e0.getY(), e1.getX(), e1.getY());
   }

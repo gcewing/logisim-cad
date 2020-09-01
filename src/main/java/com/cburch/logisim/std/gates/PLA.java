@@ -283,7 +283,7 @@ class PLA extends InstanceFactory {
     }
 
     if (!ghost) g.setColor(Color.BLACK);
-    GraphicsUtil.switchToWidth(g, 2);
+    GraphicsUtil.switchToWidth(g, painter.getStrokeWidth());
     g.drawRect(x, y, bds.getWidth(), bds.getHeight());
 
     g.setFont(painter.getAttributeValue(StdAttr.LABEL_FONT));

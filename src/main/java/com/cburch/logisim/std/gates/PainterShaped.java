@@ -106,14 +106,14 @@ public class PainterShaped {
 
   static void paintAnd(InstancePainter painter, int width, int height) {
     Graphics g = painter.getGraphics();
-    GraphicsUtil.switchToWidth(g, 2);
-    int[] xp = new int[] {-width / 2, -width + 1, -width + 1, -width / 2};
+    GraphicsUtil.switchToWidth(g, painter.getStrokeWidth());
+    int[] xp = new int[] {-width / 2, -width /*+ 1*/, -width /*+ 1*/, -width / 2};
     int[] yp = new int[] {-width / 2, -width / 2, width / 2, width / 2};
     GraphicsUtil.drawCenteredArc(g, -width / 2, 0, width / 2, -90, 180);
 
     g.drawPolyline(xp, yp, 4);
     if (height > width) {
-      g.drawLine(-width + 1, -height / 2, -width + 1, height / 2);
+      g.drawLine(-width /*+ 1*/, -height / 2, -width + 1, height / 2);
     }
   }
 
@@ -140,7 +140,7 @@ public class PainterShaped {
     } else {
       Graphics g = painter.getGraphics();
       Color baseColor = g.getColor();
-      GraphicsUtil.switchToWidth(g, 3);
+      GraphicsUtil.switchToWidth(g, painter.getWireWidth(attrs.width));
       for (int i = 0; i < inputs; i++) {
         Location offs = factory.getInputOffset(attrs, i);
         Location src = loc.translate(offs.getX(), offs.getY());
@@ -167,30 +167,30 @@ public class PainterShaped {
 
   static void paintNot(InstancePainter painter) {
     Graphics g = painter.getGraphics();
-    GraphicsUtil.switchToWidth(g, 2);
+    GraphicsUtil.switchToWidth(g, painter.getStrokeWidth());
     if (painter.getAttributeValue(NotGate.ATTR_SIZE) == NotGate.SIZE_NARROW) {
-      GraphicsUtil.switchToWidth(g, 2);
       int[] xp = new int[4];
       int[] yp = new int[4];
       xp[0] = -6;
       yp[0] = 0;
-      xp[1] = -19;
+      xp[1] = -20;
       yp[1] = -6;
-      xp[2] = -19;
+      xp[2] = -20;
       yp[2] = 6;
       xp[3] = -6;
       yp[3] = 0;
       g.drawPolyline(xp, yp, 4);
       g.drawOval(-6, -3, 6, 6);
     } else {
+      final int h = 12; // 10 * 2/sqrt(3)
       int[] xp = new int[4];
       int[] yp = new int[4];
       xp[0] = -10;
       yp[0] = 0;
-      xp[1] = -29;
-      yp[1] = -7;
-      xp[2] = -29;
-      yp[2] = 7;
+      xp[1] = -30;
+      yp[1] = -h;
+      xp[2] = -30;
+      yp[2] = h;
       xp[3] = -10;
       yp[3] = 0;
       g.drawPolyline(xp, yp, 4);
@@ -200,7 +200,7 @@ public class PainterShaped {
 
   static void paintOr(InstancePainter painter, int width, int height) {
     Graphics g = painter.getGraphics();
-    GraphicsUtil.switchToWidth(g, 2);
+    GraphicsUtil.switchToWidth(g, painter.getStrokeWidth());
     GeneralPath path;
     if (width < 40) {
       path = PATH_NARROW;
@@ -216,7 +216,6 @@ public class PainterShaped {
   }
 
   private static void paintShield(Graphics g, int xlate, int width, int height) {
-    GraphicsUtil.switchToWidth(g, 2);
     g.translate(xlate, 0);
     ((Graphics2D) g).draw(computeShield(width, height));
     g.translate(-xlate, 0);

@@ -42,6 +42,7 @@ import com.cburch.logisim.circuit.CircuitState;
 import com.cburch.logisim.circuit.appear.DynamicElement;
 import com.cburch.logisim.data.Attribute;
 import com.cburch.logisim.data.Bounds;
+import com.cburch.logisim.instance.InstancePainter;
 import com.cburch.logisim.instance.StdAttr;
 import com.cburch.logisim.util.GraphicsUtil;
 import com.cburch.logisim.util.UnmodifiableList;
@@ -57,7 +58,7 @@ public class TtyShape extends DynamicElement {
   }
 
   @Override
-  public void paintDynamic(Graphics g, CircuitState state) {
+  public void paintDynamic(Graphics g, CircuitState state, InstancePainter painter) {
     TtyState data = state == null ? null : (TtyState) getData(state);
     if (data != null) {
       int rows = data.getNrRows();
@@ -68,7 +69,7 @@ public class TtyShape extends DynamicElement {
       if (height < 30) height = 30;
       setBounds(width,height);
     }
-    GraphicsUtil.switchToWidth(g, 2);
+    GraphicsUtil.switchToWidth(g, painter.getStrokeWidth());
     g.setColor(Color.YELLOW);
     g.fillRoundRect(bounds.getX(), bounds.getY(), bounds.getWidth(), bounds.getHeight(),
     		2 * Tty.BORDER, 2 * Tty.BORDER);

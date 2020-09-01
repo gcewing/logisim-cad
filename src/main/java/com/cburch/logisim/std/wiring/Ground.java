@@ -75,7 +75,7 @@ public class Ground extends InstanceFactory {
     double radians = Math.toRadians((degrees + 360) % 360);
     g.rotate(radians);
 
-    GraphicsUtil.switchToWidth(g, Wire.WIDTH);
+    GraphicsUtil.switchToWidth(g, painter.getWireWidth());
     if (!isGhost && painter.getShowState()) {
       g.setColor(painter.getPortValue(0).getColor());
     }

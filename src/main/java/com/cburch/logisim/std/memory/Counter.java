@@ -181,7 +181,7 @@ public class Counter extends InstanceFactory implements DynamicElementProvider {
 
   private void DrawControl(InstancePainter painter, int xpos, int ypos) {
     Graphics g = painter.getGraphics();
-    GraphicsUtil.switchToWidth(g, 2);
+    GraphicsUtil.switchToWidth(g, painter.getStrokeWidth());
     BitWidth widthVal = painter.getAttributeValue(StdAttr.WIDTH);
     int width = widthVal == null ? 8 : widthVal.getWidth();
     g.drawLine(xpos + 20, ypos, xpos + 20 + SymbolWidth(width), ypos);
@@ -206,7 +206,7 @@ public class Counter extends InstanceFactory implements DynamicElementProvider {
             ? "CTR" + Integer.toString(painter.getAttributeValue(StdAttr.WIDTH).getWidth())
             : "CTR DIV0x" + Long.toHexString(max);
     GraphicsUtil.drawCenteredText(g, Label, xpos + (SymbolWidth(width) / 2) + 20, ypos + 5);
-    GraphicsUtil.switchToWidth(g, 2);
+    GraphicsUtil.switchToWidth(g, painter.getStrokeWidth());
     /* Draw Reset Input */
     g.drawLine(xpos, ypos + 20, xpos + 20, ypos + 20);
     GraphicsUtil.drawText(g, "R", xpos + 30, ypos + 20, GraphicsUtil.H_LEFT, GraphicsUtil.V_CENTER);
@@ -318,7 +318,7 @@ public class Counter extends InstanceFactory implements DynamicElementProvider {
     Graphics g = painter.getGraphics();
     Font font = g.getFont();
     g.setFont(font.deriveFont(7.0f));
-    GraphicsUtil.switchToWidth(g, 2);
+    GraphicsUtil.switchToWidth(g, painter.getStrokeWidth());
     g.drawRect(xpos + 20, RealYpos, SymbolWidth(NrOfBits), 20);
     /* Input Line */
     if (NrOfBits > 1) {

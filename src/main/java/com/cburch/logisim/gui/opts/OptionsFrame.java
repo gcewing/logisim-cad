@@ -110,6 +110,7 @@ public class OptionsFrame extends LFrame {
     file.addLibraryListener(myListener);
     panels = new OptionsPanel[] { new SimulateOptions(this), 
         new ToolbarOptions(this), new MouseOptions(this),
+        new RenderingOptions(this),
         new RevertPanel(this)};
     tabbedPane = new JTabbedPane();
     for (int index = 0; index < panels.length; index++) {

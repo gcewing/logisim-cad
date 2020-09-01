@@ -789,6 +789,10 @@ public class Circuit {
     return false;
   }
 
+  public boolean isConnectedToWire(Location loc) {
+    return wires.points.isConnectedToWire(loc);
+  }
+
   void mutatorAdd(Component c) {
     // logger.debug("mutatorAdd: {}", c);
     locker.checkForWritePermission("add", this);

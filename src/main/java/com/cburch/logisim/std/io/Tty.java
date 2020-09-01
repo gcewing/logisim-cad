@@ -148,7 +148,7 @@ public class Tty extends InstanceFactory  implements DynamicElementProvider {
   @Override
   public void paintGhost(InstancePainter painter) {
     Graphics g = painter.getGraphics();
-    GraphicsUtil.switchToWidth(g, 2);
+    GraphicsUtil.switchToWidth(g, painter.getStrokeWidth());
     Bounds bds = painter.getBounds();
     g.drawRoundRect(bds.getX(), bds.getY(), bds.getWidth(), bds.getHeight(), 10, 10);
   }
@@ -163,7 +163,7 @@ public class Tty extends InstanceFactory  implements DynamicElementProvider {
       g.setColor(painter.getAttributeValue(Io.ATTR_BACKGROUND));
       g.fillRoundRect(bds.getX(), bds.getY(), bds.getWidth(), bds.getHeight(), 10, 10);
     }
-    GraphicsUtil.switchToWidth(g, 2);
+    GraphicsUtil.switchToWidth(g, painter.getStrokeWidth());
     g.setColor(Color.BLACK);
     g.drawRoundRect(
         bds.getX(), bds.getY(), bds.getWidth(), bds.getHeight(), 2 * BORDER, 2 * BORDER);

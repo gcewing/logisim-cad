@@ -165,7 +165,7 @@ public class Transistor extends InstanceFactory {
     }
 
     // input and output lines
-    GraphicsUtil.switchToWidth(g, Wire.WIDTH);
+    GraphicsUtil.switchToWidth(g, painter.getWireWidth());
     g.setColor(output);
     g.drawLine(0, 0, -13, 0);
     g.drawLine(-13, m * 6, -13, 0);
@@ -178,11 +178,11 @@ public class Transistor extends InstanceFactory {
     g.setColor(gate);
     if (type == TYPE_P) {
       g.drawLine(-20, m * 20, -20, m * 18);
-      GraphicsUtil.switchToWidth(g, 2);
+      GraphicsUtil.switchToWidth(g, painter.getStrokeWidth());
       g.drawOval(-20 - 3, m * 15 - 3, 6, 6);
     } else {
       g.drawLine(-20, m * 20, -20, m * 13);
-      GraphicsUtil.switchToWidth(g, 2);
+      GraphicsUtil.switchToWidth(g, painter.getStrokeWidth());
     }
 
     // draw platforms

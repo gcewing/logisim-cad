@@ -47,6 +47,7 @@ import com.cburch.logisim.data.Attributes;
 import com.cburch.logisim.data.Bounds;
 import com.cburch.logisim.data.Location;
 import com.cburch.logisim.instance.InstanceComponent;
+import com.cburch.logisim.instance.InstancePainter;
 import com.cburch.logisim.instance.StdAttr;
 import com.cburch.logisim.util.GraphicsUtil;
 import com.cburch.logisim.util.UnmodifiableList;
@@ -272,7 +273,7 @@ public abstract class DynamicElement extends AbstractCanvasObject {
 
   @Override
   public void paint(Graphics g, HandleGesture gesture) {
-    paintDynamic(g, null);
+    paintDynamic(g, null, null);
   }
 
   public void parseSvgElement(Element elt) {
@@ -312,7 +313,12 @@ public abstract class DynamicElement extends AbstractCanvasObject {
     return ret;
   }
 
-  public abstract void paintDynamic(Graphics g, CircuitState state);
+  public void paintDynamic(Graphics g, CircuitState state, InstancePainter painter) {
+    paintDynamic(g, state);
+  }
+
+  public void paintDynamic(Graphics g, CircuitState state) {
+  }
 
   public void drawLabel(Graphics g) {
     if (labelLoc == LABEL_NONE) return;

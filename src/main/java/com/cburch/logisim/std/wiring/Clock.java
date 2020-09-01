@@ -254,7 +254,7 @@ public class Clock extends InstanceFactory {
     // included
     int x = bds.getX();
     int y = bds.getY();
-    GraphicsUtil.switchToWidth(g, 2);
+    GraphicsUtil.switchToWidth(g, painter.getStrokeWidth());
     g.setColor(Color.BLACK);
     g.drawRect(x, y, bds.getWidth(), bds.getHeight());
 

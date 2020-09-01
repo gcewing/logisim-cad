@@ -106,7 +106,7 @@ public class Subtractor extends InstanceFactory {
     Location loc = painter.getLocation();
     int x = loc.getX();
     int y = loc.getY();
-    GraphicsUtil.switchToWidth(g, 2);
+    GraphicsUtil.switchToWidth(g, painter.getStrokeWidth());
     g.setColor(Color.BLACK);
     g.drawLine(x - 15, y, x - 5, y);
     GraphicsUtil.switchToWidth(g, 1);

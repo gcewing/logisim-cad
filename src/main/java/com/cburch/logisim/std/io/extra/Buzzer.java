@@ -206,11 +206,11 @@ public class Buzzer extends InstanceFactory {
     g.setColor(Color.DARK_GRAY);
     g.fillOval(x, y, 40, 40);
     g.setColor(Color.GRAY);
-    GraphicsUtil.switchToWidth(g, 2);
+    GraphicsUtil.switchToWidth(g, painter.getStrokeWidth());
     for (byte k = 8; k <= 16; k += 4) {
       g.drawOval(x + 20 - k, y + 20 - k, k * 2, k * 2);
     }
-    GraphicsUtil.switchToWidth(g, 2);
+    GraphicsUtil.switchToWidth(g, painter.getStrokeWidth());
     g.setColor(Color.DARK_GRAY);
     g.drawLine(x + 4, y + height / 2, x + 36, y + height / 2);
     g.drawLine(x + width / 2, y + 4, x + width / 2, y + 36);
