@@ -5,6 +5,28 @@ This is a fork of logisim-evolution with some features making it easier
 to use for designing circuits to be built with real parts. amd to help
 produce nice-looking schematics.
 
+Rendering Improvements
+----------------------
+
+Some refinements have been made to the rendering of schematics to improve
+their appearance. Port and junction dots are centred on wires properly, and
+some gate shapes have been adjusted slightly so that their outlines are
+aligned better with the grid. Port dots on component symbols are only
+displayed when a port does not have a wire attached to it.
+
+Some options have been added, on a new Rendering tab of the Project Options
+window:
+
+* Base Stroke Width
+
+The width of single-bit lines and component outlines. The widths of buses
+and other features are calculated relative to this.
+
+* Hide Abutted Ports
+
+Prevents port dots from being displayed where two components connect
+directly without an intervening wire.
+
 Improvements to the Appearance Editor
 -------------------------------------
 
