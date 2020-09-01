@@ -120,7 +120,7 @@ class SplitterPainter {
     int dy = parms.getEndToEndDeltaY();
     if (facing == Direction.NORTH || facing == Direction.SOUTH) {
       int ySpine = (y0 + y1) / 2;
-      GraphicsUtil.switchToWidth(g, Wire.WIDTH);
+      GraphicsUtil.switchToWidth(g, context.getWireWidth());
       g.drawLine(x0, y0, x0, ySpine);
       int xi = x1;
       int yi = y1;
@@ -134,7 +134,7 @@ class SplitterPainter {
         yi += dy;
       }
       if (fanout > 3) {
-        GraphicsUtil.switchToWidth(g, SPINE_WIDTH);
+        GraphicsUtil.switchToWidth(g, context.getBusWidth());
         g.setColor(Color.BLACK);
         g.drawLine(
             x1 + (dx > 0 ? 10 : -10), ySpine, x1 + (fanout - 1) * dx + (dx > 0 ? 10 : -10), ySpine);
@@ -144,7 +144,7 @@ class SplitterPainter {
       }
     } else {
       int xSpine = (x0 + x1) / 2;
-      GraphicsUtil.switchToWidth(g, Wire.WIDTH);
+      GraphicsUtil.switchToWidth(g, context.getWireWidth());
       g.drawLine(x0, y0, xSpine, y0);
       int xi = x1;
       int yi = y1;
@@ -158,7 +158,7 @@ class SplitterPainter {
         yi += dy;
       }
       if (fanout >= 3) {
-        GraphicsUtil.switchToWidth(g, SPINE_WIDTH);
+        GraphicsUtil.switchToWidth(g, context.getBusWidth());
         g.setColor(Color.BLACK);
         g.drawLine(
             xSpine, y1 + (dy > 0 ? 10 : -10), xSpine, y1 + (fanout - 1) * dy + (dy > 0 ? 10 : -10));
@@ -187,7 +187,7 @@ class SplitterPainter {
 
     Graphics g = context.getGraphics();
     Color oldColor = g.getColor();
-    GraphicsUtil.switchToWidth(g, Wire.WIDTH);
+    GraphicsUtil.switchToWidth(g, context.getWireWidth());
     for (int i = 0, n = attrs.fanout; i < n; i++) {
       if (showState) {
         Value val = state.getValue(Location.create(x, y));
@@ -197,7 +197,7 @@ class SplitterPainter {
       x += dx;
       y += dy;
     }
-    GraphicsUtil.switchToWidth(g, SPINE_WIDTH);
+    GraphicsUtil.switchToWidth(g, context.getBusWidth());
     g.setColor(oldColor);
     int spine0x = x0 + parms.getSpine0X();
     int spine0y = y0 + parms.getSpine0Y();

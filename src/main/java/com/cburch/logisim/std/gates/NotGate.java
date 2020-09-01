@@ -280,7 +280,7 @@ class NotGate extends InstanceFactory {
   }
 
   private void paintRectangularBase(Graphics g, InstancePainter painter) {
-    GraphicsUtil.switchToWidth(g, 2);
+    GraphicsUtil.switchToWidth(g, painter.getStrokeWidth());
     if (painter.getAttributeValue(ATTR_SIZE) == SIZE_NARROW) {
       g.drawRect(-20, -9, 14, 18);
       GraphicsUtil.drawCenteredText(g, RECT_LABEL, -13, 0);

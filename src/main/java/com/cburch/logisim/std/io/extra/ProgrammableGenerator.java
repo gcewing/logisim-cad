@@ -406,7 +406,7 @@ public class ProgrammableGenerator extends InstanceFactory {
       ys = new int[] {y + 5, y + 7, y + 7, y + 3, y + 3, y + 5};
     }
     g.drawPolyline(xs, ys, xs.length);
-    GraphicsUtil.switchToWidth(g, 2);
+    GraphicsUtil.switchToWidth(g, painter.getStrokeWidth());
     xs = new int[] {x - 5, x - 5, x + 1, x + 1, x - 4};
     ys = new int[] {y + 5, y - 5, y - 5, y, y};
     g.drawPolyline(xs, ys, xs.length);

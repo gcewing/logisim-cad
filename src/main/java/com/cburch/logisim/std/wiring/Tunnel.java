@@ -228,7 +228,7 @@ public class Tunnel extends InstanceFactory {
         yp = new int[] {y0, y0, y1, y1, mw, 0, -mw};
       }
     }
-    GraphicsUtil.switchToWidth(g, 2);
+    GraphicsUtil.switchToWidth(g, painter.getStrokeWidth());
     g.drawPolygon(xp, yp, xp.length);
   }
 

@@ -135,7 +135,7 @@ public class BitAdder extends InstanceFactory {
     painter.drawBounds();
     painter.drawPorts();
 
-    GraphicsUtil.switchToWidth(g, 2);
+    GraphicsUtil.switchToWidth(g, painter.getStrokeWidth());
     Location loc = painter.getLocation();
     int x = loc.getX() - 10;
     int y = loc.getY();

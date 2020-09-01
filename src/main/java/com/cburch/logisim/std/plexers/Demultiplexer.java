@@ -157,23 +157,25 @@ public class Demultiplexer extends InstanceFactory {
     Direction facing = painter.getAttributeValue(StdAttr.FACING);
     BitWidth select = painter.getAttributeValue(Plexers.ATTR_SELECT);
     Bounds bds = painter.getBounds();
+    Graphics g = painter.getGraphics();
 
+    GraphicsUtil.switchToWidth(g, painter.getStrokeWidth());
     if (select.getWidth() == 1) {
       if (facing == Direction.EAST || facing == Direction.WEST) {
         Plexers.drawTrapezoid(
-            painter.getGraphics(),
+            g,
             Bounds.create(bds.getX(), bds.getY() + 5, bds.getWidth(), bds.getHeight() - 10),
             facing.reverse(),
             10);
       } else {
         Plexers.drawTrapezoid(
-            painter.getGraphics(),
+            g,
             Bounds.create(bds.getX() + 5, bds.getY(), bds.getWidth() - 10, bds.getHeight()),
             facing.reverse(),
             10);
       }
     } else {
-      Plexers.drawTrapezoid(painter.getGraphics(), bds, facing.reverse(), 20);
+      Plexers.drawTrapezoid(g, bds, facing.reverse(), 20);
     }
   }
 
@@ -187,7 +189,7 @@ public class Demultiplexer extends InstanceFactory {
     int outputs = 1 << select.getWidth();
 
     // draw select and enable inputs
-    GraphicsUtil.switchToWidth(g, 3);
+    GraphicsUtil.switchToWidth(g, painter.getWireWidth());
     boolean vertical = facing == Direction.NORTH || facing == Direction.SOUTH;
     Object selectLoc = painter.getAttributeValue(Plexers.ATTR_SELECT_LOC);
     int selMult = selectLoc == Plexers.SELECT_BOTTOM_LEFT ? 1 : -1;
@@ -239,6 +241,7 @@ public class Demultiplexer extends InstanceFactory {
         g, "0", bds.getX() + x0, bds.getY() + y0, halign, GraphicsUtil.V_BASELINE);
 
     // draw trapezoid, "DMX" label, and ports
+    GraphicsUtil.switchToWidth(g, painter.getStrokeWidth());
     g.setColor(Color.BLACK);
     if (outputs == 2) {
       if (facing == Direction.EAST || facing == Direction.WEST) {

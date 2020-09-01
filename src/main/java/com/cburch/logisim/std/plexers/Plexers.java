@@ -101,7 +101,6 @@ public class Plexers extends Library {
       yp[1] += facingLean;
       yp[2] -= facingLean;
     }
-    GraphicsUtil.switchToWidth(g, 2);
     g.drawPolygon(xp, yp, 4);
   }
 

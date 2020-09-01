@@ -34,6 +34,7 @@ import com.cburch.logisim.LogisimVersion;
 import com.cburch.logisim.circuit.CircuitState;
 import com.cburch.logisim.circuit.RadixOption;
 import com.cburch.logisim.circuit.Wire;
+import com.cburch.logisim.comp.ComponentDrawContext;
 import com.cburch.logisim.comp.EndData;
 import com.cburch.logisim.data.Attribute;
 import com.cburch.logisim.data.AttributeOption;
@@ -459,6 +460,7 @@ public class Pin extends InstanceFactory {
     @Override
     public void paint(InstancePainter painter) {
       if (bitCaret < 0) return;
+      ComponentDrawContext context = painter.getContext();
       BitWidth width = painter.getAttributeValue(StdAttr.WIDTH);
       RadixOption radix = painter.getAttributeValue(RadixOption.ATTRIBUTE);
       if (radix == RadixOption.RADIX_10_SIGNED || radix == RadixOption.RADIX_10_UNSIGNED) return;
@@ -505,7 +507,7 @@ public class Pin extends InstanceFactory {
           x -= 4 + DIGIT_WIDTH * (bitCaret / r);
           y -= 4;
         }
-        GraphicsUtil.switchToWidth(g, 2);
+        GraphicsUtil.switchToWidth(g, context.getStrokeWidth());
         g.drawLine(x - 6, y, x, y);
       }
       g.setColor(Color.BLACK);
@@ -722,6 +724,7 @@ public class Pin extends InstanceFactory {
       InstancePainter painter, int width, int height, boolean isOutput, boolean isGhost) {
     /* Note: we are here in an translated environment the point (0,0) presents the pin location*/
     if (isGhost) return;
+    ComponentDrawContext context = painter.getContext();
     Value value = getState(painter).intendedValue;
     Graphics g = painter.getGraphics();
     Graphics2D g2 = (Graphics2D) g;
@@ -754,7 +757,7 @@ public class Pin extends InstanceFactory {
       if (radix == null || radix == RadixOption.RADIX_2) {
         int wid = value.getWidth();
         if (wid == 0) {
-          GraphicsUtil.switchToWidth(g, 2);
+          GraphicsUtil.switchToWidth(g, context.getStrokeWidth());
           int x = -15 - (width - 15) / 2;
           g.drawLine(x - 4, 0, x + 4, 0);
           if (dir == Direction.WEST) {
@@ -808,6 +811,7 @@ public class Pin extends InstanceFactory {
       int height,
       Color LineColor,
       boolean isGhost) {
+    ComponentDrawContext context = painter.getContext();
     PinAttributes attrs = (PinAttributes) painter.getAttributeSet();
     boolean NewShape = attrs.getValue(ProbeAttributes.PROBEAPPEARANCE) == ProbeAttributes.APPEAR_EVOLUTION_NEW;
     boolean isBus = attrs.getValue(StdAttr.WIDTH).getWidth() > 1;
@@ -851,16 +855,16 @@ public class Pin extends InstanceFactory {
       g2.translate(xpos, ypos);
       g2.rotate(rotation);
       if (isBus) {
-        GraphicsUtil.switchToWidth(g, Wire.WIDTH_BUS);
+        GraphicsUtil.switchToWidth(g, context.getBusWidth());
         g.drawLine(Wire.WIDTH_BUS / 2 - 5, 0, 0, 0);
-        GraphicsUtil.switchToWidth(g, 2);
+        GraphicsUtil.switchToWidth(g, context.getStrokeWidth());
       } else {
         Color col = g.getColor();
         if (painter.getShowState())
           g.setColor(LineColor);
-        GraphicsUtil.switchToWidth(g, Wire.WIDTH);
+        GraphicsUtil.switchToWidth(g, context.getWireWidth());
         g.drawLine(-5, 0, 0, 0);
-        GraphicsUtil.switchToWidth(g, 2);
+        GraphicsUtil.switchToWidth(g, context.getStrokeWidth());
         g.setColor(col);
       }
       g.drawLine(-15, -rheight / 2, -5, 0);
@@ -882,6 +886,7 @@ public class Pin extends InstanceFactory {
       int height,
       Color LineColor,
       boolean isGhost) {
+    ComponentDrawContext context = painter.getContext();
     PinAttributes attrs = (PinAttributes) painter.getAttributeSet();
     boolean NewShape = attrs.getValue(ProbeAttributes.PROBEAPPEARANCE) == ProbeAttributes.APPEAR_EVOLUTION_NEW;
     boolean isBus = attrs.getValue(StdAttr.WIDTH).getWidth() > 1;
@@ -914,16 +919,16 @@ public class Pin extends InstanceFactory {
       g2.translate(xpos, ypos);
       g2.rotate(rotation);
       if (isBus) {
-        GraphicsUtil.switchToWidth(g, Wire.WIDTH_BUS);
+        GraphicsUtil.switchToWidth(g, context.getBusWidth());
         g.drawLine(-3, 0, -Wire.WIDTH_BUS / 2, 0);
-        GraphicsUtil.switchToWidth(g, 2);
+        GraphicsUtil.switchToWidth(g, context.getStrokeWidth());
       } else {
         Color col = g.getColor();
         if (painter.getShowState())
           g.setColor(LineColor);
-        GraphicsUtil.switchToWidth(g, Wire.WIDTH);
+        GraphicsUtil.switchToWidth(g, context.getWireWidth());
         g.drawLine(-3, 0, 0, 0);
-        GraphicsUtil.switchToWidth(g, 2);
+        GraphicsUtil.switchToWidth(g, context.getStrokeWidth());
         g.setColor(col);
       }
       g.drawLine(10 - rwidth, -rheight / 2, -rwidth, 0);
@@ -954,13 +959,14 @@ public class Pin extends InstanceFactory {
 
   @Override
   public void paintGhost(InstancePainter painter) {
+    ComponentDrawContext context = painter.getContext();
     PinAttributes attrs = (PinAttributes) painter.getAttributeSet();
     Location loc = painter.getLocation();
     Bounds bds = painter.getOffsetBounds();
     int x = loc.getX();
     int y = loc.getY();
     Graphics g = painter.getGraphics();
-    GraphicsUtil.switchToWidth(g, 2);
+    GraphicsUtil.switchToWidth(g, context.getStrokeWidth());
     if (attrs.isOutput()) {
       DrawOutputShape(
           painter,
@@ -1053,6 +1059,7 @@ public class Pin extends InstanceFactory {
 
   @Override
   public void paintInstance(InstancePainter painter) {
+    ComponentDrawContext context = painter.getContext();
     PinAttributes attrs = (PinAttributes) painter.getAttributeSet();
     Graphics g = painter.getGraphics();
     Bounds bds = painter .getInstance().getBounds(); // intentionally with no graphics object - we don't want label included
@@ -1061,7 +1068,7 @@ public class Pin extends InstanceFactory {
     Value found = state.foundValue;
     int x = bds.getX();
     int y = bds.getY();
-    GraphicsUtil.switchToWidth(g, 2);
+    GraphicsUtil.switchToWidth(g, context.getStrokeWidth());
     g.setColor(Color.black);
     if (IsOutput) {
       DrawOutputShape(

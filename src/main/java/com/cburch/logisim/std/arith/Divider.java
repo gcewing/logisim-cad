@@ -135,7 +135,7 @@ public class Divider extends InstanceFactory {
     Location loc = painter.getLocation();
     int x = loc.getX();
     int y = loc.getY();
-    GraphicsUtil.switchToWidth(g, 2);
+    GraphicsUtil.switchToWidth(g, painter.getStrokeWidth());
     g.setColor(Color.BLACK);
     g.fillOval(x - 12, y - 7, 4, 4);
     g.drawLine(x - 15, y, x - 5, y);

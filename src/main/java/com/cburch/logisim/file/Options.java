@@ -52,10 +52,18 @@ public class Options {
           S.getter("gateUndefinedOption"),
           new AttributeOption[] {GATE_UNDEFINED_IGNORE, GATE_UNDEFINED_ERROR});
 
+  public static final Attribute<Integer> ATTR_STROKE_WIDTH =
+    Attributes.forInteger("strokewidth", S.getter("renderStrokeWidthOption"));
+
+  public static final Attribute<Boolean> ATTR_HIDE_ABUTTED_PORTS =
+    Attributes.forBoolean("hideabuttedports", S.getter("renderHideAbuttedPorts"));
+
   public static final Integer sim_rand_dflt = Integer.valueOf(32);
 
-  private static final Attribute<?>[] ATTRIBUTES = {ATTR_GATE_UNDEFINED, ATTR_SIM_LIMIT, ATTR_SIM_RAND};
-  private static final Object[] DEFAULTS = {GATE_UNDEFINED_IGNORE, Integer.valueOf(1000), Integer.valueOf(0)};
+  private static final Attribute<?>[] ATTRIBUTES = {ATTR_GATE_UNDEFINED, ATTR_SIM_LIMIT, ATTR_SIM_RAND,
+    ATTR_STROKE_WIDTH, ATTR_HIDE_ABUTTED_PORTS};
+  private static final Object[] DEFAULTS = {GATE_UNDEFINED_IGNORE, Integer.valueOf(1000), Integer.valueOf(0),
+    3, true};
 
   private AttributeSet attrs;
   private MouseMappings mmappings;

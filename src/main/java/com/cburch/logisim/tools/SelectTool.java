@@ -197,7 +197,7 @@ public class SelectTool extends Tool {
         if (result != null) {
           Collection<Wire> wiresToAdd = result.getWiresToAdd();
           Graphics g = context.getGraphics();
-          GraphicsUtil.switchToWidth(g, 3);
+          GraphicsUtil.switchToWidth(g, context.getWireWidth());
           g.setColor(Color.GRAY);
           for (Wire w : wiresToAdd) {
             Location loc0 = w.getEnd0();

@@ -64,7 +64,7 @@ class PainterDin {
       throw new IllegalArgumentException("unrecognized shape");
     }
 
-    GraphicsUtil.switchToWidth(g, 2);
+    GraphicsUtil.switchToWidth(g, painter.getStrokeWidth());
     int x0 = xMid - diam / 2;
     Color oldColor = g.getColor();
     if (painter.getShowState()) {
@@ -130,7 +130,7 @@ class PainterDin {
 
     AbstractGate factory = hasBubble ? NorGate.FACTORY : OrGate.FACTORY;
     boolean printView = painter.isPrintView() && painter.getInstance() != null;
-    GraphicsUtil.switchToWidth(g, 2);
+    GraphicsUtil.switchToWidth(g, painter.getStrokeWidth());
     for (int i = 0; i < inputs; i++) {
       if (!printView || painter.isPortConnected(i)) {
         Location loc = factory.getInputOffset(attrs, i);

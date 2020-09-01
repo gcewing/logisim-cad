@@ -222,7 +222,7 @@ public class Random extends InstanceFactory {
 
   private void DrawControl(InstancePainter painter, int xpos, int ypos, int NrOfBits) {
     Graphics g = painter.getGraphics();
-    GraphicsUtil.switchToWidth(g, 2);
+    GraphicsUtil.switchToWidth(g, painter.getStrokeWidth());
     g.drawLine(xpos + 10, ypos, xpos + 70, ypos);
     g.drawLine(xpos + 10, ypos, xpos + 10, ypos + 60);
     g.drawLine(xpos + 70, ypos, xpos + 70, ypos + 60);
@@ -241,7 +241,7 @@ public class Random extends InstanceFactory {
         g, "EN", xpos + 20, ypos + 40, GraphicsUtil.H_LEFT, GraphicsUtil.V_CENTER);
     painter.drawPort(NXT);
     painter.drawClockSymbol(xpos + 10, ypos + 50);
-    GraphicsUtil.switchToWidth(g, 2);
+    GraphicsUtil.switchToWidth(g, painter.getStrokeWidth());
     if (painter.getAttributeValue(StdAttr.EDGE_TRIGGER).equals(StdAttr.TRIG_FALLING)) {
       g.drawOval(xpos, ypos + 45, 10, 10);
     } else {
@@ -253,7 +253,7 @@ public class Random extends InstanceFactory {
 
   private void DrawData(InstancePainter painter, int xpos, int ypos, int NrOfBits, int Value) {
     Graphics g = painter.getGraphics();
-    GraphicsUtil.switchToWidth(g, 2);
+    GraphicsUtil.switchToWidth(g, painter.getStrokeWidth());
     g.drawRect(xpos, ypos, 80, 20);
     if (painter.getShowState()) {
       String str = StringUtil.toHexString(NrOfBits, Value);

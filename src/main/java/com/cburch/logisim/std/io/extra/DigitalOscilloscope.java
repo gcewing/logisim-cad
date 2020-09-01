@@ -154,7 +154,7 @@ public class DigitalOscilloscope extends InstanceFactory {
   public void paintGhost(InstancePainter painter) {
     Bounds bds = painter.getBounds();
     Graphics g = painter.getGraphics();
-    GraphicsUtil.switchToWidth(g, 2);
+    GraphicsUtil.switchToWidth(g, painter.getStrokeWidth());
     g.drawRoundRect(bds.getX(), bds.getY(), bds.getWidth(), bds.getHeight(), border, border);
   }
 
@@ -213,7 +213,7 @@ public class DigitalOscilloscope extends InstanceFactory {
           x + border + 15 * length + 4,
           y + border + i * 30 + 30 + showclock * 2);
 
-      GraphicsUtil.switchToWidth(g, 2);
+      GraphicsUtil.switchToWidth(g, painter.getStrokeWidth());
       if (diagramstate.getmoveback() && diagramstate.getState(i, length - 1) != null) {
         g.setColor(Color.BLACK);
         g.drawLine(

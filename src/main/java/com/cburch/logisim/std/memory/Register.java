@@ -100,7 +100,7 @@ public class Register extends InstanceFactory implements DynamicElementProvider 
       GraphicsUtil.drawCenteredText(g, str, x + 30, y + 8);
       g.setColor(Color.black);
     }
-    GraphicsUtil.switchToWidth(g, 2);
+    GraphicsUtil.switchToWidth(g, painter.getStrokeWidth());
     g.drawRect(x + 10, y + 20, 40, 60);
     if (nr_of_bits > 1) {
       g.drawLine(x + 15, y + 80, x + 15, y + 85);
@@ -121,7 +121,7 @@ public class Register extends InstanceFactory implements DynamicElementProvider 
     GraphicsUtil.switchToWidth(g, 1);
     GraphicsUtil.drawCenteredText(g, "D", x + 18, y + 30);
     GraphicsUtil.drawCenteredText(g, "Q", x + 41, y + 30);
-    GraphicsUtil.switchToWidth(g, 3);
+    GraphicsUtil.switchToWidth(g, painter.getWireWidth());
     g.drawLine(x + 30, y + 81, x + 30, y + 90);
     GraphicsUtil.switchToWidth(g, 1);
     g.setColor(Color.GRAY);
@@ -129,12 +129,12 @@ public class Register extends InstanceFactory implements DynamicElementProvider 
     g.setColor(Color.BLACK);
     if (has_we) {
       GraphicsUtil.drawCenteredText(g, "WE", x + 22, y + 50);
-      GraphicsUtil.switchToWidth(g, 3);
+      GraphicsUtil.switchToWidth(g, painter.getWireWidth());
       g.drawLine(x, y + 50, x + 10, y + 50);
       GraphicsUtil.switchToWidth(g, 1);
     }
     if (!isLatch) {
-      GraphicsUtil.switchToWidth(g, 2);
+      GraphicsUtil.switchToWidth(g, painter.getStrokeWidth());
       g.drawLine(x + 10, y + 65, x + 20, y + 70);
       g.drawLine(x + 10, y + 75, x + 20, y + 70);
       GraphicsUtil.switchToWidth(g, 1);
@@ -142,11 +142,11 @@ public class Register extends InstanceFactory implements DynamicElementProvider 
       GraphicsUtil.drawCenteredText(g, "E", x + 18, y + 70);
     }
     if (!neg_active) {
-      GraphicsUtil.switchToWidth(g, 3);
+      GraphicsUtil.switchToWidth(g, painter.getWireWidth());
       g.drawLine(x, y + 70, x + 10, y + 70);
       GraphicsUtil.switchToWidth(g, 1);
     } else {
-      GraphicsUtil.switchToWidth(g, 2);
+      GraphicsUtil.switchToWidth(g, painter.getStrokeWidth());
       g.drawOval(x, y + 65, 10, 10);
       GraphicsUtil.switchToWidth(g, 1);
     }

@@ -34,6 +34,7 @@ import com.cburch.logisim.circuit.WireSet;
 import com.cburch.logisim.comp.ComponentDrawContext;
 import com.cburch.logisim.data.Attribute;
 import com.cburch.logisim.data.AttributeSet;
+import com.cburch.logisim.data.BitWidth;
 import com.cburch.logisim.data.Bounds;
 import com.cburch.logisim.data.Direction;
 import com.cburch.logisim.data.Location;
@@ -51,6 +52,30 @@ public class InstancePainter implements InstanceState {
   public InstancePainter(ComponentDrawContext context, InstanceComponent instance) {
     this.context = context;
     this.comp = instance;
+  }
+  
+  public ComponentDrawContext getContext() {
+    return context;
+  }
+  
+  public int getStrokeWidth() {
+    return context.getStrokeWidth();
+  }
+
+  public int getWireWidth() {
+    return context.getWireWidth();
+  }
+
+  public int getWireWidth(BitWidth w) {
+    return context.getWireWidth(w);
+  }
+
+  public int getBusWidth() {
+    return context.getBusWidth();
+  }
+  
+  public double getJunctionWidth(BitWidth w, boolean highlighted) {
+    return context.getJunctionWidth(w, highlighted);
   }
 
   //

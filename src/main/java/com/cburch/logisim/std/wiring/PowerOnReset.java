@@ -135,7 +135,7 @@ public class PowerOnReset extends InstanceFactory {
     Bounds bds = painter.getInstance().getBounds();
     int x = bds.getX();
     int y = bds.getY();
-    GraphicsUtil.switchToWidth(g, 2);
+    GraphicsUtil.switchToWidth(g, painter.getStrokeWidth());
     g.setColor(Color.ORANGE);
     g.fillRect(x, y, bds.getWidth(), bds.getHeight());
     g.setColor(Color.BLACK);

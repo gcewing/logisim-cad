@@ -156,7 +156,7 @@ public class Probe extends InstanceFactory {
       if (wid == 0) {
         x += bds.getWidth() / 2;
         y += bds.getHeight() / 2;
-        GraphicsUtil.switchToWidth(g, 2);
+        GraphicsUtil.switchToWidth(g, painter.getStrokeWidth());
         g.drawLine(x - 4, y, x + 4, y);
         return;
       }
@@ -238,7 +238,7 @@ public class Probe extends InstanceFactory {
       if (wid == 0) {
         x += bds.getWidth() / 2;
         y += bds.getHeight() / 2;
-        GraphicsUtil.switchToWidth(g, 2);
+        GraphicsUtil.switchToWidth(g, painter.getStrokeWidth());
         g.drawLine(x - 4, y, x + 4, y);
         return;
       }

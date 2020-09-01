@@ -123,7 +123,7 @@ public class PullResistor extends InstanceFactory {
     Direction facing = painter.getAttributeValue(StdAttr.FACING);
     Graphics g = painter.getGraphics();
     Color baseColor = g.getColor();
-    GraphicsUtil.switchToWidth(g, 3);
+    GraphicsUtil.switchToWidth(g, painter.getWireWidth());
     if (color && inColor != null) g.setColor(inColor);
     if (facing == Direction.EAST) {
       GraphicsUtil.drawText(
@@ -149,7 +149,7 @@ public class PullResistor extends InstanceFactory {
     if (color && outColor != null) g.setColor(outColor);
     g.drawLine(0, -4, 0, 0);
     g.setColor(baseColor);
-    GraphicsUtil.switchToWidth(g, 2);
+    GraphicsUtil.switchToWidth(g, painter.getStrokeWidth());
     if (painter.getGateShape() == AppPreferences.SHAPE_SHAPED) {
       int[] xp = {0, -5, 5, -5, 5, -5, 0};
       int[] yp = {-25, -23, -19, -15, -11, -7, -5};

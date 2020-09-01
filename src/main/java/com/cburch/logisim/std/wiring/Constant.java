@@ -200,7 +200,7 @@ public class Constant extends InstanceFactory {
     Bounds bds = getOffsetBounds(painter.getAttributeSet());
 
     Graphics g = painter.getGraphics();
-    GraphicsUtil.switchToWidth(g, 2);
+    GraphicsUtil.switchToWidth(g, painter.getStrokeWidth());
     g.fillOval(-2, -2, 4, 4);
     g.setFont(DEFAULT_FONT);
     GraphicsUtil.drawCenteredText(

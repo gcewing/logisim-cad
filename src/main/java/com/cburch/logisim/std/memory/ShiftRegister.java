@@ -183,7 +183,7 @@ public class ShiftRegister extends InstanceFactory {
       boolean has_load,
       boolean active_low_clock) {
     Graphics g = painter.getGraphics();
-    GraphicsUtil.switchToWidth(g, 2);
+    GraphicsUtil.switchToWidth(g, painter.getStrokeWidth());
     int blockwidth = SymbolWidth;
     g.drawLine(xpos + 10, ypos, xpos + blockwidth + 10, ypos);
     g.drawLine(xpos + 10, ypos, xpos + 10, ypos + 60);
@@ -207,7 +207,7 @@ public class ShiftRegister extends InstanceFactory {
     GraphicsUtil.drawCenteredText(g, Identifier, xpos + (SymbolWidth / 2) + 10, ypos + 5);
     /* Draw the clock input */
     painter.drawClockSymbol(xpos + 10, ypos + 50);
-    GraphicsUtil.switchToWidth(g, 2);
+    GraphicsUtil.switchToWidth(g, painter.getStrokeWidth());
     if (active_low_clock) g.drawOval(xpos, ypos + 45, 10, 10);
     else g.drawLine(xpos, ypos + 50, xpos + 10, ypos + 50);
     painter.drawPort(CK);
@@ -250,7 +250,7 @@ public class ShiftRegister extends InstanceFactory {
     boolean LastBlock = (current_stage == (nr_of_stages - 1));
     int blockwidth = SymbolWidth;
     Graphics g = painter.getGraphics();
-    GraphicsUtil.switchToWidth(g, 2);
+    GraphicsUtil.switchToWidth(g, painter.getStrokeWidth());
     g.drawRect(real_xpos, real_ypos, blockwidth, height);
     if (nr_of_bits > 1) {
       g.drawLine(real_xpos + blockwidth, real_ypos + 5, real_xpos + blockwidth + 5, real_ypos + 5);

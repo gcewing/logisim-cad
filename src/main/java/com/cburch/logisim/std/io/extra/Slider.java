@@ -273,7 +273,7 @@ public class Slider extends InstanceFactory {
     SliderValue data = getValueState(painter);
     int x = bds.getX(), y = bds.getY();
     painter.drawRoundBounds(painter.getAttributeValue(Io.ATTR_COLOR));
-    GraphicsUtil.switchToWidth(g, 2);
+    GraphicsUtil.switchToWidth(g, painter.getStrokeWidth());
     // slider line
     g.drawLine(x + 10, y + bds.getHeight() - 10, x + bds.getWidth() - 10, y + bds.getHeight() - 10);
     g.setColor(Color.DARK_GRAY);

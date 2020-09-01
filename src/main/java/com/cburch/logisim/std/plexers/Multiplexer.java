@@ -183,10 +183,12 @@ public class Multiplexer extends InstanceFactory {
     Direction facing = painter.getAttributeValue(StdAttr.FACING);
     BitWidth select = painter.getAttributeValue(Plexers.ATTR_SELECT);
     Bounds bds = painter.getBounds();
+    Graphics g = painter.getGraphics();
     int lean;
     if (select.getWidth() == 1) lean = (size == Plexers.SIZE_NARROW ? 7 : 10);
     else lean = (size == Plexers.SIZE_NARROW ? 10 : 20);
-    Plexers.drawTrapezoid(painter.getGraphics(), bds, facing, lean);
+    GraphicsUtil.switchToWidth(g, painter.getStrokeWidth());
+    Plexers.drawTrapezoid(g, bds, facing, lean);
   }
 
   @Override
@@ -201,7 +203,7 @@ public class Multiplexer extends InstanceFactory {
     int inputs = 1 << select.getWidth();
 
     // draw stubs for select/enable inputs that aren't on instance boundary
-    GraphicsUtil.switchToWidth(g, 3);
+    GraphicsUtil.switchToWidth(g, painter.getWireWidth());
     boolean vertical = facing != Direction.NORTH && facing != Direction.SOUTH;
     Object selectLoc = painter.getAttributeValue(Plexers.ATTR_SELECT_LOC);
     int selMult = selectLoc == Plexers.SELECT_BOTTOM_LEFT ? 1 : -1;
@@ -265,6 +267,7 @@ public class Multiplexer extends InstanceFactory {
     GraphicsUtil.drawText(g, "0", x0, y0, halign, GraphicsUtil.V_BASELINE);
 
     // draw the trapezoid, "MUX" string, the individual ports
+    GraphicsUtil.switchToWidth(g, painter.getStrokeWidth());
     g.setColor(Color.BLACK);
     int lean;
     if (inputs == 2) {

@@ -39,6 +39,7 @@ import java.awt.Shape;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Ellipse2D;
 
 public class GraphicsUtil {
   public static void drawArrow(
@@ -226,6 +227,10 @@ public class GraphicsUtil {
       Graphics2D g2 = (Graphics2D) g;
       g2.setStroke(new BasicStroke((float) width));
     }
+  }
+  
+  public static void fillCenteredCircle(Graphics g, double x, double y, double r) {
+    ((Graphics2D)g).fill(new Ellipse2D.Double(x - r, y - r, 2 * r, 2 * r));
   }
 
   public static final int H_LEFT = -1;
