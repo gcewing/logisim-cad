@@ -74,3 +74,6 @@ look approximately right but a bit wonky.
 A pin number can be assigned to an input or output. Both the pin label and the
 pin number can be automatically shown next to the port on the circuit symbol,
 with options for positioning.
+
+Standard Logisim-evolution will show the automatic pin labels (but not numbers)
+as ordinary text objects, not linked to the port.
