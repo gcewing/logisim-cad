@@ -44,12 +44,16 @@ public class SvgCreator {
   
   public static Element createShapeElement(Document doc, String shapeName, AbstractCanvasObject shape) {
     Element elt = doc.createElement(shapeName);
+    addShapeAttributes(elt, shape);
+    return elt;
+  }
+
+  protected static void addShapeAttributes(Element elt, AbstractCanvasObject shape) {
     for (Attribute a : shape.getAttributes()) {
       String attrName = a.getName();
       if (attrName.startsWith("a-"))
         elt.setAttribute(attrName, a.toStandardString(shape.getValue(a)));
     }
-    return elt;
   }
 
   public static Element createCurve(Document doc, Curve curve) {
@@ -136,14 +140,22 @@ public class SvgCreator {
   }
 
   public static Element createText(Document doc, Text text) {
-    Element elt = createShapeElement(doc, "text", text);
     Location loc = text.getLocation();
     Font font = text.getValue(DrawAttr.FONT);
     Color fill = text.getValue(DrawAttr.FILL_COLOR);
     Object halign = text.getValue(DrawAttr.HALIGNMENT);
     Object valign = text.getValue(DrawAttr.VALIGNMENT);
-    elt.setAttribute("x", "" + loc.getX());
-    elt.setAttribute("y", "" + loc.getY());
+    Element elt = createTextElement(doc, text.getText(), loc.getX(), loc.getY(), font, fill, halign, valign);
+    addShapeAttributes(elt, text);
+    return elt;
+  }
+
+  public static Element createTextElement(Document doc, String text,
+    int x, int y, Font font, Color fill, Object halign, Object valign)
+  {
+    Element elt = doc.createElement("text");
+    elt.setAttribute("x", "" + x);
+    elt.setAttribute("y", "" + y);
     if (!colorMatches(fill, Color.BLACK)) {
       elt.setAttribute("fill", getColorString(fill));
     }
@@ -167,7 +179,7 @@ public class SvgCreator {
     } else {
       elt.setAttribute("dominant-baseline", "central");
     }
-    elt.appendChild(doc.createTextNode(text.getText()));
+    elt.appendChild(doc.createTextNode(text));
     return elt;
   }
 

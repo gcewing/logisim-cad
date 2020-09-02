@@ -283,10 +283,16 @@ class XmlWriter {
       Element appear = doc.createElement("appear");
       for (Object o : circuit.getAppearance().getObjectsFromBottom()) {
         if (o instanceof AbstractCanvasObject) {
-          Element elt = ((AbstractCanvasObject) o).toSvgElement(doc);
+          AbstractCanvasObject aco = (AbstractCanvasObject) o;
+          Element elt = aco.toSvgElement(doc);
           if (elt != null) {
             appear.appendChild(elt);
           }
+//           List<AbstractCanvasObject> bcl = aco.backwardsCompatibilityObjects();
+//           if (bcl != null)
+//             for (AbstractCanvasObject bco : bcl)
+//               appear.appendChild(bco.toSvgElement(doc));
+          aco.addSvgForBackwardsCompatibility(appear);
         }
       }
       ret.appendChild(appear);
