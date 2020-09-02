@@ -261,4 +261,10 @@ public abstract class AbstractCanvasObject implements AttributeSet, CanvasObject
   }
 
   protected abstract void updateValue(Attribute<?> attr, Object value);
+
+//   public List<AbstractCanvasObject> backwardsCompatibilityObjects() {
+//     return null;
+//   }
+//   
+  public void addSvgForBackwardsCompatibility(Element elt) {}
 }

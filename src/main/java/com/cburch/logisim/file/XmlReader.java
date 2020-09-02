@@ -301,6 +301,8 @@ class XmlReader {
         // XmlCircuitReader once the full Circuit tree has been built.
         // Static shapes (e.g. pins and anchors) need to be done here.
         if (sub.getTagName().startsWith("visible-")) continue;
+        // Logisim-CAD: Ignore objects included for backward compatibility with logisim-evolution
+        if (sub.getAttribute("lsc-ignore").equals("true")) continue;
         try {
           AbstractCanvasObject m = AppearanceSvgReader.createShape(sub, pins, null);
           if (m == null) {
