@@ -33,6 +33,7 @@ import static com.cburch.logisim.circuit.Strings.S;
 import com.cburch.draw.model.CanvasObject;
 import com.cburch.draw.model.Handle;
 import com.cburch.draw.model.HandleGesture;
+import com.cburch.draw.shapes.DrawAttr;
 import com.cburch.draw.shapes.SvgCreator;
 import com.cburch.draw.util.TextMetrics;
 // import com.cburch.logisim.circuit.appear.PortAttributes;
@@ -282,5 +283,35 @@ public class AppearancePort extends AppearanceElement {
     ret.setAttribute("height", "" + 2 * r);
     ret.setAttribute("pin", "" + pinLoc.getX() + "," + pinLoc.getY());
     return ret;
+  }
+
+  @Override
+  public void addSvgForBackwardsCompatibility(Element parent) {
+    if (getValue(PinAttributes.PORT_SHOW_LABEL)) {
+      Location loc = getLocation();
+      int x = loc.getX();
+      int y = loc.getY();
+      Object halign = DrawAttr.HALIGN_CENTER;
+      Object valign = DrawAttr.VALIGN_MIDDLE;
+      if (facing == Direction.WEST) {
+        x += labelMargin;
+        halign = DrawAttr.HALIGN_LEFT;
+      }
+      else if (facing == Direction.EAST) {
+        x -= labelMargin;
+        halign = DrawAttr.HALIGN_RIGHT;
+      }
+      else if (facing == Direction.SOUTH)
+        valign = DrawAttr.VALIGN_BOTTOM;
+      else if (facing == Direction.NORTH)
+        valign = DrawAttr.VALIGN_TOP;
+      String label = pin.getAttributeValue(StdAttr.LABEL);
+      Font font = getValue(PinAttributes.PORT_LABEL_FONT);
+      Color fill = getValue(PinAttributes.PORT_LABEL_COLOR);
+      Document doc = parent.getOwnerDocument();
+      Element elt = SvgCreator.createTextElement(doc, label, x, y, font, fill, halign, valign);
+      elt.setAttribute("lsc-ignore", "true");
+      parent.appendChild(elt);
+    }
   }
 }
