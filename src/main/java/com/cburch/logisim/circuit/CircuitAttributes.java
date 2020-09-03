@@ -153,7 +153,7 @@ public class CircuitAttributes extends AbstractAttributeSet {
       Attributes.forString("clabel", S.getter("circuitLabelAttr"));
 
   public static final Attribute<Direction> CIRCUIT_LABEL_FACING_ATTR =
-      Attributes.forDirection("clabelup", S.getter("circuitLabelDirAttr"));
+      Attributes.forDirectionWithCenter("clabelup", S.getter("circuitLabelDirAttr"));
 
   public static final Attribute<Font> CIRCUIT_LABEL_FONT_ATTR =
       Attributes.forFont("clabelfont", S.getter("circuitLabelFontAttr"));
@@ -174,18 +174,25 @@ public class CircuitAttributes extends AbstractAttributeSet {
           S.getter("circuitAppearanceAttr"),
           new AttributeOption[] {APPEAR_CLASSIC, APPEAR_FPGA, APPEAR_EVOLUTION, APPEAR_CUSTOM});
 
+  public static final Attribute<Integer> NUM_VARIANTS_ATTR =
+      Attributes.forInteger("numvariants", S.getter("numberOfVariants"));
+
+  public static final Attribute<String> VARIANT_ATTR =
+      Attributes.forString("variant", S.getter("variant"));
+
   private static final Attribute<?>[] STATIC_ATTRS = {
     NAME_ATTR,
     CIRCUIT_LABEL_ATTR,
     CIRCUIT_LABEL_FACING_ATTR,
     CIRCUIT_LABEL_FONT_ATTR,
+    NUM_VARIANTS_ATTR,
     APPEARANCE_ATTR,
     NAMED_CIRCUIT_BOX_FIXED_SIZE,
     CIRCUIT_VHDL_PATH
   };
 
   private static final Object[] STATIC_DEFAULTS = {
-    "", "", Direction.EAST, StdAttr.DEFAULT_LABEL_FONT, APPEAR_CLASSIC, false, ""
+    "", "", Direction.EAST, StdAttr.DEFAULT_LABEL_FONT, 0, APPEAR_CLASSIC, false, ""
   };
 
   private static final List<Attribute<?>> INSTANCE_ATTRS =
@@ -197,6 +204,7 @@ public class CircuitAttributes extends AbstractAttributeSet {
             StdAttr.LABEL_FONT,
             StdAttr.LABEL_VISIBILITY,
             NAME_ATTR,
+            VARIANT_ATTR,
             CIRCUIT_LABEL_ATTR,
             CIRCUIT_LABEL_FACING_ATTR,
             CIRCUIT_LABEL_FONT_ATTR,
@@ -214,6 +222,7 @@ public class CircuitAttributes extends AbstractAttributeSet {
   private MyListener listener;
   private Instance[] pinInstances;
   private boolean NameReadOnly;
+  private String variant;
 
   public CircuitAttributes(Circuit source) {
     this.source = source;
@@ -255,6 +264,7 @@ public class CircuitAttributes extends AbstractAttributeSet {
     if (attr == StdAttr.LABEL_FONT) return (E) labelFont;
     if (attr == StdAttr.LABEL_VISIBILITY) return (E) LabelVisable;
     if (attr == LABEL_LOCATION_ATTR) return (E) labelLocation;
+    if (attr == VARIANT_ATTR) return (E) variant;
     else return source.getStaticAttributes().getValue(attr);
   }
 
@@ -323,6 +333,11 @@ public class CircuitAttributes extends AbstractAttributeSet {
       if (labelLocation.equals(val)) return;
       labelLocation = val;
       fireAttributeValueChanged(LABEL_LOCATION_ATTR, val, null);
+    } else if (attr == VARIANT_ATTR) {
+      String val = (String) value;
+      if (variant == val) return;
+      variant = val;
+      fireAttributeValueChanged(VARIANT_ATTR, val, null);
     } else {
       source.getStaticAttributes().setValue(attr, value);
       if (attr == NAME_ATTR) {
