@@ -207,17 +207,17 @@ public class CircuitAttributes extends AbstractAttributeSet {
           new Attribute<?>[] {
             StdAttr.FACING,
             StdAttr.LABEL,
+            SERIAL_NO_ATTR,
+            VARIANT_ATTR,
             LABEL_LOCATION_ATTR,
             StdAttr.LABEL_FONT,
             StdAttr.LABEL_VISIBILITY,
-            NAME_ATTR,
-            SERIAL_NO_ATTR,
-            VARIANT_ATTR,
-            CIRCUIT_LABEL_ATTR,
-            CIRCUIT_LABEL_FACING_ATTR,
-            CIRCUIT_LABEL_FONT_ATTR,
-            APPEARANCE_ATTR,
-            CIRCUIT_VHDL_PATH
+//             NAME_ATTR,
+//             CIRCUIT_LABEL_ATTR,
+//             CIRCUIT_LABEL_FACING_ATTR,
+//             CIRCUIT_LABEL_FONT_ATTR,
+//             APPEARANCE_ATTR,
+//             CIRCUIT_VHDL_PATH
           });
 
   private Circuit source;
