@@ -180,6 +180,10 @@ public class CircuitAttributes extends AbstractAttributeSet {
   public static final Attribute<String> VARIANT_ATTR =
       Attributes.forString("variant", S.getter("variant"));
 
+  // Computed attribute, not stored
+  public static final Attribute<String> DISPLAYED_LABEL_ATTR =
+      Attributes.forString("displayedlabel", S.getter("displayedLabel"));
+
   private static final Attribute<?>[] STATIC_ATTRS = {
     NAME_ATTR,
     CIRCUIT_LABEL_ATTR,
@@ -265,7 +269,12 @@ public class CircuitAttributes extends AbstractAttributeSet {
     if (attr == StdAttr.LABEL_VISIBILITY) return (E) LabelVisable;
     if (attr == LABEL_LOCATION_ATTR) return (E) labelLocation;
     if (attr == VARIANT_ATTR) return (E) variant;
+    if (attr == DISPLAYED_LABEL_ATTR) return (E) getDisplayedLabel();
     else return source.getStaticAttributes().getValue(attr);
+  }
+  
+  protected String getDisplayedLabel() {
+    return label + variant;
   }
 
   @Override
@@ -318,6 +327,7 @@ public class CircuitAttributes extends AbstractAttributeSet {
       if (label.equals(val)) return;
       label = val;
       fireAttributeValueChanged(StdAttr.LABEL, val, oldval);
+      fireAttributeValueChanged(DISPLAYED_LABEL_ATTR, getDisplayedLabel(), null);
     } else if (attr == StdAttr.LABEL_FONT) {
       Font val = (Font) value;
       if (labelFont.equals(val)) return;
@@ -338,6 +348,9 @@ public class CircuitAttributes extends AbstractAttributeSet {
       if (variant == val) return;
       variant = val;
       fireAttributeValueChanged(VARIANT_ATTR, val, null);
+      fireAttributeValueChanged(DISPLAYED_LABEL_ATTR, getDisplayedLabel(), null);
+    } else if (attr == DISPLAYED_LABEL_ATTR) {
+      // computed attribute, ignore
     } else {
       source.getStaticAttributes().setValue(attr, value);
       if (attr == NAME_ATTR) {
