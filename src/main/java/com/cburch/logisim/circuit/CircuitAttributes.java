@@ -174,8 +174,11 @@ public class CircuitAttributes extends AbstractAttributeSet {
           S.getter("circuitAppearanceAttr"),
           new AttributeOption[] {APPEAR_CLASSIC, APPEAR_FPGA, APPEAR_EVOLUTION, APPEAR_CUSTOM});
 
-  public static final Attribute<Integer> NUM_VARIANTS_ATTR =
-      Attributes.forInteger("numvariants", S.getter("numberOfVariants"));
+//   public static final Attribute<Integer> NUM_VARIANTS_ATTR =
+//       Attributes.forInteger("numvariants", S.getter("numberOfVariants"));
+// 
+  public static final Attribute<String[]> VARIANT_LIST_ATTR = 
+      Attributes.forStringArray("variantlist", S.getter("circuitVariantList"));
 
   public static final Attribute<String> SERIAL_NO_ATTR =
       Attributes.forString("serialno", S.getter("circuitSerialNumber"));
@@ -189,17 +192,17 @@ public class CircuitAttributes extends AbstractAttributeSet {
 
   private static final Attribute<?>[] STATIC_ATTRS = {
     NAME_ATTR,
+    VARIANT_LIST_ATTR,
     CIRCUIT_LABEL_ATTR,
     CIRCUIT_LABEL_FACING_ATTR,
     CIRCUIT_LABEL_FONT_ATTR,
-    NUM_VARIANTS_ATTR,
     APPEARANCE_ATTR,
     NAMED_CIRCUIT_BOX_FIXED_SIZE,
     CIRCUIT_VHDL_PATH
   };
 
   private static final Object[] STATIC_DEFAULTS = {
-    "", "", Direction.EAST, StdAttr.DEFAULT_LABEL_FONT, 0, APPEAR_CLASSIC, false, ""
+    "", Attributes.emptyStringArray, "", Direction.EAST, StdAttr.DEFAULT_LABEL_FONT, APPEAR_CLASSIC, false, ""
   };
 
   private static final List<Attribute<?>> INSTANCE_ATTRS =

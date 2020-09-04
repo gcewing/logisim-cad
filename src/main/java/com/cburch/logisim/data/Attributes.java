@@ -458,6 +458,27 @@ public class Attributes {
       return value;
     }
   }
+  
+  private static class StringArrayAttribute extends Attribute<String[]> {
+    private StringArrayAttribute(String name, StringGetter disp) {
+      super(name, disp);
+    }
+    
+    @Override
+    public String toDisplayString(String[] value) {
+      return value == null ? "" : toStandardString(value);
+    }
+    
+    @Override
+    public String toStandardString(String[] value) {
+      return Attribute.standardizeString(String.join(",", value));
+    }
+
+    @Override
+    public String[] parse(String value) {
+      return value.split(",");
+    }
+  }
 
   public static Attribute<String> forHidden() {
     return new HiddenAttribute();
@@ -581,10 +602,16 @@ public class Attributes {
   public static Attribute<String> forString(String name, StringGetter disp) {
     return new StringAttribute(name, disp);
   }
+  
+  public static Attribute<String[]> forStringArray(String name, StringGetter disp) {
+    return new StringArrayAttribute(name, disp);
+  }
 
   private static StringGetter getter(String s) {
     return new ConstantGetter(s);
   }
+
+  public static final String[] emptyStringArray = {};
 
   private Attributes() {}
 }
