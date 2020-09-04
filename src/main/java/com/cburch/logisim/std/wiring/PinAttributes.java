@@ -63,8 +63,8 @@ public class PinAttributes extends ProbeAttributes {
   public static final Attribute<String> ATTR_DUMMY = new DummyAttr("type");
   public static PinAttributes instance = new PinAttributes();
 
-	public static final Attribute<String> PIN_NUMBER =
-	  Attributes.forString("pin-number", S.getter("pinNumberAttr"));
+	public static final Attribute<String[]> PIN_NUMBER =
+	  Attributes.forStringArray("pin-number", S.getter("pinNumberAttr"));
 
   // Port attributes
 
@@ -162,13 +162,22 @@ public class PinAttributes extends ProbeAttributes {
   public boolean portShowLabel = true;
   public Font portLabelFont = defaultPortLabelFont;
   public Color portLabelColor = defaultPortLabelColor;
-  public String pinNumber = "";
+  public String[] pinNumber = Attributes.emptyStringArray;
   public boolean portShowPinNumber = true;
   public AttributeOption pinNumberPosition = PINNO_ABOVE_LEFT;
   public Font pinNumberFont = defaultPinNumberFont;
   public Color pinNumberColor = defaultPinNumberColor;
 
   public PinAttributes() {}
+  
+  public String getPinNumber(int variantIndex) {
+    if (variantIndex < 0)
+      return PIN_NUMBER.toStandardString(pinNumber);
+    else if (variantIndex >= pinNumber.length)
+      return "";
+    else
+      return pinNumber[variantIndex];
+  }
 
   @Override
   public List<Attribute<?>> getAttributes() {
@@ -248,7 +257,7 @@ public class PinAttributes extends ProbeAttributes {
       return;
     }
     else if (attr == PIN_NUMBER)
-      pinNumber = (String) value;
+      pinNumber = (String[]) value;
     else if (attr == PORT_SHOW_LABEL)
       portShowLabel = (Boolean) value;
     else if (attr == PORT_LABEL_FONT)

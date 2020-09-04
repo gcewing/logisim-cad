@@ -279,11 +279,23 @@ public class CircuitAttributes extends AbstractAttributeSet {
     if (attr == VARIANT_ATTR) return (E) variant;
     if (attr == DISPLAYED_LABEL_ATTR) return (E) getDisplayedLabel();
     if (attr == SERIAL_NO_ATTR) return (E) serialNo;
-    else return source.getStaticAttributes().getValue(attr);
+    else return getStaticValue(attr);
+  }
+  
+  protected <E> E getStaticValue(Attribute<E> attr) {
+    return source.getStaticAttributes().getValue(attr);
   }
   
   protected String getDisplayedLabel() {
     return label + serialNo + variant;
+  }
+  
+  public int getVariantIndex() {
+    String[] variantList = getStaticValue(VARIANT_LIST_ATTR);
+    for (int i = 0; i < variantList.length; i++)
+      if (variantList[i].equals(variant))
+        return i;
+    return -1;
   }
 
   @Override

@@ -29,6 +29,7 @@
 package com.cburch.logisim.instance;
 
 import com.cburch.logisim.circuit.Circuit;
+import com.cburch.logisim.circuit.CircuitAttributes;
 import com.cburch.logisim.circuit.CircuitState;
 import com.cburch.logisim.circuit.WireSet;
 import com.cburch.logisim.comp.ComponentDrawContext;
@@ -132,6 +133,10 @@ public class InstancePainter implements InstanceState {
 
   public Circuit getCircuit() {
     return context.getCircuit();
+  }
+  
+  public int getVariantIndex() {
+    return ((CircuitAttributes)getAttributeSet()).getVariantIndex();
   }
 
   /**
