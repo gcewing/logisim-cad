@@ -153,7 +153,7 @@ public class CircuitAttributes extends AbstractAttributeSet {
       Attributes.forString("clabel", S.getter("circuitLabelAttr"));
 
   public static final Attribute<Direction> CIRCUIT_LABEL_FACING_ATTR =
-      Attributes.forDirectionWithCenter("clabelup", S.getter("circuitLabelDirAttr"));
+      Attributes.forDirection("clabelup", S.getter("circuitLabelDirAttr"));
 
   public static final Attribute<Font> CIRCUIT_LABEL_FONT_ATTR =
       Attributes.forFont("clabelfont", S.getter("circuitLabelFontAttr"));
