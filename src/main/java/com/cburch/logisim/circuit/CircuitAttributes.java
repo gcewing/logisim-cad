@@ -177,12 +177,15 @@ public class CircuitAttributes extends AbstractAttributeSet {
   public static final Attribute<Integer> NUM_VARIANTS_ATTR =
       Attributes.forInteger("numvariants", S.getter("numberOfVariants"));
 
+  public static final Attribute<String> SERIAL_NO_ATTR =
+      Attributes.forString("serialno", S.getter("circuitSerialNumber"));
+
   public static final Attribute<String> VARIANT_ATTR =
-      Attributes.forString("variant", S.getter("variant"));
+      Attributes.forString("variant", S.getter("circuitVariant"));
 
   // Computed attribute, not stored
   public static final Attribute<String> DISPLAYED_LABEL_ATTR =
-      Attributes.forString("displayedlabel", S.getter("displayedLabel"));
+      Attributes.forString("displayedlabel", S.getter(""));
 
   private static final Attribute<?>[] STATIC_ATTRS = {
     NAME_ATTR,
@@ -208,6 +211,7 @@ public class CircuitAttributes extends AbstractAttributeSet {
             StdAttr.LABEL_FONT,
             StdAttr.LABEL_VISIBILITY,
             NAME_ATTR,
+            SERIAL_NO_ATTR,
             VARIANT_ATTR,
             CIRCUIT_LABEL_ATTR,
             CIRCUIT_LABEL_FACING_ATTR,
@@ -226,6 +230,7 @@ public class CircuitAttributes extends AbstractAttributeSet {
   private MyListener listener;
   private Instance[] pinInstances;
   private boolean NameReadOnly;
+  private String serialNo = "";
   private String variant;
 
   public CircuitAttributes(Circuit source) {
@@ -270,11 +275,12 @@ public class CircuitAttributes extends AbstractAttributeSet {
     if (attr == LABEL_LOCATION_ATTR) return (E) labelLocation;
     if (attr == VARIANT_ATTR) return (E) variant;
     if (attr == DISPLAYED_LABEL_ATTR) return (E) getDisplayedLabel();
+    if (attr == SERIAL_NO_ATTR) return (E) serialNo;
     else return source.getStaticAttributes().getValue(attr);
   }
   
   protected String getDisplayedLabel() {
-    return label + variant;
+    return label + serialNo + variant;
   }
 
   @Override
@@ -348,6 +354,12 @@ public class CircuitAttributes extends AbstractAttributeSet {
       if (variant == val) return;
       variant = val;
       fireAttributeValueChanged(VARIANT_ATTR, val, null);
+      fireAttributeValueChanged(DISPLAYED_LABEL_ATTR, getDisplayedLabel(), null);
+    } else if (attr == SERIAL_NO_ATTR) {
+      String val = (String) value;
+      if (serialNo == val) return;
+      serialNo = val;
+      fireAttributeValueChanged(SERIAL_NO_ATTR, val, null);
       fireAttributeValueChanged(DISPLAYED_LABEL_ATTR, getDisplayedLabel(), null);
     } else if (attr == DISPLAYED_LABEL_ATTR) {
       // computed attribute, ignore
