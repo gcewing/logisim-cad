@@ -30,6 +30,7 @@ package com.cburch.logisim.std.wiring;
 
 import static com.cburch.logisim.std.Strings.S;
 
+import com.cburch.logisim.circuit.CircuitAttributes;
 import com.cburch.logisim.circuit.RadixOption;
 import com.cburch.logisim.comp.EndData;
 import com.cburch.logisim.data.Attribute;
@@ -171,12 +172,14 @@ public class PinAttributes extends ProbeAttributes {
   public PinAttributes() {}
   
   public String getPinNumber(int variantIndex) {
-    if (variantIndex < 0)
+    if (variantIndex == CircuitAttributes.ALL_VARIANTS)
       return PIN_NUMBER.toStandardString(pinNumber);
-    else if (variantIndex >= pinNumber.length)
-      return "";
-    else
+    else if (pinNumber.length == 1)
+      return pinNumber[0];
+    else if (variantIndex >= 0 && variantIndex < pinNumber.length)
       return pinNumber[variantIndex];
+    else
+      return "";
   }
 
   @Override
