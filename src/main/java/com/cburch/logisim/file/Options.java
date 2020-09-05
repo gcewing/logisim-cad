@@ -51,6 +51,9 @@ public class Options {
           "gateUndefined",
           S.getter("gateUndefinedOption"),
           new AttributeOption[] {GATE_UNDEFINED_IGNORE, GATE_UNDEFINED_ERROR});
+  
+  public static final Attribute<Boolean> ATTR_ENFORCE_HDL =
+      Attributes.forBoolean("enforcehdl", S.getter("schematicEnforceHdlNamesOption"));
 
   public static final Attribute<Integer> ATTR_STROKE_WIDTH =
     Attributes.forInteger("strokewidth", S.getter("renderStrokeWidthOption"));
@@ -61,9 +64,9 @@ public class Options {
   public static final Integer sim_rand_dflt = Integer.valueOf(32);
 
   private static final Attribute<?>[] ATTRIBUTES = {ATTR_GATE_UNDEFINED, ATTR_SIM_LIMIT, ATTR_SIM_RAND,
-    ATTR_STROKE_WIDTH, ATTR_HIDE_ABUTTED_PORTS};
+    ATTR_STROKE_WIDTH, ATTR_HIDE_ABUTTED_PORTS, ATTR_ENFORCE_HDL};
   private static final Object[] DEFAULTS = {GATE_UNDEFINED_IGNORE, Integer.valueOf(1000), Integer.valueOf(0),
-    3, true};
+    3, true, false};
 
   private AttributeSet attrs;
   private MouseMappings mmappings;
@@ -92,4 +95,11 @@ public class Options {
   public ToolbarData getToolbarData() {
     return toolbar;
   }
+
+  public boolean enforcingHdlSyntax() {
+    boolean result = attrs.getValue(ATTR_ENFORCE_HDL);
+    System.out.printf("Options.enforcingHdlSyntax: %s\n", result);
+    return result;
+  }
+
 }

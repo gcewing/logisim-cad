@@ -41,6 +41,7 @@ class RenderingOptions extends SmartOptionsPanel {
   protected void addOptions() {
     addOption(new IntegerOption("renderingStrokeWidth", 3, Options.ATTR_STROKE_WIDTH));
     addOption(new BooleanOption("renderingHideAbuttedPorts", Options.ATTR_HIDE_ABUTTED_PORTS));
+    addOption(new BooleanOption("schematicEnforceHdlNames", Options.ATTR_ENFORCE_HDL));
   }
   
   @Override

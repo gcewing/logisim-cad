@@ -105,7 +105,7 @@ public class CircuitAttributes extends AbstractAttributeSet {
             e.getSource().setValue(NAME_ATTR, OldName);
             source.fireEvent(CircuitEvent.ACTION_SET_NAME, OldName);
             return;
-          } else if (!SyntaxChecker.isVariableNameAcceptable(NewName, true)) {
+          } else if (enforcingHdlSyntax() && !SyntaxChecker.isVariableNameAcceptable(NewName, true)) {
             e.getSource().setValue(NAME_ATTR, OldName);
             source.fireEvent(CircuitEvent.ACTION_SET_NAME, OldName);
             return;
@@ -134,6 +134,10 @@ public class CircuitAttributes extends AbstractAttributeSet {
           source.RecalcDefaultShape();
         }
       }
+    }
+
+    protected boolean enforcingHdlSyntax() {
+      return source.getProject().getOptions().enforcingHdlSyntax();
     }
   }
 
