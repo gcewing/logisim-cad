@@ -93,6 +93,8 @@ public class CircuitAttributes extends AbstractAttributeSet {
     public void attributeListChanged(AttributeEvent e) {}
 
     public void attributeValueChanged(AttributeEvent e) {
+//       System.out.printf("CircuitAttributes.StaticListener.attributeValueChanged: %s\n",
+//         e.getAttribute());
       if (e.getAttribute() == NAME_ATTR) {
         String NewName = (String) e.getValue();
         String OldName = e.getOldValue() == null ? "ThisShouldNotHappen" : (String) e.getOldValue();
@@ -174,8 +176,29 @@ public class CircuitAttributes extends AbstractAttributeSet {
           S.getter("circuitAppearanceAttr"),
           new AttributeOption[] {APPEAR_CLASSIC, APPEAR_FPGA, APPEAR_EVOLUTION, APPEAR_CUSTOM});
 
+//   public static final Attribute<Integer> NUM_VARIANTS_ATTR =
+//       Attributes.forInteger("numvariants", S.getter("numberOfVariants"));
+// 
+  public static final Attribute<String[]> VARIANT_LIST_ATTR = 
+      Attributes.forStringArray("variantlist", S.getter("circuitVariantList"));
+
+  public static final Attribute<String> DESIGNATION_PREFIX_ATTR =
+      Attributes.forString("designationprefix", S.getter("circuitDesignationPrefix"));
+
+  public static final Attribute<String> SERIAL_NO_ATTR =
+      Attributes.forString("serialno", S.getter("circuitSerialNumber"));
+
+  public static final Attribute<String> VARIANT_ATTR =
+      Attributes.forString("variant", S.getter("circuitVariant"));
+
+  // Computed attribute, not stored
+  public static final Attribute<String> DISPLAYED_LABEL_ATTR =
+      Attributes.forString("displayedlabel", S.getter(""));
+
   private static final Attribute<?>[] STATIC_ATTRS = {
     NAME_ATTR,
+    DESIGNATION_PREFIX_ATTR,
+    VARIANT_LIST_ATTR,
     CIRCUIT_LABEL_ATTR,
     CIRCUIT_LABEL_FACING_ATTR,
     CIRCUIT_LABEL_FONT_ATTR,
@@ -185,7 +208,7 @@ public class CircuitAttributes extends AbstractAttributeSet {
   };
 
   private static final Object[] STATIC_DEFAULTS = {
-    "", "", Direction.EAST, StdAttr.DEFAULT_LABEL_FONT, APPEAR_CLASSIC, false, ""
+    "", "", Attributes.emptyStringArray, "", Direction.EAST, StdAttr.DEFAULT_LABEL_FONT, APPEAR_CLASSIC, false, ""
   };
 
   private static final List<Attribute<?>> INSTANCE_ATTRS =
@@ -193,15 +216,17 @@ public class CircuitAttributes extends AbstractAttributeSet {
           new Attribute<?>[] {
             StdAttr.FACING,
             StdAttr.LABEL,
+            SERIAL_NO_ATTR,
+            VARIANT_ATTR,
             LABEL_LOCATION_ATTR,
             StdAttr.LABEL_FONT,
             StdAttr.LABEL_VISIBILITY,
-            NAME_ATTR,
-            CIRCUIT_LABEL_ATTR,
-            CIRCUIT_LABEL_FACING_ATTR,
-            CIRCUIT_LABEL_FONT_ATTR,
-            APPEARANCE_ATTR,
-            CIRCUIT_VHDL_PATH
+//             NAME_ATTR,
+//             CIRCUIT_LABEL_ATTR,
+//             CIRCUIT_LABEL_FACING_ATTR,
+//             CIRCUIT_LABEL_FONT_ATTR,
+//             APPEARANCE_ATTR,
+//             CIRCUIT_VHDL_PATH
           });
 
   private Circuit source;
@@ -214,6 +239,8 @@ public class CircuitAttributes extends AbstractAttributeSet {
   private MyListener listener;
   private Instance[] pinInstances;
   private boolean NameReadOnly;
+  private String serialNo = "";
+  private String variant;
 
   public CircuitAttributes(Circuit source) {
     this.source = source;
@@ -255,7 +282,32 @@ public class CircuitAttributes extends AbstractAttributeSet {
     if (attr == StdAttr.LABEL_FONT) return (E) labelFont;
     if (attr == StdAttr.LABEL_VISIBILITY) return (E) LabelVisable;
     if (attr == LABEL_LOCATION_ATTR) return (E) labelLocation;
-    else return source.getStaticAttributes().getValue(attr);
+    if (attr == VARIANT_ATTR) return (E) variant;
+    if (attr == DISPLAYED_LABEL_ATTR) return (E) getDisplayedLabel();
+    if (attr == SERIAL_NO_ATTR) return (E) serialNo;
+    else return getStaticValue(attr);
+  }
+  
+  protected <E> E getStaticValue(Attribute<E> attr) {
+    return source.getStaticAttributes().getValue(attr);
+  }
+  
+  protected String getDisplayedLabel() {
+    if (!label.equals(""))
+      return label;
+    else
+      return getStaticValue(DESIGNATION_PREFIX_ATTR) + serialNo + variant;
+  }
+  
+  public static int NO_VARIANT = -1;
+  public static int ALL_VARIANTS = -2;
+  
+  public int getVariantIndex() {
+    String[] variantList = getStaticValue(VARIANT_LIST_ATTR);
+    for (int i = 0; i < variantList.length; i++)
+      if (variantList[i].equals(variant))
+        return i;
+    return NO_VARIANT;
   }
 
   @Override
@@ -323,6 +375,18 @@ public class CircuitAttributes extends AbstractAttributeSet {
       if (labelLocation.equals(val)) return;
       labelLocation = val;
       fireAttributeValueChanged(LABEL_LOCATION_ATTR, val, null);
+    } else if (attr == VARIANT_ATTR) {
+      String val = (String) value;
+      if (variant == val) return;
+      variant = val;
+      fireAttributeValueChanged(VARIANT_ATTR, val, null);
+    } else if (attr == SERIAL_NO_ATTR) {
+      String val = (String) value;
+      if (serialNo == val) return;
+      serialNo = val;
+      fireAttributeValueChanged(SERIAL_NO_ATTR, val, null);
+    } else if (attr == DISPLAYED_LABEL_ATTR) {
+      // computed attribute, ignore
     } else {
       source.getStaticAttributes().setValue(attr, value);
       if (attr == NAME_ATTR) {

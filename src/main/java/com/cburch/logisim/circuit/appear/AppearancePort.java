@@ -36,7 +36,7 @@ import com.cburch.draw.model.HandleGesture;
 import com.cburch.draw.shapes.DrawAttr;
 import com.cburch.draw.shapes.SvgCreator;
 import com.cburch.draw.util.TextMetrics;
-// import com.cburch.logisim.circuit.appear.PortAttributes;
+import com.cburch.logisim.circuit.CircuitAttributes;
 import com.cburch.logisim.data.Attribute;
 import com.cburch.logisim.data.AttributeOption;
 import com.cburch.logisim.data.Direction;
@@ -185,7 +185,7 @@ public class AppearancePort extends AppearanceElement {
     }
     g.fillOval(x - MINOR_RADIUS, y - MINOR_RADIUS, 2 * MINOR_RADIUS, 2 * MINOR_RADIUS);
     paintLabel(g);
-    paintPinNumber(g);
+    paintPinNumber(g, CircuitAttributes.ALL_VARIANTS);
   }
   
   protected PinAttributes getPinAttributeSet() {
@@ -222,13 +222,13 @@ public class AppearancePort extends AppearanceElement {
     }
   }
   
-  public void paintPinNumber(Graphics g) {
+  public void paintPinNumber(Graphics g, int variantIndex) {
     PinAttributes pa = getPinAttributeSet();
     if (pa.portShowPinNumber) {
       Location loc = getLocation();
       int x0 = loc.getX();
       int y0 = loc.getY();
-      String pinNo = pa.pinNumber;
+      String pinNo = pa.getPinNumber(variantIndex);
       AttributeOption pos = pa.pinNumberPosition;
       g.setFont(pa.pinNumberFont);
       g.setColor(pa.pinNumberColor);

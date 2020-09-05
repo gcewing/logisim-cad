@@ -187,7 +187,8 @@ public class SubcircuitFactory extends InstanceFactory {
       y = bds.getY() - 2;
       va = GraphicsUtil.V_BASELINE;
     }
-    instance.setTextField(StdAttr.LABEL, StdAttr.LABEL_FONT, x, y, ha, va);
+//     instance.setTextField(StdAttr.LABEL, StdAttr.LABEL_FONT, x, y, ha, va);
+    instance.setTextField(CircuitAttributes.DISPLAYED_LABEL_ATTR, StdAttr.LABEL_FONT, x, y, ha, va);
   }
 
   //
@@ -349,9 +350,13 @@ public class SubcircuitFactory extends InstanceFactory {
 
   @Override
   public void instanceAttributeChanged(Instance instance, Attribute<?> attr) {
+//     System.out.printf("SubcircuitFactory.instanceAttributeChanged: %s\n", attr);
     if (attr == StdAttr.FACING) {
       computePorts(instance);
-    } else if (attr == CircuitAttributes.LABEL_LOCATION_ATTR) {
+    } else if (attr == CircuitAttributes.LABEL_LOCATION_ATTR
+        || attr == CircuitAttributes.DESIGNATION_PREFIX_ATTR
+        || attr == CircuitAttributes.SERIAL_NO_ATTR
+        || attr == CircuitAttributes.VARIANT_ATTR) {
       configureLabel(instance);
     } else if (attr == CircuitAttributes.APPEARANCE_ATTR) {
       CircuitTransaction xn = new ChangeAppearanceTransaction();

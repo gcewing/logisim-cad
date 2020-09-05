@@ -146,6 +146,7 @@ public class InstanceComponent implements Component, AttributeListener, ToolTipM
   public void attributeListChanged(AttributeEvent e) {}
 
   public void attributeValueChanged(AttributeEvent e) {
+//     System.out.printf("InstanceComponent.attributeValueChanged: %s\n", e.getAttribute());
     Attribute<?> attr = e.getAttribute();
     if (e.getAttribute().equals(StdAttr.LABEL)) {
       @SuppressWarnings("unchecked")

@@ -74,7 +74,10 @@ public abstract class Attribute<V> {
   }
 
   public String toStandardString(V value) {
-    String oldString = value.toString();
+    return standardizeString(value.toString());
+  }
+  
+  public static String standardizeString(String oldString) {
     String newString = oldString.replaceAll("[\u0000-\u001f]", "");
     newString = newString.replaceAll("&#.*?;", "");
     return newString;

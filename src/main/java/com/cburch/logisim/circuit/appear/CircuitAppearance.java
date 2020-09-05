@@ -281,11 +281,12 @@ public class CircuitAppearance extends Drawing {
       } catch (UnsupportedOperationException e) {
       }
     }
+    int variantIndex = painter.getVariantIndex();
     for (CanvasObject shape : getObjectsFromBottom()) {
       if (shape instanceof AppearancePort) {
         AppearancePort port = (AppearancePort) shape;
         port.paintLabel(g);
-        port.paintPinNumber(g);
+        port.paintPinNumber(g, variantIndex);
       }
       if (!(shape instanceof AppearanceElement)) {
         Graphics dup = g.create();

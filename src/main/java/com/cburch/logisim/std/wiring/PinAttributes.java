@@ -30,6 +30,7 @@ package com.cburch.logisim.std.wiring;
 
 import static com.cburch.logisim.std.Strings.S;
 
+import com.cburch.logisim.circuit.CircuitAttributes;
 import com.cburch.logisim.circuit.RadixOption;
 import com.cburch.logisim.comp.EndData;
 import com.cburch.logisim.data.Attribute;
@@ -63,8 +64,8 @@ public class PinAttributes extends ProbeAttributes {
   public static final Attribute<String> ATTR_DUMMY = new DummyAttr("type");
   public static PinAttributes instance = new PinAttributes();
 
-	public static final Attribute<String> PIN_NUMBER =
-	  Attributes.forString("pin-number", S.getter("pinNumberAttr"));
+	public static final Attribute<String[]> PIN_NUMBER =
+	  Attributes.forStringArray("pin-number", S.getter("pinNumberAttr"));
 
   // Port attributes
 
@@ -162,13 +163,24 @@ public class PinAttributes extends ProbeAttributes {
   public boolean portShowLabel = true;
   public Font portLabelFont = defaultPortLabelFont;
   public Color portLabelColor = defaultPortLabelColor;
-  public String pinNumber = "";
+  public String[] pinNumber = Attributes.emptyStringArray;
   public boolean portShowPinNumber = true;
   public AttributeOption pinNumberPosition = PINNO_ABOVE_LEFT;
   public Font pinNumberFont = defaultPinNumberFont;
   public Color pinNumberColor = defaultPinNumberColor;
 
   public PinAttributes() {}
+  
+  public String getPinNumber(int variantIndex) {
+    if (variantIndex == CircuitAttributes.ALL_VARIANTS)
+      return PIN_NUMBER.toStandardString(pinNumber);
+    else if (pinNumber.length == 1)
+      return pinNumber[0];
+    else if (variantIndex >= 0 && variantIndex < pinNumber.length)
+      return pinNumber[variantIndex];
+    else
+      return "";
+  }
 
   @Override
   public List<Attribute<?>> getAttributes() {
@@ -248,7 +260,7 @@ public class PinAttributes extends ProbeAttributes {
       return;
     }
     else if (attr == PIN_NUMBER)
-      pinNumber = (String) value;
+      pinNumber = (String[]) value;
     else if (attr == PORT_SHOW_LABEL)
       portShowLabel = (Boolean) value;
     else if (attr == PORT_LABEL_FONT)
