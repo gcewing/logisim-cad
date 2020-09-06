@@ -47,7 +47,7 @@ import org.slf4j.LoggerFactory;
 
 public class Main {
   public static void main(String[] args) throws Exception {
-    System.setProperty("apple.awt.application.name", "Logisim-evolution");
+    System.setProperty("apple.awt.application.name", "Logisim-CAD");
     try {
       if (!GraphicsEnvironment.isHeadless()) {
         UIManager.setLookAndFeel(AppPreferences.LookAndFeel.get());
@@ -89,7 +89,8 @@ public class Main {
   static final Logger logger = LoggerFactory.getLogger(Main.class);
 
   public static final LogisimVersion VERSION =
-      LogisimVersion.get(3, 3, 1, LogisimVersion.FINAL_REVISION);
+//       LogisimVersion.get(3, 3, 1, LogisimVersion.FINAL_REVISION);
+    LogisimVersion.get();
 
   public static final String VERSION_NAME = VERSION.toString();
   public static final int COPYRIGHT_YEAR = 2020;
@@ -99,6 +100,6 @@ public class Main {
   public static boolean headless = false;
 
   /** URL for the automatic updater */
-  public static final String UPDATE_URL =
-      "https://raw.githubusercontent.com/reds-heig/logisim-evolution/develop/logisim_evolution_version.xml";
+//   public static final String UPDATE_URL =
+//       "https://raw.githubusercontent.com/reds-heig/logisim-evolution/develop/logisim_evolution_version.xml";
 }

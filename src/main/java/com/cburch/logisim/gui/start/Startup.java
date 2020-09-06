@@ -553,115 +553,115 @@ public class Startup implements AWTEventListener {
    *     otherwise
    */
   public boolean autoUpdate() {
-    if (!AppPreferences.AutomaticUpdateCheck.getBoolean()) return false;
-    ProgressMonitor Monitor =
-        new ProgressMonitor(null, "Checking for new logisim version", "Autoupdate", 0, 4);
-    Monitor.setProgress(0);
-    Monitor.setMillisToPopup(0);
-    Monitor.setMillisToDecideToPopup(0);
-    if (!networkConnectionAvailable()) {
-      Monitor.close();
-      return false;
-    }
-    Monitor.setProgress(1);
-    // Get the remote XML file containing the current version
-    URL xmlURL;
-    try {
-      xmlURL = new URL(Main.UPDATE_URL);
-    } catch (MalformedURLException e) {
-      logger.error(
-          "The URL of the XML file for the auto-updater is malformed.\nPlease report this error to the software maintainer\n-- AUTO-UPDATE ABORTED --");
-      Monitor.close();
-      return (false);
-    }
-    URLConnection conn;
-    try {
-      conn = xmlURL.openConnection();
-    } catch (IOException e) {
-      logger.error(
-          "Although an Internet connection should be available, the system couldn't connect to the URL requested by the auto-updater\nIf the error persist, please contact the software maintainer\n-- AUTO-UPDATE ABORTED --");
-      Monitor.close();
-      return (false);
-    }
-    InputStream in;
-    try {
-      in = conn.getInputStream();
-    } catch (IOException e) {
-      logger.error(
-          "Although an Internet connection should be available, the system couldn't retrieve the data requested by the auto-updater.\nIf the error persist, please contact the software maintainer\n-- AUTO-UPDATE ABORTED --");
-      Monitor.close();
-      return (false);
-    }
-    ArgonXML logisimData = new ArgonXML(in, "logisim-evolution");
-    Monitor.setProgress(2);
-
-    // Get the appropriate remote version number
-    LogisimVersion remoteVersion = LogisimVersion.parse(logisimData.child("version").content());
-
-    // If the remote version is newer, perform the update
-    Monitor.setProgress(3);
-    if (remoteVersion.compareTo(Main.VERSION) > 0) {
-      int answer =
-          JOptionPane.showConfirmDialog(
-              null,
-              "A new Logisim-evolution version ("
-                  + remoteVersion
-                  + ") is available!\nWould you like to update?",
-              "Update",
-              JOptionPane.YES_NO_OPTION,
-              JOptionPane.INFORMATION_MESSAGE);
-
-      if (answer == 1) {
-        // User refused to update -- we just hope he gets sufficiently
-        // annoyed by the message that he finally updates!
-        Monitor.close();
-        return (false);
-      }
-
-      // Obtain the base directory of the jar archive
-      CodeSource codeSource = Startup.class.getProtectionDomain().getCodeSource();
-      File jarFile = null;
-      try {
-        jarFile = new File(codeSource.getLocation().toURI().getPath());
-      } catch (URISyntaxException e) {
-        logger.error(
-            "Error in the syntax of the URI for the path of the executed Logisim-evolution JAR file!");
-        e.printStackTrace();
-        JOptionPane.showMessageDialog(
-            null,
-            "An error occurred while updating to the new Logisim-evolution version.\nPlease check the console for log information.",
-            "Update failed",
-            JOptionPane.ERROR_MESSAGE);
-        Monitor.close();
-        return (false);
-      }
-
-      // Get the appropriate remote filename to download
-      String remoteJar = logisimData.child("file").content();
-
-      boolean updateOk = downloadInstallUpdatedVersion(remoteJar, jarFile.getAbsolutePath());
-
-      if (updateOk) {
-        JOptionPane.showMessageDialog(
-            null,
-            "The new Logisim-evolution version ("
-                + remoteVersion
-                + ") has been correctly installed.\nPlease restart Logisim-evolution for the changes to take effect.",
-            "Update succeeded",
-            JOptionPane.INFORMATION_MESSAGE);
-        Monitor.close();
-        return (true);
-      } else {
-        JOptionPane.showMessageDialog(
-            null,
-            "An error occurred while updating to the new Logisim-evolution version.\nPlease check the console for log information.",
-            "Update failed",
-            JOptionPane.ERROR_MESSAGE);
-        Monitor.close();
-        return (false);
-      }
-    }
-    Monitor.close();
+//     if (!AppPreferences.AutomaticUpdateCheck.getBoolean()) return false;
+//     ProgressMonitor Monitor =
+//         new ProgressMonitor(null, "Checking for new logisim version", "Autoupdate", 0, 4);
+//     Monitor.setProgress(0);
+//     Monitor.setMillisToPopup(0);
+//     Monitor.setMillisToDecideToPopup(0);
+//     if (!networkConnectionAvailable()) {
+//       Monitor.close();
+//       return false;
+//     }
+//     Monitor.setProgress(1);
+//     // Get the remote XML file containing the current version
+//     URL xmlURL;
+//     try {
+//       xmlURL = new URL(Main.UPDATE_URL);
+//     } catch (MalformedURLException e) {
+//       logger.error(
+//           "The URL of the XML file for the auto-updater is malformed.\nPlease report this error to the software maintainer\n-- AUTO-UPDATE ABORTED --");
+//       Monitor.close();
+//       return (false);
+//     }
+//     URLConnection conn;
+//     try {
+//       conn = xmlURL.openConnection();
+//     } catch (IOException e) {
+//       logger.error(
+//           "Although an Internet connection should be available, the system couldn't connect to the URL requested by the auto-updater\nIf the error persist, please contact the software maintainer\n-- AUTO-UPDATE ABORTED --");
+//       Monitor.close();
+//       return (false);
+//     }
+//     InputStream in;
+//     try {
+//       in = conn.getInputStream();
+//     } catch (IOException e) {
+//       logger.error(
+//           "Although an Internet connection should be available, the system couldn't retrieve the data requested by the auto-updater.\nIf the error persist, please contact the software maintainer\n-- AUTO-UPDATE ABORTED --");
+//       Monitor.close();
+//       return (false);
+//     }
+//     ArgonXML logisimData = new ArgonXML(in, "logisim-evolution");
+//     Monitor.setProgress(2);
+// 
+//     // Get the appropriate remote version number
+//     LogisimVersion remoteVersion = LogisimVersion.parse(logisimData.child("version").content());
+// 
+//     // If the remote version is newer, perform the update
+//     Monitor.setProgress(3);
+//     if (remoteVersion.compareTo(Main.VERSION) > 0) {
+//       int answer =
+//           JOptionPane.showConfirmDialog(
+//               null,
+//               "A new Logisim-evolution version ("
+//                   + remoteVersion
+//                   + ") is available!\nWould you like to update?",
+//               "Update",
+//               JOptionPane.YES_NO_OPTION,
+//               JOptionPane.INFORMATION_MESSAGE);
+// 
+//       if (answer == 1) {
+//         // User refused to update -- we just hope he gets sufficiently
+//         // annoyed by the message that he finally updates!
+//         Monitor.close();
+//         return (false);
+//       }
+// 
+//       // Obtain the base directory of the jar archive
+//       CodeSource codeSource = Startup.class.getProtectionDomain().getCodeSource();
+//       File jarFile = null;
+//       try {
+//         jarFile = new File(codeSource.getLocation().toURI().getPath());
+//       } catch (URISyntaxException e) {
+//         logger.error(
+//             "Error in the syntax of the URI for the path of the executed Logisim-evolution JAR file!");
+//         e.printStackTrace();
+//         JOptionPane.showMessageDialog(
+//             null,
+//             "An error occurred while updating to the new Logisim-evolution version.\nPlease check the console for log information.",
+//             "Update failed",
+//             JOptionPane.ERROR_MESSAGE);
+//         Monitor.close();
+//         return (false);
+//       }
+// 
+//       // Get the appropriate remote filename to download
+//       String remoteJar = logisimData.child("file").content();
+// 
+//       boolean updateOk = downloadInstallUpdatedVersion(remoteJar, jarFile.getAbsolutePath());
+// 
+//       if (updateOk) {
+//         JOptionPane.showMessageDialog(
+//             null,
+//             "The new Logisim-evolution version ("
+//                 + remoteVersion
+//                 + ") has been correctly installed.\nPlease restart Logisim-evolution for the changes to take effect.",
+//             "Update succeeded",
+//             JOptionPane.INFORMATION_MESSAGE);
+//         Monitor.close();
+//         return (true);
+//       } else {
+//         JOptionPane.showMessageDialog(
+//             null,
+//             "An error occurred while updating to the new Logisim-evolution version.\nPlease check the console for log information.",
+//             "Update failed",
+//             JOptionPane.ERROR_MESSAGE);
+//         Monitor.close();
+//         return (false);
+//       }
+//     }
+//     Monitor.close();
     return (false);
   }
 

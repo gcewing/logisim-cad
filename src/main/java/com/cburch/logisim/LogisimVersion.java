@@ -28,7 +28,23 @@
 
 package com.cburch.logisim;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
 public class LogisimVersion {
+  public static LogisimVersion get() {
+    try {
+      InputStream s = LogisimVersion.class.getResourceAsStream("/resources/logisim/version.txt");
+      BufferedReader r = new BufferedReader(new InputStreamReader(s));
+      String text = r.readLine();
+      return parse(text);
+    }
+    catch (java.io.IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
   /**
    * Create a new version object for the current Logisim instance (the constructor is private) where
    * the revision number is set to its default value and no variant is used
@@ -173,7 +189,7 @@ public class LogisimVersion {
 
   public String rev() {
     if (revision != FINAL_REVISION) {
-      return ("rev. " + revision);
+      return (" rev. " + revision);
     } else {
       return ("");
     }

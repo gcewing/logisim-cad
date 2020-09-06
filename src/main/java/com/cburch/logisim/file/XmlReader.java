@@ -363,12 +363,17 @@ class XmlReader {
       String versionString = elt.getAttribute("source");
       boolean HolyCrossFile = false;
       boolean IsEvolutionFile = true;
+      boolean IsLSCADFile = false;
       if (versionString.equals("")) {
         sourceVersion = Main.VERSION;
+        IsLSCADFile = true;
       } else {
         sourceVersion = LogisimVersion.parse(versionString);
         HolyCrossFile = versionString.endsWith("-HC");
+        IsLSCADFile = versionString.endsWith("-CAD");
       }
+      if (IsLSCADFile)
+        IsEvolutionFile = true;
 
       // If we are opening a pre-logisim-evolution file, there might be
       // some components
@@ -377,8 +382,7 @@ class XmlReader {
       // We have therefore to warn the user that things might be a little
       // strange in their
       // circuits...
-      if (sourceVersion.compareTo(LogisimVersion.get(2, 7, 2)) < 0) {
-        IsEvolutionFile = true;
+      if (!IsLSCADFile && sourceVersion.compareTo(LogisimVersion.get(2, 7, 2)) < 0) {
         JOptionPane.showMessageDialog(
             null,
             "You are opening a file created with original Logisim code.\n"

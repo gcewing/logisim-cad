@@ -74,20 +74,20 @@ tasks {
         jarTask = "shadowJar"
         bundleJRE = false
         highResolutionCapable = true
-        appName = "LogisimE"
+        appName = "Logisim-CAD"
         appStyle = "universalJavaApplicationStub"
-        bundleIdentifier = "com.cburch.logisim"
-        creatorCode = "LSMe"
+        bundleIdentifier = "gcewing.logisimcad"
+        creatorCode = "LsmC"
         icon = "src/main/resources/resources/logisim/img/Logisim-evolution.icns"
         // backgroundImage = "src/main/resources/resources/logisim/img/logisim-icon-128.png"
         // javaProperties.put("apple.laf.useScreenMenuBar", "true")
-        bundleExtras.put("CFBundleDisplayName", "LogisimE")
+        bundleExtras.put("CFBundleDisplayName", "Logisim-CAD")
         bundleExtras.put(
             "CFBundleDocumentTypes",
             arrayOf(
                 mapOf(
-                    "LSItemContentTypes" to arrayOf("com.cburch.logisim.ecirc"),
-                    "CFBundleTypeName" to "Logisim-evolution circuit file",
+                    "LSItemContentTypes" to arrayOf("gcewing.logisimcad.lscc"),
+                    "CFBundleTypeName" to "Logisim-CAD circuit file",
                     "LSHandlerRank" to "Owner",
                     "CFBundleTypeRole" to "Editor",
                     "LSIsAppleDefaultForType" to true
@@ -98,13 +98,13 @@ tasks {
             "UTExportedTypeDeclarations",
             arrayOf(
                 mapOf(
-                    "UTTypeIdentifier" to "com.cburch.logisim.ecirc",
-                    "UTTypeDescription" to "Logisim-evolution circuit file",
+                    "UTTypeIdentifier" to "gcewing.logisimcad.lscc",
+                    "UTTypeDescription" to "Logisim-CAD circuit file",
                     "UTTypeConformsTo" to arrayOf("public.data"),
                     "UTTypeIconFile" to "Logisim-evolution.icns",
                     "UTTypeTagSpecification" to
                     mapOf(
-                        "public.filename-extension" to arrayOf("ecirc"),
+                        "public.filename-extension" to arrayOf("lscc"),
                         "public.mime-type" to arrayOf("application-prs.cburch.logisim")
                     )
                 )

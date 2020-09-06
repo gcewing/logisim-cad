@@ -467,8 +467,8 @@ public class ProjectActions {
     } while (!validFilename);
 
     File f = chooser.getSelectedFile();
-    String circExt = Loader.LOGISIM_EXTENSION;
-    if (!f.getName().endsWith(circExt)) {
+    String circExt = Loader.LSCAD_EXTENSION;
+    if (!Loader.endsWithAny(f.getName(), Loader.LOGISIM_EXTENSIONS)) {
       String old = f.getName();
       int ext0 = old.lastIndexOf('.');
       if (ext0 < 0 || !Pattern.matches("\\.\\p{L}{2,}[0-9]?", old.substring(ext0))) {

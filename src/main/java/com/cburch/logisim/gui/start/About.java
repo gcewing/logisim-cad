@@ -166,25 +166,28 @@ public class About {
 
       g.setColor(headerColor);
       g.setFont(headerFont);
-      g.drawString("Logisim-evolution", x, y + 25);
-
-      g.setFont(copyrightFont);
-      fm = g.getFontMetrics();
-      str = "\u00a9 " + Main.COPYRIGHT_YEAR;
-      g.drawString(str, x + IMAGE_WIDTH - fm.stringWidth(str), y + 12);
-
-      str = "HES-SO";
-      g.drawString(str, x + IMAGE_WIDTH - fm.stringWidth(str), y + 26);
+      g.drawString("Logisim-CAD", x, y + 25);
+      
+      int b = y + 25;
 
       g.setFont(versionFont);
       fm = g.getFontMetrics();
-      str = "Version " + Main.VERSION.mainVersion();
-      g.drawString(str, x + IMAGE_WIDTH - fm.stringWidth(str), y + 50);
+      str = "Version " + Main.VERSION.mainVersion() + Main.VERSION.rev();
+      g.drawString(str, x + IMAGE_WIDTH - fm.stringWidth(str), b);
 
       g.setFont(copyrightFont);
       fm = g.getFontMetrics();
-      str = Main.VERSION.rev();
-      g.drawString(str, x + IMAGE_WIDTH - fm.stringWidth(str), y + 50);
+      b += fm.getAscent();
+      str = "Based on Logisim-evolution";
+      g.drawString(str, x + IMAGE_WIDTH - fm.stringWidth(str), b);
+      b += fm.getAscent();
+      str = "\u00a9 HES-SO" + Main.COPYRIGHT_YEAR;
+      g.drawString(str, x + IMAGE_WIDTH - fm.stringWidth(str), b);
+
+//       g.setFont(copyrightFont);
+//       fm = g.getFontMetrics();
+//       str = Main.VERSION.rev();
+//       g.drawString(str, x + IMAGE_WIDTH - fm.stringWidth(str), y + 50);
     }
 
     private void drawWires(Graphics g, int x0, int y0) {
@@ -293,7 +296,7 @@ public class About {
     panel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
 
     JOptionPane.showMessageDialog(
-        owner, panel, "Logisim-evolution " + Main.VERSION_NAME, JOptionPane.PLAIN_MESSAGE);
+        owner, panel, "Logisim-CAD " + Main.VERSION_NAME, JOptionPane.PLAIN_MESSAGE);
   }
 
   static final int IMAGE_BORDER = 30;
