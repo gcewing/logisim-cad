@@ -132,6 +132,11 @@ class AboutCredits extends JComponent {
 
     lines = new ArrayList<CreditsLine>();
     linesHeight = 0; // computed in paintComponent
+    lines.add(new CreditsLine(0, S.get("creditsRoleCAD")));
+    lines.add(new CreditsLine(1, "Gregory Ewing"));
+    lines.add(new CreditsLine(1, "greg.ewing@canterbury.ac.nz"));
+    lines.add(new CreditsLine(2, "https://www.csse.canterbury.ac.nz/greg.ewing/"));
+    
     lines.add(new CreditsLine(0, S.get("creditsRoleFork")));
     lines.add(new CreditsLine(1, "College of the Holy Cross"));
     lines.add(new CreditsLine(2, "http://www.holycross.edu"));

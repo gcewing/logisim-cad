@@ -163,31 +163,32 @@ public class About {
     private void drawText(Graphics g, int x, int y) {
       FontMetrics fm;
       String str;
+      int b, h;
 
       g.setColor(headerColor);
       g.setFont(headerFont);
-      g.drawString("Logisim-CAD", x, y + 25);
+      fm = g.getFontMetrics();
+      b = y + fm.getAscent();
+      g.drawString("Logisim-CAD", x, b);
       
-      int b = y + 25;
-
       g.setFont(versionFont);
       fm = g.getFontMetrics();
+      b = y + fm.getAscent();
       str = "Version " + Main.VERSION.mainVersion() + Main.VERSION.rev();
       g.drawString(str, x + IMAGE_WIDTH - fm.stringWidth(str), b);
+      b += fm.getDescent();
 
       g.setFont(copyrightFont);
       fm = g.getFontMetrics();
+      
       b += fm.getAscent();
       str = "Based on Logisim-evolution";
       g.drawString(str, x + IMAGE_WIDTH - fm.stringWidth(str), b);
-      b += fm.getAscent();
-      str = "\u00a9 HES-SO" + Main.COPYRIGHT_YEAR;
-      g.drawString(str, x + IMAGE_WIDTH - fm.stringWidth(str), b);
+      b += fm.getDescent();
 
-//       g.setFont(copyrightFont);
-//       fm = g.getFontMetrics();
-//       str = Main.VERSION.rev();
-//       g.drawString(str, x + IMAGE_WIDTH - fm.stringWidth(str), y + 50);
+      b += fm.getAscent();
+      str = "\u00a9 HES-SO " + Main.COPYRIGHT_YEAR;
+      g.drawString(str, x + IMAGE_WIDTH - fm.stringWidth(str), b);
     }
 
     private void drawWires(Graphics g, int x0, int y0) {
