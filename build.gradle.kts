@@ -86,7 +86,7 @@ tasks {
             "CFBundleDocumentTypes",
             arrayOf(
                 mapOf(
-                    "LSItemContentTypes" to arrayOf("gcewing.logisimcad.lscc"),
+                    "LSItemContentTypes" to arrayOf("gcewing.logisimcad.ccirc"),
                     "CFBundleTypeName" to "Logisim-CAD circuit file",
                     "LSHandlerRank" to "Owner",
                     "CFBundleTypeRole" to "Editor",
@@ -98,13 +98,13 @@ tasks {
             "UTExportedTypeDeclarations",
             arrayOf(
                 mapOf(
-                    "UTTypeIdentifier" to "gcewing.logisimcad.lscc",
+                    "UTTypeIdentifier" to "gcewing.logisimcad.ccirc",
                     "UTTypeDescription" to "Logisim-CAD circuit file",
                     "UTTypeConformsTo" to arrayOf("public.data"),
                     "UTTypeIconFile" to "Logisim-evolution.icns",
                     "UTTypeTagSpecification" to
                     mapOf(
-                        "public.filename-extension" to arrayOf("lscc"),
+                        "public.filename-extension" to arrayOf("ccirc"),
                         "public.mime-type" to arrayOf("application-prs.cburch.logisim")
                     )
                 )

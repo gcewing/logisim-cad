@@ -174,7 +174,7 @@ public class About {
       g.setFont(versionFont);
       fm = g.getFontMetrics();
       b = y + fm.getAscent();
-      str = "Version " + Main.VERSION.mainVersion() + Main.VERSION.rev();
+      str = "Version " + Main.VERSION_CAD.mainVersion() + Main.VERSION_CAD.rev();
       g.drawString(str, x + IMAGE_WIDTH - fm.stringWidth(str), b);
       b += fm.getDescent();
 

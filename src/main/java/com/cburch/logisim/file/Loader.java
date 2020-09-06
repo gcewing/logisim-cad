@@ -164,7 +164,7 @@ public class Loader implements LibraryLoader {
     }
   }
 
-  public static final String LSCAD_EXTENSION = ".ecirc";
+  public static final String LSCAD_EXTENSION = ".ccirc";
   public static final String[] LOGISIM_EXTENSIONS = {".circ", ".ecirc", LSCAD_EXTENSION};
 
   public static final FileFilter LOGISIM_FILTER = new LogisimFileFilter();
@@ -340,7 +340,7 @@ public class Loader implements LibraryLoader {
     try {
       LogisimFile ret = loadLogisimFile(file);
       if (ret != null) setMainFile(file);
-      else throw new LoadFailedException("File could not be opened");
+//       else throw new LoadFailedException("File could not be opened");
       showMessages(ret);
       return ret;
     } catch (LoaderException e) {

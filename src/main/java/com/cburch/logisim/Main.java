@@ -89,10 +89,12 @@ public class Main {
   static final Logger logger = LoggerFactory.getLogger(Main.class);
 
   public static final LogisimVersion VERSION =
-//       LogisimVersion.get(3, 3, 1, LogisimVersion.FINAL_REVISION);
-    LogisimVersion.get();
+      LogisimVersion.get(3, 3, 1, LogisimVersion.FINAL_REVISION);
+  public static final LogisimVersion VERSION_CAD =
+      LogisimVersion.get();
 
   public static final String VERSION_NAME = VERSION.toString();
+  public static final String VERSION_NAME_CAD = VERSION_CAD.toString();
   public static final int COPYRIGHT_YEAR = 2020;
 
   public static boolean ANALYZE = true;

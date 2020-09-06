@@ -346,8 +346,8 @@ public class ProjectActions {
 
     try {
       LogisimFile lib = loader.openLogisimFile(f);
-      AppPreferences.updateRecentFile(f);
       if (lib == null) return null;
+      AppPreferences.updateRecentFile(f);
       LibraryTools.RemovePresentLibraries(lib, new HashMap<String, Library>(), true);
       if (proj == null) {
         proj = new Project(lib);
@@ -383,6 +383,8 @@ public class ProjectActions {
     if (monitor != null) monitor.setProgress(SplashScreen.FILE_LOAD);
     Loader loader = new Loader(monitor);
     LogisimFile file = loader.openLogisimFile(source, substitutions);
+    if (file == null)
+      return null;
     AppPreferences.updateRecentFile(source);
 
     LogisimRuntimeSettings.setIsGui(LogisimRuntimeSettings.GUI);
@@ -393,6 +395,8 @@ public class ProjectActions {
       throws LoadFailedException {
     Loader loader = new Loader(monitor);
     LogisimFile file = loader.openLogisimFile(source);
+    if (file == null)
+      return null;
     Project ret = new Project(file);
     updatecircs(file, ret);
     LogisimRuntimeSettings.setIsGui(LogisimRuntimeSettings.CLI);

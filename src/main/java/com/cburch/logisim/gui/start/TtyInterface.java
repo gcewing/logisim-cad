@@ -323,6 +323,8 @@ public class TtyInterface {
       System.exit(-1);
       return;
     }
+    if (file == null)
+      return;
 
     int format = args.getTtyFormat();
     if ((format & FORMAT_STATISTICS) != 0) {

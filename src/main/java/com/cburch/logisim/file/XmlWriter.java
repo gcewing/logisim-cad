@@ -374,7 +374,8 @@ class XmlWriter {
             "\nThis file is intended to be "
                 + "loaded by Logisim-evolution (https://github.com/reds-heig/logisim-evolution).\n"));
     ret.setAttribute("version", "1.0");
-    ret.setAttribute("source", Main.VERSION_NAME + "-CAD");
+    ret.setAttribute("source", Main.VERSION_NAME);
+    ret.setAttribute("source-cad", Main.VERSION_NAME_CAD);
 
     for (Library lib : file.getLibraries()) {
       Element elt = fromLibrary(lib);

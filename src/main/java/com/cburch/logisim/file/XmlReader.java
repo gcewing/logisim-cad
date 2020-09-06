@@ -358,39 +358,9 @@ class XmlReader {
       return ret;
     }
 
-    private void toLogisimFile(Element elt, Project proj) {
-      // determine the version producing this file
-      String versionString = elt.getAttribute("source");
-      boolean HolyCrossFile = false;
+    private void toLogisimFile(Element elt, Project proj, LogisimVersion sourceVersion, boolean HolyCrossFile) {
+      this.sourceVersion = sourceVersion;
       boolean IsEvolutionFile = true;
-      boolean IsLSCADFile = false;
-      if (versionString.equals("")) {
-        sourceVersion = Main.VERSION;
-        IsLSCADFile = true;
-      } else {
-        sourceVersion = LogisimVersion.parse(versionString);
-        HolyCrossFile = versionString.endsWith("-HC");
-        IsLSCADFile = versionString.endsWith("-CAD");
-      }
-      if (IsLSCADFile)
-        IsEvolutionFile = true;
-
-      // If we are opening a pre-logisim-evolution file, there might be
-      // some components
-      // (such as the RAM or the counters), that have changed their shape
-      // and other details.
-      // We have therefore to warn the user that things might be a little
-      // strange in their
-      // circuits...
-      if (!IsLSCADFile && sourceVersion.compareTo(LogisimVersion.get(2, 7, 2)) < 0) {
-        JOptionPane.showMessageDialog(
-            null,
-            "You are opening a file created with original Logisim code.\n"
-                + "You might encounter some problems in the execution, since some components evolved since then.\n"
-                + "Moreover, labels will be converted to match VHDL limitations for variable names.",
-            "Old file format -- compatibility mode",
-            JOptionPane.WARNING_MESSAGE);
-      }
 
       // first, load the sublibraries
       for (Element o : XmlIterator.forChildElements(elt, "lib")) {
@@ -1016,13 +986,57 @@ class XmlReader {
   LogisimFile readLibrary(InputStream is, Project proj) throws IOException, SAXException {
     Document doc = loadXmlFrom(is);
     Element elt = doc.getDocumentElement();
-    elt = ensureLogisimCompatibility(elt);
+
+    boolean enforceHDL = false;
+    LogisimVersion sourceVersion;
+    
+    // determine the version producing this file
+    String versionString = elt.getAttribute("source");
+    boolean HolyCrossFile = false;
+    if (versionString.equals("")) {
+      sourceVersion = Main.VERSION;
+    } else {
+      sourceVersion = LogisimVersion.parse(versionString);
+      HolyCrossFile = versionString.endsWith("-HC");
+    }
+
+    // If we are opening a pre-logisim-evolution file, there might be
+    // some components
+    // (such as the RAM or the counters), that have changed their shape
+    // and other details.
+    // We have therefore to warn the user that things might be a little
+    // strange in their
+    // circuits...
+    if (sourceVersion.compareTo(LogisimVersion.get(2, 7, 2)) < 0) {
+//       JOptionPane.showMessageDialog(
+//           null,
+//           "You are opening a file created with original Logisim code.\n"
+//               + "You might encounter some problems in the execution, since some components evolved since then.\n"
+//               + "Moreover, labels will be converted to match VHDL limitations for variable names.",
+//           "Old file format -- compatibility mode",
+//           JOptionPane.WARNING_MESSAGE);
+      int result = JOptionPane.showConfirmDialog(null,
+        "You are opening a file created with the original version of Logisim.\n"
+        + "You might encounter problems, because some components evolved since then.\n"
+        + "\n"
+        + "Do you want circuit labels converted for HDL compliance?",
+        "Old file format -- compatibility mode",
+        JOptionPane.YES_NO_CANCEL_OPTION,
+        JOptionPane.WARNING_MESSAGE);
+      if (result == JOptionPane.CANCEL_OPTION)
+        return null;
+      if (result == JOptionPane.YES_OPTION)
+        enforceHDL = true;
+    }
+
+    if (enforceHDL)
+      elt = ensureLogisimCompatibility(elt);
 
     considerRepairs(doc, elt);
     LogisimFile file = new LogisimFile((Loader) loader);
     ReadContext context = new ReadContext(file);
 
-    context.toLogisimFile(elt, proj);
+    context.toLogisimFile(elt, proj, sourceVersion, HolyCrossFile);
 
     if (file.getCircuitCount() == 0) {
       file.addCircuit(new Circuit("main", file, proj));

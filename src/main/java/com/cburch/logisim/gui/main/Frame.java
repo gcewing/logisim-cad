@@ -440,7 +440,7 @@ public class Frame extends LFrame implements LocaleListener {
     } else {
       s = StringUtil.format(S.get("titleFileKnown"), name);
     }
-    this.setTitle(s + " (v " + Main.VERSION_NAME + ")");
+    this.setTitle(s + " (v " + Main.VERSION_NAME_CAD + ")");
     myProjectListener.enableSave();
   }
 
