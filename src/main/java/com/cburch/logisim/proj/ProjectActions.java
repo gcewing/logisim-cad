@@ -450,11 +450,15 @@ public class ProjectActions {
     chooser.addChoosableFileFilter(Loader.LOGISIM_EVOLUTION_FILTER);
     File mf = loader.getMainFile();
     if (mf != null) {
+      if (mf.getName().endsWith(Loader.LOGISIM_EVOLUTION_EXTENSION))
+        chooser.setFileFilter(Loader.LOGISIM_EVOLUTION_FILTER);
+      else
+        chooser.setFileFilter(Loader.LOGISIM_CAD_FILTER);
       chooser.setSelectedFile(Loader.fileWithoutExtension(mf));
     }
-
     int returnVal;
     boolean validFilename = false;
+    File f;
     HashMap<String, String> Error = new HashMap<String, String>();
     do {
       Error.clear();
@@ -462,7 +466,17 @@ public class ProjectActions {
       if (returnVal != JFileChooser.APPROVE_OPTION) {
         return false;
       }
-      validFilename = checkValidFilename(chooser.getSelectedFile().getName(), proj, Error);
+      f = chooser.getSelectedFile();
+      FileFilter filt = chooser.getFileFilter();
+      String circExt;
+      if (filt == Loader.LOGISIM_CAD_FILTER)
+        circExt = Loader.LOGISIM_CAD_EXTENSION;
+      else if (filt == Loader.LOGISIM_EVOLUTION_FILTER)
+        circExt = Loader.LOGISIM_EVOLUTION_EXTENSION;
+      else
+        throw new RuntimeException("ProjectActions.doSaveAs: File filter not recognised");
+      f = Loader.fileWithExtension(f, circExt);
+      validFilename = checkValidFilename(f.getName(), proj, Error);
       if (!validFilename) {
         String Message = "\"" + chooser.getSelectedFile() + "\":\n";
         for (String key : Error.keySet()) {
@@ -473,56 +487,6 @@ public class ProjectActions {
             chooser, Message, S.get("FileSaveAsItem"), JOptionPane.ERROR_MESSAGE);
       }
     } while (!validFilename);
-
-    File f = chooser.getSelectedFile();
-    String circExt;
-    boolean saveAsCAD;
-    FileFilter filt = chooser.getFileFilter();
-    if (filt == Loader.LOGISIM_CAD_FILTER) {
-      System.out.printf("ProjectActions.doSaveAs: filter = LOGISIM_CAD_FILTER\n");
-      circExt = Loader.LOGISIM_CAD_EXTENSION;
-      saveAsCAD = true;
-    }
-    else if (filt == Loader.LOGISIM_EVOLUTION_FILTER) {
-      System.out.printf("ProjectActions.doSaveAs: filter = LOGISIM_EVOLUTION_FILTER\n");
-      circExt = Loader.LOGISIM_EVOLUTION_EXTENSION;
-      saveAsCAD = false;
-    }
-    else
-      throw new RuntimeException("ProjectActions.doSaveAs: File filter not recognised");
-
-//     if (!f.getName().endsWith(circExt)) {
-//       String old = f.getName();
-//       int ext0 = old.lastIndexOf('.');
-//       if (ext0 < 0 || !Pattern.matches("\\.\\p{L}{2,}[0-9]?", old.substring(ext0))) {
-//         f = new File(f.getParentFile(), old + circExt);
-//       } else {
-//         String ext = old.substring(ext0);
-//         String ttl = S.get("replaceExtensionTitle");
-//         String msg = S.fmt("replaceExtensionMessage", ext);
-//         Object[] options = {
-//           S.fmt("replaceExtensionReplaceOpt", ext),
-//           S.fmt("replaceExtensionAddOpt", circExt),
-//           S.get("replaceExtensionKeepOpt")
-//         };
-//         JOptionPane dlog = new JOptionPane(msg);
-//         dlog.setMessageType(JOptionPane.QUESTION_MESSAGE);
-//         dlog.setOptions(options);
-//         dlog.createDialog(proj.getFrame(), ttl).setVisible(true);
-// 
-//         Object result = dlog.getValue();
-//         if (result == options[0]) {
-//           String name = old.substring(0, ext0) + circExt;
-//           f = new File(f.getParentFile(), name);
-//         } else if (result == options[1]) {
-//           f = new File(f.getParentFile(), old + circExt);
-//         }
-//       }
-//     }
-    
-    f = Loader.fileWithExtension(f, circExt);
-    System.out.printf("ProjectActions.doSaveAs: %s\n", f.getPath());
-
     if (f.exists()) {
       int confirm =
           JOptionPane.showConfirmDialog(
