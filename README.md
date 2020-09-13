@@ -103,3 +103,13 @@ Variant.
 
 Syntax checking of circuit names is now optional, for those who have no
 intention of using any HDL features.
+
+File Formats and Extensions
+---------------------------
+
+By default, Logisim-CAD saves project files with extension ".ccirc", but
+you can choose to use ".circ" instead to facilitate sharing your files with
+users of standard Logisim-evolution. There is currently no difference in
+the format of the saved file; Logisim-CAD files are designed so that
+Logisim-evolution can read them and will do something reasobale with
+them.

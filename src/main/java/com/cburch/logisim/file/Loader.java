@@ -95,6 +95,22 @@ public class Loader implements LibraryLoader {
         return true;
     return false;
   }
+  
+  public static String filenameWithoutExtension(String filename) {
+    int i = filename.lastIndexOf(".");
+    if (i >= 0)
+      return filename.substring(0, i);
+    else
+      return filename;
+  }
+  
+  public static File fileWithoutExtension(File f) {
+    return new File(f.getParentFile(), filenameWithoutExtension(f.getName()));
+  }
+  
+  public static File fileWithExtension(File f, String ext) {
+    return new File(f.getParentFile(), f.getName() + ext);
+  }
 
   private static class LogisimFileFilter extends FileFilter {
     @Override
@@ -122,7 +138,7 @@ public class Loader implements LibraryLoader {
   private static class LogisimCADFileFilter extends FileFilter {
     @Override
     public boolean accept(File f) {
-      return f.isDirectory() || f.getName().endsWith(LSCAD_EXTENSION);
+      return f.isDirectory() || f.getName().endsWith(LOGISIM_CAD_EXTENSION);
     }
 
     @Override
@@ -145,10 +161,7 @@ public class Loader implements LibraryLoader {
 
   private static File determineBackupName(File base) {
     File dir = base.getParentFile();
-    String name = base.getName();
-    if (name.endsWith(LSCAD_EXTENSION)) {
-      name = name.substring(0, name.length() - LSCAD_EXTENSION.length());
-    }
+    String name = filenameWithoutExtension(base.getName());
     for (int i = 1; i <= 20; i++) {
       String ext = i == 1 ? ".bak" : (".bak" + i);
       File candidate = new File(dir, name + ext);
@@ -164,8 +177,9 @@ public class Loader implements LibraryLoader {
     }
   }
 
-  public static final String LSCAD_EXTENSION = ".ccirc";
-  public static final String[] LOGISIM_EXTENSIONS = {".circ", ".ecirc", LSCAD_EXTENSION};
+  public static final String LOGISIM_EVOLUTION_EXTENSION = ".circ";
+  public static final String LOGISIM_CAD_EXTENSION = ".ccirc";
+  public static final String[] LOGISIM_EXTENSIONS = {".circ", ".ecirc", LOGISIM_CAD_EXTENSION};
 
   public static final FileFilter LOGISIM_FILTER = new LogisimFileFilter();
   public static final FileFilter LOGISIM_EVOLUTION_FILTER = new LogisimEvolutionFileFilter();
@@ -496,12 +510,7 @@ public class Loader implements LibraryLoader {
   }
 
   private String toProjectName(File file) {
-    String ret = file.getName();
-    if (ret.endsWith(LSCAD_EXTENSION)) {
-      return ret.substring(0, ret.length() - LSCAD_EXTENSION.length());
-    } else {
-      return ret;
-    }
+    return filenameWithoutExtension(file.getName());
   }
 
   public String vhdlImportChooser(Component window) {

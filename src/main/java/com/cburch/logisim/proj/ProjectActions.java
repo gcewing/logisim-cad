@@ -61,6 +61,7 @@ import java.util.regex.Pattern;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import javax.swing.filechooser.FileFilter;
 
 public class ProjectActions {
   private static String FILE_NAME_FORMAT_ERROR = "FileNameError";
@@ -444,9 +445,12 @@ public class ProjectActions {
   public static boolean doSaveAs(Project proj) {
     Loader loader = proj.getLogisimFile().getLoader();
     JFileChooser chooser = loader.createChooser();
-    chooser.setFileFilter(Loader.LOGISIM_FILTER);
-    if (loader.getMainFile() != null) {
-      chooser.setSelectedFile(loader.getMainFile());
+    chooser.setAcceptAllFileFilterUsed​(false);
+    chooser.addChoosableFileFilter(Loader.LOGISIM_CAD_FILTER);
+    chooser.addChoosableFileFilter(Loader.LOGISIM_EVOLUTION_FILTER);
+    File mf = loader.getMainFile();
+    if (mf != null) {
+      chooser.setSelectedFile(Loader.fileWithoutExtension(mf));
     }
 
     int returnVal;
@@ -471,35 +475,53 @@ public class ProjectActions {
     } while (!validFilename);
 
     File f = chooser.getSelectedFile();
-    String circExt = Loader.LSCAD_EXTENSION;
-    if (!Loader.endsWithAny(f.getName(), Loader.LOGISIM_EXTENSIONS)) {
-      String old = f.getName();
-      int ext0 = old.lastIndexOf('.');
-      if (ext0 < 0 || !Pattern.matches("\\.\\p{L}{2,}[0-9]?", old.substring(ext0))) {
-        f = new File(f.getParentFile(), old + circExt);
-      } else {
-        String ext = old.substring(ext0);
-        String ttl = S.get("replaceExtensionTitle");
-        String msg = S.fmt("replaceExtensionMessage", ext);
-        Object[] options = {
-          S.fmt("replaceExtensionReplaceOpt", ext),
-          S.fmt("replaceExtensionAddOpt", circExt),
-          S.get("replaceExtensionKeepOpt")
-        };
-        JOptionPane dlog = new JOptionPane(msg);
-        dlog.setMessageType(JOptionPane.QUESTION_MESSAGE);
-        dlog.setOptions(options);
-        dlog.createDialog(proj.getFrame(), ttl).setVisible(true);
-
-        Object result = dlog.getValue();
-        if (result == options[0]) {
-          String name = old.substring(0, ext0) + circExt;
-          f = new File(f.getParentFile(), name);
-        } else if (result == options[1]) {
-          f = new File(f.getParentFile(), old + circExt);
-        }
-      }
+    String circExt;
+    boolean saveAsCAD;
+    FileFilter filt = chooser.getFileFilter();
+    if (filt == Loader.LOGISIM_CAD_FILTER) {
+      System.out.printf("ProjectActions.doSaveAs: filter = LOGISIM_CAD_FILTER\n");
+      circExt = Loader.LOGISIM_CAD_EXTENSION;
+      saveAsCAD = true;
     }
+    else if (filt == Loader.LOGISIM_EVOLUTION_FILTER) {
+      System.out.printf("ProjectActions.doSaveAs: filter = LOGISIM_EVOLUTION_FILTER\n");
+      circExt = Loader.LOGISIM_EVOLUTION_EXTENSION;
+      saveAsCAD = false;
+    }
+    else
+      throw new RuntimeException("ProjectActions.doSaveAs: File filter not recognised");
+
+//     if (!f.getName().endsWith(circExt)) {
+//       String old = f.getName();
+//       int ext0 = old.lastIndexOf('.');
+//       if (ext0 < 0 || !Pattern.matches("\\.\\p{L}{2,}[0-9]?", old.substring(ext0))) {
+//         f = new File(f.getParentFile(), old + circExt);
+//       } else {
+//         String ext = old.substring(ext0);
+//         String ttl = S.get("replaceExtensionTitle");
+//         String msg = S.fmt("replaceExtensionMessage", ext);
+//         Object[] options = {
+//           S.fmt("replaceExtensionReplaceOpt", ext),
+//           S.fmt("replaceExtensionAddOpt", circExt),
+//           S.get("replaceExtensionKeepOpt")
+//         };
+//         JOptionPane dlog = new JOptionPane(msg);
+//         dlog.setMessageType(JOptionPane.QUESTION_MESSAGE);
+//         dlog.setOptions(options);
+//         dlog.createDialog(proj.getFrame(), ttl).setVisible(true);
+// 
+//         Object result = dlog.getValue();
+//         if (result == options[0]) {
+//           String name = old.substring(0, ext0) + circExt;
+//           f = new File(f.getParentFile(), name);
+//         } else if (result == options[1]) {
+//           f = new File(f.getParentFile(), old + circExt);
+//         }
+//       }
+//     }
+    
+    f = Loader.fileWithExtension(f, circExt);
+    System.out.printf("ProjectActions.doSaveAs: %s\n", f.getPath());
 
     if (f.exists()) {
       int confirm =
