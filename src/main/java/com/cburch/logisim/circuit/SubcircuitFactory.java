@@ -353,7 +353,8 @@ public class SubcircuitFactory extends InstanceFactory {
 //     System.out.printf("SubcircuitFactory.instanceAttributeChanged: %s\n", attr);
     if (attr == StdAttr.FACING) {
       computePorts(instance);
-    } else if (attr == CircuitAttributes.LABEL_LOCATION_ATTR
+    } else if (attr == StdAttr.LABEL
+        || attr == CircuitAttributes.LABEL_LOCATION_ATTR
         || attr == CircuitAttributes.DESIGNATION_PREFIX_ATTR
         || attr == CircuitAttributes.SERIAL_NO_ATTR
         || attr == CircuitAttributes.VARIANT_ATTR) {
