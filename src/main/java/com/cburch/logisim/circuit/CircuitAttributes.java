@@ -303,8 +303,12 @@ public class CircuitAttributes extends AbstractAttributeSet {
   protected String getDisplayedLabel() {
     if (!label.equals(""))
       return label;
-    else
-      return getStaticValue(DESIGNATION_PREFIX_ATTR) + serialNo + variant;
+    else {
+      String result = serialNo + variant;
+      if (!result.equals(""))
+        result = getStaticValue(DESIGNATION_PREFIX_ATTR) + result;
+      return result;
+    }
   }
   
   public static int NO_VARIANT = -1;
