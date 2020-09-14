@@ -106,8 +106,10 @@ public class CircuitAttributes extends AbstractAttributeSet {
             source.fireEvent(CircuitEvent.ACTION_SET_NAME, OldName);
             return;
           } else if (enforcingHdlSyntax() && !SyntaxChecker.isVariableNameAcceptable(NewName, true)) {
-            e.getSource().setValue(NAME_ATTR, OldName);
-            source.fireEvent(CircuitEvent.ACTION_SET_NAME, OldName);
+            if (SyntaxChecker.isVariableNameAcceptable(OldName, false)) {
+              e.getSource().setValue(NAME_ATTR, OldName);
+              source.fireEvent(CircuitEvent.ACTION_SET_NAME, OldName);
+            }
             return;
           } else {
             for (Component c : source.getNonWires()) {
