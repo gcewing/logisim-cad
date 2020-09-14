@@ -14,7 +14,7 @@ some gate shapes have been adjusted slightly so that their outlines are
 aligned better with the grid. Port dots on component symbols are only
 displayed when a port does not have a wire attached to it.
 
-Some options have been added, on a new Rendering tab of the Project Options
+Some options have been added, on a new Schematics tab of the Project Options
 window:
 
 * Base Stroke Width
