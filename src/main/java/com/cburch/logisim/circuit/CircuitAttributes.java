@@ -245,7 +245,7 @@ public class CircuitAttributes extends AbstractAttributeSet {
   private MyListener listener;
   private Instance[] pinInstances;
   private boolean NameReadOnly;
-  private String serialNo = "";
+  private String serialNo;
   private String variant;
 
   public CircuitAttributes(Circuit source) {
@@ -256,6 +256,8 @@ public class CircuitAttributes extends AbstractAttributeSet {
     labelLocation = Direction.NORTH;
     labelFont = StdAttr.DEFAULT_LABEL_FONT;
     LabelVisable = true;
+    serialNo = "";
+    variant = "";
     pinInstances = new Instance[0];
     NameReadOnly = false;
   }
