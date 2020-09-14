@@ -628,4 +628,8 @@ public class Project {
       fireEvent(new ProjectEvent(ProjectEvent.UNDO_COMPLETE, this, action));
     }
   }
+
+  public boolean enforcingHdlSyntax() {
+    return getOptions().enforcingHdlSyntax();
+  }
 }

@@ -111,12 +111,14 @@ public class ProjectCircuitActions {
       /* Checking for valid names */
       if (name.isEmpty()) {
         error = new JLabel(S.get("circuitNameMissingError"));
-      } else if (CorrectLabel.IsKeyword(name, false)) {
-        error = new JLabel("\"" + name + "\": " + S.get("circuitNameKeyword"));
-      } else if (!SyntaxChecker.isVariableNameAcceptable(name, false)) {
-        error = new JLabel("\"" + name + "\": " + S.get("circuitNameInvalidName"));
-      } else if (NameIsInUse(proj, name)) {
-        error = new JLabel("\"" + name + "\": " + S.get("circuitNameExists"));
+      } else if (proj.enforcingHdlSyntax()) {
+        if (CorrectLabel.IsKeyword(name, false)) {
+          error = new JLabel("\"" + name + "\": " + S.get("circuitNameKeyword"));
+        } else if (!SyntaxChecker.isVariableNameAcceptable(name, false)) {
+          error = new JLabel("\"" + name + "\": " + S.get("circuitNameInvalidName"));
+        } else if (NameIsInUse(proj, name)) {
+          error = new JLabel("\"" + name + "\": " + S.get("circuitNameExists"));
+        }
       }
       if (error != null) {
         JOptionPane.showMessageDialog(
