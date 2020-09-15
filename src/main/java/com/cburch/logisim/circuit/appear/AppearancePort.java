@@ -195,10 +195,22 @@ public class AppearancePort extends AppearanceElement {
   public void paintLabel(Graphics g) {
     String label = pin.getAttributeValue(StdAttr.LABEL);
     PinAttributes pa = getPinAttributeSet();
+    Location loc = getLocation();
+    int x0 = loc.getX();
+    int y0 = loc.getY();
+    boolean dongle = false;
+    boolean overbar = false;
+    int offset = 0;
+    if (label.startsWith("/")) {
+      label = label.substring(1);
+      dongle = true;
+      offset = 10;
+    }
+    if (label.endsWith("/")) {
+      overbar = true;
+      label = label.substring(0, label.length() - 1);
+    }
     if (pa.portShowLabel) {
-      Location loc = getLocation();
-      int x0 = loc.getX();
-      int y0 = loc.getY();
       g.setFont(pa.portLabelFont);
       g.setColor(pa.portLabelColor);
       TextMetrics tm = new TextMetrics(g, label);
@@ -207,18 +219,38 @@ public class AppearancePort extends AppearanceElement {
       int descent = tm.descent;
       int x, y;
       if (facing == Direction.WEST)
-        x = x0 + labelMargin;
+        x = x0 + offset + labelMargin;
       else if (facing == Direction.EAST)
-        x = x0 - labelMargin - width;
+        x = x0 - offset - labelMargin - width;
       else
         x = x0 - width / 2;
       if (facing == Direction.SOUTH)
-        y = y0 - labelLeading - descent;
+        y = y0 - offset - labelLeading - descent;
       else if (facing == Direction.NORTH)
-        y = y0 + labelLeading + ascent;
+        y = y0 + offset + labelLeading + ascent;
       else
         y = y0 + (ascent + descent) / 2 - descent;
       g.drawString(label, x, y);
+      if (overbar) {
+//         g.drawLine(x, y - ascent, x + width, y - ascent);
+        g.fillRect(x, y - ascent + 1, width, 1);
+//         java.awt.Graphics2D g2 = (java.awt.Graphics2D)g;
+//         java.awt.geom.Rectangle2D b = g2.getFont().createGlyphVector(g2.getFontRenderContext(), label).getVisualBounds();
+//         g.fillRect(x, y - (int)b.getHeight() - 2, width, 1);
+      }
+    }
+    if (dongle) {
+      int xd = x0;
+      int yd = y0;
+      if (facing == Direction.WEST)
+        xd += 5;
+      else if (facing == Direction.EAST)
+        xd -= 5;
+      if (facing == Direction.SOUTH)
+        yd -= 5;
+      else if (facing == Direction.NORTH)
+        yd += 5;
+      g.drawOval(xd - 5, yd - 5, 10, 10);
     }
   }
   
