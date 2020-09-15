@@ -41,6 +41,10 @@ public interface AttributeSet {
 
   public List<Attribute<?>> getAttributes();
 
+  default List<Attribute<?>> getAllAttributes() {
+    return getAttributes();
+  }
+
   public <V> V getValue(Attribute<V> attr);
 
   public boolean isReadOnly(Attribute<?> attr);

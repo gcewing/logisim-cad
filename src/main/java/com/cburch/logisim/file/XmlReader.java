@@ -163,7 +163,7 @@ class XmlReader {
       // attribute list each time because it may change as we iterate
       // (as it will for a splitter).
       for (int i = 0; true; i++) {
-        List<Attribute<?>> attrList = attrs.getAttributes();
+        List<Attribute<?>> attrList = attrs.getAllAttributes();
         if (i >= attrList.size()) break;
         @SuppressWarnings("unchecked")
         Attribute<Object> attr = (Attribute<Object>) attrList.get(i);

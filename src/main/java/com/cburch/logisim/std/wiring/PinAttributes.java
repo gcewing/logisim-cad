@@ -103,8 +103,7 @@ public class PinAttributes extends ProbeAttributes {
   public static final Attribute<Color> PIN_NUMBER_COLOR =
       Attributes.forColor("pin-number-color", S.getter("pinNumberColorAttr"));
 
-  // Attributes editable via pin
-
+  // All attributes stored on pin
   private static final List<Attribute<?>> ATTRIBUTES =
       Arrays.asList(
           new Attribute<?>[] {
@@ -118,7 +117,6 @@ public class PinAttributes extends ProbeAttributes {
             StdAttr.LABEL_FONT,
             RadixOption.ATTRIBUTE,
             PROBEAPPEARANCE,
-//             ATTR_DUMMY,
             PORT_SHOW_LABEL,
             PORT_LABEL_FONT,
             PORT_LABEL_COLOR,
@@ -128,8 +126,23 @@ public class PinAttributes extends ProbeAttributes {
             PIN_NUMBER_COLOR
           });
 
-  // Attributes editable via port
+  // Attributes editable via pin
+  private static final List<Attribute<?>> PIN_ATTRIBUTES =
+      Arrays.asList(
+          new Attribute<?>[] {
+            StdAttr.FACING,
+            Pin.ATTR_TYPE,
+            StdAttr.WIDTH,
+            Pin.ATTR_TRISTATE,
+            Pin.ATTR_PULL,
+            StdAttr.LABEL,
+            PIN_NUMBER,
+            StdAttr.LABEL_FONT,
+            RadixOption.ATTRIBUTE,
+            PROBEAPPEARANCE
+          });
 
+  // Attributes editable via port
   public static final List<Attribute<?>> PORT_ATTRIBUTES =
       Arrays.asList(
           new Attribute<?>[] {
@@ -183,8 +196,13 @@ public class PinAttributes extends ProbeAttributes {
   }
 
   @Override
-  public List<Attribute<?>> getAttributes() {
+  public List<Attribute<?>> getAllAttributes() {
     return ATTRIBUTES;
+  }
+
+  @Override
+  public List<Attribute<?>> getAttributes() {
+    return PIN_ATTRIBUTES;
   }
 
   @Override
