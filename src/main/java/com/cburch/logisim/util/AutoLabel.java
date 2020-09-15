@@ -172,9 +172,13 @@ public class AutoLabel {
     return (index - 1);
   }
 
+  private boolean enforcingHdlSyntax(Circuit circ) {
+    return circ.getProject().getOptions().enforcingHdlSyntax();
+  }
+
   private void update(Circuit circ, String Label, boolean UseFirstLabel, ComponentFactory me) {
     if (circ == null) return;
-    if (Label.isEmpty() || !SyntaxChecker.isVariableNameAcceptable(Label, false)) {
+    if (Label.isEmpty() || (enforcingHdlSyntax(circ) && !SyntaxChecker.isVariableNameAcceptable(Label, false))) {
       LabelBase.put(circ, "");
       CurrentIndex.put(circ, 0);
       UseLabelBaseOnly.put(circ, false);

@@ -151,19 +151,13 @@ public class InstanceComponent implements Component, AttributeListener, ToolTipM
     if (e.getAttribute().equals(StdAttr.LABEL)) {
       @SuppressWarnings("unchecked")
       Attribute<String> lattr = (Attribute<String>) e.getAttribute();
-      String value = (String) e.getSource().getValue(e.getAttribute());
+      String value = (String) e.getSource().getValue(lattr);
       String Oldvalue = e.getOldValue() != null ? (String) e.getOldValue() : "";
       if (!Oldvalue.equals(value)) {
-        if (!SyntaxChecker.isVariableNameAcceptable(value, true)) {
-          e.getSource().setValue(lattr, Oldvalue);
-        } else if (getFactory().getName().toUpperCase().equals(value.toUpperCase())) {
-          JOptionPane.showMessageDialog(null, S.get("MatchedLabelNameError"));
-          e.getSource().setValue(lattr, Oldvalue);
-        } else if (CorrectLabel.IsKeyword(value, false)) {
-          JOptionPane.showMessageDialog(null, "\"" + value + "\": " + S.get("KeywordNameError"));
-          e.getSource().setValue(lattr, Oldvalue);
-        } else {
+        if (labelAcceptable(value, true))
           fireLabelChanged(e);
+        else if (labelAcceptable(Oldvalue, false)) {
+          e.getSource().setValue(lattr, Oldvalue);
         }
       }
     }
@@ -172,7 +166,28 @@ public class InstanceComponent implements Component, AttributeListener, ToolTipM
       factory.instanceAttributeChanged(instance, e.getAttribute());
     }
   }
+  
+  private boolean labelAcceptable(String value, boolean showMessage) {
+    if (enforcingHdlSyntax()) {
+      if (!SyntaxChecker.isVariableNameAcceptable(value, showMessage)) {
+        return false;
+      } else if (getFactory().getName().toUpperCase().equals(value.toUpperCase())) {
+        if (showMessage)
+          JOptionPane.showMessageDialog(null, S.get("MatchedLabelNameError"));
+        return false;
+      } else if (CorrectLabel.IsKeyword(value, false)) {
+        if (showMessage)
+          JOptionPane.showMessageDialog(null, "\"" + value + "\": " + S.get("KeywordNameError"));
+        return false;
+      }
+    }
+    return true;
+  }
 
+  private boolean enforcingHdlSyntax() {
+    return instanceState.getCircuitState().getCircuit().getProject().enforcingHdlSyntax();
+  }
+  
   private void computeEnds() {
     List<Port> ports = portList;
     EndData[] esOld = endArray;

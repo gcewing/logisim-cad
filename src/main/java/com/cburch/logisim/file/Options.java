@@ -98,7 +98,6 @@ public class Options {
 
   public boolean enforcingHdlSyntax() {
     boolean result = attrs.getValue(ATTR_ENFORCE_HDL);
-    System.out.printf("Options.enforcingHdlSyntax: %s\n", result);
     return result;
   }
 
