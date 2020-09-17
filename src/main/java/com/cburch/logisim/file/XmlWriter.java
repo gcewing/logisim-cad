@@ -288,10 +288,6 @@ class XmlWriter {
           if (elt != null) {
             appear.appendChild(elt);
           }
-//           List<AbstractCanvasObject> bcl = aco.backwardsCompatibilityObjects();
-//           if (bcl != null)
-//             for (AbstractCanvasObject bco : bcl)
-//               appear.appendChild(bco.toSvgElement(doc));
           aco.addSvgForBackwardsCompatibility(appear);
         }
       }

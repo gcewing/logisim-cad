@@ -42,14 +42,22 @@ import com.cburch.logisim.data.AttributeOption;
 import com.cburch.logisim.data.Direction;
 import com.cburch.logisim.data.Bounds;
 import com.cburch.logisim.data.Location;
+import com.cburch.logisim.file.Options;
 import com.cburch.logisim.instance.Instance;
 import com.cburch.logisim.instance.StdAttr;
 import com.cburch.logisim.std.wiring.Pin;
 import com.cburch.logisim.std.wiring.PinAttributes;
+import com.cburch.logisim.util.GraphicsUtil;
 import com.cburch.logisim.util.UnmodifiableList;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.font.FontRenderContext;
+import java.awt.font.LineMetrics;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Rectangle2D;
 import java.util.List;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -192,65 +200,111 @@ public class AppearancePort extends AppearanceElement {
     return (PinAttributes) pin.getAttributeSet();
   }
   
-  public void paintLabel(Graphics g) {
-    String label = pin.getAttributeValue(StdAttr.LABEL);
-    PinAttributes pa = getPinAttributeSet();
-    Location loc = getLocation();
-    int x0 = loc.getX();
-    int y0 = loc.getY();
-    boolean dongle = false;
-    boolean overbar = false;
-    int offset = 0;
-    if (label.startsWith("/")) {
-      label = label.substring(1);
-      dongle = true;
-      offset = 10;
+  protected static final FontRenderContext genericFRC =
+    new FontRenderContext(new AffineTransform(), true, true);
+    
+  protected class LabelRenderInfo {
+    String text;
+    boolean labelled;
+    boolean dongle;
+    boolean overbar;
+    float x0, y0; // port position
+    float xa, ya; // text anchor position
+    float xr, yr; // text rendering start point
+    float xb, yb; // overbar position
+    float xd, yd; // dongle center position
+    float width; // width of text and overbar
+    int stroke = 1; // dongle stroke width
+    Object halign, valign; // with respect to xa, ya
+    
+    public LabelRenderInfo() {
+      this(null);
     }
-    if (label.endsWith("/")) {
-      overbar = true;
-      label = label.substring(0, label.length() - 1);
-    }
-    if (pa.portShowLabel) {
-      g.setFont(pa.portLabelFont);
-      g.setColor(pa.portLabelColor);
-      TextMetrics tm = new TextMetrics(g, label);
-      int width = tm.width;
-      int ascent = tm.ascent;
-      int descent = tm.descent;
-      int x, y;
-      if (facing == Direction.WEST)
-        x = x0 + offset + labelMargin;
-      else if (facing == Direction.EAST)
-        x = x0 - offset - labelMargin - width;
-      else
-        x = x0 - width / 2;
-      if (facing == Direction.SOUTH)
-        y = y0 - offset - labelLeading - descent;
-      else if (facing == Direction.NORTH)
-        y = y0 + offset + labelLeading + ascent;
-      else
-        y = y0 + (ascent + descent) / 2 - descent;
-      g.drawString(label, x, y);
-      if (overbar) {
-//         g.drawLine(x, y - ascent, x + width, y - ascent);
-        g.fillRect(x, y - ascent + 1, width, 1);
-//         java.awt.Graphics2D g2 = (java.awt.Graphics2D)g;
-//         java.awt.geom.Rectangle2D b = g2.getFont().createGlyphVector(g2.getFontRenderContext(), label).getVisualBounds();
-//         g.fillRect(x, y - (int)b.getHeight() - 2, width, 1);
+    
+    public LabelRenderInfo(Graphics2D g) {
+      text = pin.getAttributeValue(StdAttr.LABEL);
+      PinAttributes pa = getPinAttributeSet();
+      Location loc = getLocation();
+      x0 = loc.getX();
+      y0 = loc.getY();
+      int offset = 0;
+      if (pa.portNegationStyle == PinAttributes.PORT_NEGATION_CIRCLE) {
+        dongle = true;
+        offset = 10;
+      }
+      else if (pa.portNegationStyle == PinAttributes.PORT_NEGATION_BAR)
+        overbar = true;
+      labelled = pa.portShowLabel;
+      if (labelled) {
+        Font f = pa.portLabelFont;
+        FontRenderContext c = (g != null) ? g.getFontRenderContext() : genericFRC;
+        width = (float) f.getStringBounds(text, c).getWidth();
+        LineMetrics tm = f.getLineMetrics(text, c);
+        float ascent = tm.getAscent();
+        float descent = tm.getDescent();
+        if (facing == Direction.WEST) {
+          xa = x0 + offset + labelMargin;
+          xr = xa;
+          halign = DrawAttr.HALIGN_LEFT;
+        }
+        else if (facing == Direction.EAST) {
+          xa = x0 - offset - labelMargin;
+          xr = xa - width;
+          halign = DrawAttr.HALIGN_RIGHT;
+        }
+        else {
+          xa = x0;
+          xr = xa - width / 2;
+          halign = DrawAttr.HALIGN_CENTER;
+        }
+        if (facing == Direction.SOUTH) {
+          ya = y0 - offset - labelLeading - descent;
+          yr = ya;
+          valign = DrawAttr.VALIGN_BOTTOM;
+        }
+        else if (facing == Direction.NORTH) {
+          ya = y0 + offset + labelLeading + ascent;
+          yr = ya;
+          valign = DrawAttr.VALIGN_TOP;
+        }
+        else {
+          ya = y0 + (ascent + descent) / 2 - descent;
+          yr = ya;
+          valign = DrawAttr.VALIGN_MIDDLE;
+        }
+        xb = xr;
+        yb = yr - ascent;
+      }
+      if (dongle) {
+        xd = x0;
+        yd = y0;
+        if (facing == Direction.WEST)
+          xd += 5;
+        else if (facing == Direction.EAST)
+          xd -= 5;
+        if (facing == Direction.SOUTH)
+          yd -= 5;
+        else if (facing == Direction.NORTH)
+          yd += 5;
       }
     }
-    if (dongle) {
-      int xd = x0;
-      int yd = y0;
-      if (facing == Direction.WEST)
-        xd += 5;
-      else if (facing == Direction.EAST)
-        xd -= 5;
-      if (facing == Direction.SOUTH)
-        yd -= 5;
-      else if (facing == Direction.NORTH)
-        yd += 5;
-      g.drawOval(xd - 5, yd - 5, 10, 10);
+
+  } // class LabelRenderInfo
+  
+  public void paintLabel(Graphics g) {
+    Graphics2D g2 = (Graphics2D) g;
+    LabelRenderInfo lri = new LabelRenderInfo(g2);
+    if (lri.labelled) {
+      PinAttributes pa = getPinAttributeSet();
+      g.setFont(pa.portLabelFont);
+      g.setColor(pa.portLabelColor);
+      g2.drawString(lri.text, lri.xr, lri.yr);
+      if (lri.overbar)
+        g2.fill(new Rectangle2D.Double(lri.xb, lri.yb, lri.width, 1));
+    }
+    if (lri.dongle) {
+      GraphicsUtil.switchToWidth(g, lri.stroke);
+      g2.draw(new Ellipse2D.Double(lri.xd - 5, lri.yd - 5, 10, 10));
     }
   }
   
@@ -319,29 +373,26 @@ public class AppearancePort extends AppearanceElement {
 
   @Override
   public void addSvgForBackwardsCompatibility(Element parent) {
-    if (getValue(PinAttributes.PORT_SHOW_LABEL)) {
-      Location loc = getLocation();
-      int x = loc.getX();
-      int y = loc.getY();
-      Object halign = DrawAttr.HALIGN_CENTER;
-      Object valign = DrawAttr.VALIGN_MIDDLE;
-      if (facing == Direction.WEST) {
-        x += labelMargin;
-        halign = DrawAttr.HALIGN_LEFT;
-      }
-      else if (facing == Direction.EAST) {
-        x -= labelMargin;
-        halign = DrawAttr.HALIGN_RIGHT;
-      }
-      else if (facing == Direction.SOUTH)
-        valign = DrawAttr.VALIGN_BOTTOM;
-      else if (facing == Direction.NORTH)
-        valign = DrawAttr.VALIGN_TOP;
-      String label = pin.getAttributeValue(StdAttr.LABEL);
+    Document doc = parent.getOwnerDocument();
+    LabelRenderInfo lri = new LabelRenderInfo();
+    if (lri.labelled) {
       Font font = getValue(PinAttributes.PORT_LABEL_FONT);
       Color fill = getValue(PinAttributes.PORT_LABEL_COLOR);
-      Document doc = parent.getOwnerDocument();
-      Element elt = SvgCreator.createTextElement(doc, label, x, y, font, fill, halign, valign);
+      Element elt = SvgCreator.createTextElement(doc,
+        lri.text, (int)lri.xa, (int)lri.yr, font, fill, lri.halign, DrawAttr.VALIGN_BASELINE);
+      elt.setAttribute("lsc-ignore", "true");
+      parent.appendChild(elt);
+      if (lri.overbar) {
+        elt = SvgCreator.createRectangularElement(doc,
+          (int)lri.xb, (int)lri.yb, (int)lri.width, 1);
+        elt.setAttribute("lsc-ignore", "true");
+        parent.appendChild(elt);
+      }
+    }
+    if (lri.dongle) {
+      Element elt = SvgCreator.createOvalElement(doc, lri.xd - 5, lri.yd - 5, 10, 10);
+      elt.setAttribute("stroke", "#000000");
+      elt.setAttribute("fill", "none");
       elt.setAttribute("lsc-ignore", "true");
       parent.appendChild(elt);
     }

@@ -86,12 +86,18 @@ public class SvgCreator {
     double y = oval.getY();
     double width = oval.getWidth();
     double height = oval.getHeight();
-    Element elt = createShapeElement(doc, "ellipse", oval);
+    Element elt = createOvalElement(doc, x, y, width, height);
+    addShapeAttributes(elt, oval);
+    populateFill(elt, oval);
+    return elt;
+  }
+  
+  public static Element createOvalElement(Document doc, double x, double y, double width, double height) {
+    Element elt = doc.createElement("ellipse");
     elt.setAttribute("cx", "" + (x + width / 2));
     elt.setAttribute("cy", "" + (y + height / 2));
     elt.setAttribute("rx", "" + (width / 2));
     elt.setAttribute("ry", "" + (height / 2));
-    populateFill(elt, oval);
     return elt;
   }
 
@@ -122,12 +128,18 @@ public class SvgCreator {
   }
 
   private static Element createRectangular(Document doc, Rectangular rect) {
-    Element elt = createShapeElement(doc, "rect", rect);
-    elt.setAttribute("x", "" + rect.getX());
-    elt.setAttribute("y", "" + rect.getY());
-    elt.setAttribute("width", "" + rect.getWidth());
-    elt.setAttribute("height", "" + rect.getHeight());
+    Element elt = createRectangularElement(doc, rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
+    addShapeAttributes(elt, rect);
     populateFill(elt, rect);
+    return elt;
+  }
+  
+  public static Element createRectangularElement(Document doc, int x, int y, int width, int height) {
+    Element elt = doc.createElement("rect");
+    elt.setAttribute("x", "" + x);
+    elt.setAttribute("y", "" + y);
+    elt.setAttribute("width", "" + width);
+    elt.setAttribute("height", "" + height);
     return elt;
   }
 
