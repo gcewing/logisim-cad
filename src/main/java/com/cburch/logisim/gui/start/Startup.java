@@ -51,7 +51,7 @@ import com.cburch.logisim.util.ArgonXML;
 import com.cburch.logisim.util.LocaleManager;
 import com.cburch.logisim.util.MacCompatibility;
 import com.cburch.logisim.util.StringUtil;
-import org.drjekyll.fontchooser.FontChooser;
+import lscad.drjekyll.fontchooser.FontChooser;
 import java.awt.AWTEvent;
 import java.awt.Component;
 import java.awt.Toolkit;

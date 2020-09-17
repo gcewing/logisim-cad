@@ -35,7 +35,7 @@ import com.cburch.logisim.gui.generic.ComboBox;
 import com.cburch.logisim.util.FontUtil;
 import com.cburch.logisim.util.JInputComponent;
 import com.cburch.logisim.util.StringGetter;
-import org.drjekyll.fontchooser.FontChooser;
+import lscad.drjekyll.fontchooser.FontChooser;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
