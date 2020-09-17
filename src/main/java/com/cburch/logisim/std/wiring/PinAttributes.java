@@ -103,6 +103,19 @@ public class PinAttributes extends ProbeAttributes {
   public static final Attribute<Color> PIN_NUMBER_COLOR =
       Attributes.forColor("pin-number-color", S.getter("pinNumberColorAttr"));
 
+  public static final AttributeOption PORT_NEGATION_NONE =
+    new AttributeOption("none", S.getter("portNegationNoneOption"));
+  public static final AttributeOption PORT_NEGATION_CIRCLE =
+    new AttributeOption("circle", S.getter("portNegationCircleOption"));
+  public static final AttributeOption PORT_NEGATION_BAR =
+    new AttributeOption("bar", S.getter("portNegationBarOption"));
+
+  public static final Attribute<AttributeOption> PORT_NEGATION_STYLE =
+    Attributes.forOption(
+      "port-negation-style",
+      S.getter("portNegationStyleAttr"),
+      new AttributeOption[] {PORT_NEGATION_NONE, PORT_NEGATION_CIRCLE, PORT_NEGATION_BAR});
+
   // All attributes stored on pin
   private static final List<Attribute<?>> ATTRIBUTES =
       Arrays.asList(
@@ -120,6 +133,7 @@ public class PinAttributes extends ProbeAttributes {
             PORT_SHOW_LABEL,
             PORT_LABEL_FONT,
             PORT_LABEL_COLOR,
+            PORT_NEGATION_STYLE,
             PORT_SHOW_PIN_NUMBER,
             PIN_NUMBER_POSITION,
             PIN_NUMBER_FONT,
@@ -152,6 +166,7 @@ public class PinAttributes extends ProbeAttributes {
               PORT_SHOW_LABEL,
               PORT_LABEL_FONT,
               PORT_LABEL_COLOR,
+              PORT_NEGATION_STYLE,
               PORT_SHOW_PIN_NUMBER,
               PIN_NUMBER_POSITION,
               PIN_NUMBER_FONT,
@@ -176,6 +191,7 @@ public class PinAttributes extends ProbeAttributes {
   public boolean portShowLabel = true;
   public Font portLabelFont = defaultPortLabelFont;
   public Color portLabelColor = defaultPortLabelColor;
+  public AttributeOption portNegationStyle = PORT_NEGATION_NONE;
   public String[] pinNumber = Attributes.emptyStringArray;
   public boolean portShowPinNumber = true;
   public AttributeOption pinNumberPosition = PINNO_ABOVE_LEFT;
@@ -223,6 +239,7 @@ public class PinAttributes extends ProbeAttributes {
     if (attr == PORT_SHOW_LABEL) return (V) (Boolean) portShowLabel;
     if (attr == PORT_LABEL_FONT) return (V) portLabelFont;
     if (attr == PORT_LABEL_COLOR) return (V) portLabelColor;
+    if (attr == PORT_NEGATION_STYLE) return (V) portNegationStyle;
     if (attr == PORT_SHOW_PIN_NUMBER) return (V) (Boolean) portShowPinNumber;
     if (attr == PIN_NUMBER_POSITION) return (V) pinNumberPosition;
     if (attr == PIN_NUMBER_FONT) return (V) pinNumberFont;
@@ -285,6 +302,8 @@ public class PinAttributes extends ProbeAttributes {
       portLabelFont = (Font) value;
     else if (attr == PORT_LABEL_COLOR)
       portLabelColor = (Color) value;
+    else if (attr == PORT_NEGATION_STYLE)
+      portNegationStyle = (AttributeOption) value;
     else if (attr == PORT_SHOW_PIN_NUMBER)
       portShowPinNumber = (Boolean) value;
     else if (attr == PIN_NUMBER_POSITION)
