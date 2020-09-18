@@ -206,8 +206,8 @@ public class GraphicsUtil {
       case V_TOP:
         break;
       case V_CENTER:
-        ret.translate(0, -(ascent / 2));
-        break;
+//         ret.translate(0, -(ascent / 2));
+//         break;
       case V_CENTER_OVERALL:
         ret.translate(0, -(height / 2));
         break;

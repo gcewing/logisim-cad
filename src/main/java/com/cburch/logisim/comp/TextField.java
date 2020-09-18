@@ -98,8 +98,8 @@ public class TextField {
         y += ascent;
         break;
       case TextField.V_CENTER:
-        y += ascent / 2;
-        break;
+//         y += ascent / 2;
+//         break;
       case TextField.V_CENTER_OVERALL:
         y += (ascent - descent) / 2;
         break;
