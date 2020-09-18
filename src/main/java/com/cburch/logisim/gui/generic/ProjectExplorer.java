@@ -92,6 +92,9 @@ public class ProjectExplorer extends JTree implements LocaleListener {
     }
   }
 
+  private static Font plainFont = null;
+  private static Font boldFont = null;
+
   private class MyCellRenderer extends DefaultTreeCellRenderer {
 
     private static final long serialVersionUID = 1L;
@@ -108,8 +111,10 @@ public class ProjectExplorer extends JTree implements LocaleListener {
       java.awt.Component ret;
       ret =
           super.getTreeCellRendererComponent(tree, value, selected, expanded, leaf, row, hasFocus);
-      Font plainFont = AppPreferences.getScaledFont(ret.getFont());
-      Font boldFont = new Font(plainFont.getFontName(), Font.BOLD, plainFont.getSize());
+      if (plainFont == null) {
+        plainFont = AppPreferences.getScaledFont(ret.getFont());
+        boldFont = new Font(plainFont.getFontName(), Font.BOLD, plainFont.getSize());
+      }
       ret.setFont(plainFont);
       if (ret instanceof JComponent) {
         JComponent comp = (JComponent) ret;
