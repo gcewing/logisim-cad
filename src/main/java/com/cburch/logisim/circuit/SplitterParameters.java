@@ -63,7 +63,7 @@ class SplitterParameters {
     int width = 20;
 
     int gap = attrs.spacing * 10;
-    int offs = 6;
+    int offs = attrs.getCurved() ? 0 : 6;
     if (facing == Direction.NORTH || facing == Direction.SOUTH) { // ^ or V
       int m = facing == Direction.NORTH ? 1 : -1;
       dxEnd0 =

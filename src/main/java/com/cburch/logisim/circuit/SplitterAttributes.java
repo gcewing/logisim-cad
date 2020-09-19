@@ -219,16 +219,28 @@ public class SplitterAttributes extends AbstractAttributeSet {
   public static final Attribute<Integer> ATTR_FANOUT =
       Attributes.forIntegerRange("fanout", S.getter("splitterFanOutAttr"), 1, 64);
 
+  public static final AttributeOption STYLE_ANGLED =
+      new AttributeOption("angled", S.getter("splitterStyleAngled"));
+  public static final AttributeOption STYLE_CURVED =
+      new AttributeOption("curved", S.getter("splitterStyleCurved"));
+
+  public static final Attribute<AttributeOption> ATTR_STYLE =
+      Attributes.forOption(
+          "style",
+          S.getter("splitterStyleAttr"),
+          new AttributeOption[] {STYLE_ANGLED, STYLE_CURVED});
+
   private static final List<Attribute<?>> INIT_ATTRIBUTES =
       Arrays.asList(
           new Attribute<?>[] {
-            StdAttr.FACING, ATTR_FANOUT, ATTR_WIDTH, ATTR_APPEARANCE, ATTR_SPACING
+            StdAttr.FACING, ATTR_FANOUT, ATTR_WIDTH, ATTR_APPEARANCE, ATTR_STYLE, ATTR_SPACING
           });
 
   private static final String unchosen_val = "none";
   private ArrayList<Attribute<?>> attrs = new ArrayList<Attribute<?>>(INIT_ATTRIBUTES);
   private SplitterParameters parameters;
   AttributeOption appear = APPEAR_LEFT;
+  AttributeOption style = STYLE_ANGLED;
   Direction facing = Direction.EAST;
   int spacing = 1;
   byte fanout = 2; // number of ends this splits into
@@ -330,6 +342,10 @@ public class SplitterAttributes extends AbstractAttributeSet {
     }
     return ret;
   }
+  
+  public boolean getCurved() {
+    return style == STYLE_CURVED;
+  }
 
   @Override
   @SuppressWarnings("unchecked")
@@ -342,6 +358,8 @@ public class SplitterAttributes extends AbstractAttributeSet {
       return (V) BitWidth.create(bit_end.length);
     } else if (attr == ATTR_APPEARANCE) {
       return (V) appear;
+    } else if (attr == ATTR_STYLE) {
+      return (V) style;
     } else if (attr == ATTR_SPACING) {
       return (V) Integer.valueOf(spacing);
     } else if (attr instanceof BitOutAttribute) {
@@ -386,6 +404,11 @@ public class SplitterAttributes extends AbstractAttributeSet {
       AttributeOption appearance = (AttributeOption) value;
       if (appear.equals(appearance)) return;
       appear = appearance;
+      parameters = null;
+    } else if (attr == ATTR_STYLE) {
+      AttributeOption newStyle = (AttributeOption) value;
+      if (style.equals(newStyle)) return;
+      style = newStyle;
       parameters = null;
     } else if (attr instanceof BitOutAttribute) {
       BitOutAttribute bitOutAttr = (BitOutAttribute) attr;

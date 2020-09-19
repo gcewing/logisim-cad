@@ -89,7 +89,11 @@ public class ComponentDrawContext {
   }
 
   public int getWireWidth(BitWidth w) {
-    return (w.getWidth() > 1) ? getBusWidth() : getWireWidth();
+    return getWireWidth(w.getWidth());
+  }
+
+  public int getWireWidth(int w) {
+    return (w > 1) ? getBusWidth() : getWireWidth();
   }
 
   public int getHighlightedWireWidth(BitWidth w) {

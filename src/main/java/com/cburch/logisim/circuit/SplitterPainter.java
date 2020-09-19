@@ -37,6 +37,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.geom.QuadCurve2D;
 
 class SplitterPainter {
   static void drawLabels(ComponentDrawContext context, SplitterAttributes attrs, Location origin) {
@@ -74,8 +75,15 @@ class SplitterPainter {
     g.setFont(font.deriveFont(7.0f));
 
     SplitterParameters parms = attrs.getParameters();
-    int x = origin.getX() + parms.getEnd0X() + parms.getEndToSpineDeltaX();
-    int y = origin.getY() + parms.getEnd0Y() + parms.getEndToSpineDeltaY();
+    boolean curved = attrs.getCurved();
+    int hx = parms.getEndToSpineDeltaX();
+    int hy = parms.getEndToSpineDeltaY();
+    if (curved) {
+      hx = hx * 3 / 4;
+      hy = hy * 3 / 4;
+    }
+    int x = origin.getX() + parms.getEnd0X() + hx;
+    int y = origin.getY() + parms.getEnd0Y() + hy;
     int dx = parms.getEndToEndDeltaX();
     int dy = parms.getEndToEndDeltaY();
     if (parms.getTextAngle() != 0) {
@@ -169,6 +177,14 @@ class SplitterPainter {
     }
     GraphicsUtil.switchToWidth(g, 1);
   }
+  
+  private static int towards(int x, int x0, int d) {
+    if (x < x0)
+      x += d;
+    else if (x > x0)
+      x -= d;
+    return x;
+  }
 
   static void drawLines(ComponentDrawContext context, SplitterAttributes attrs, Location origin) {
     boolean showState = context.getShowState();
@@ -184,21 +200,52 @@ class SplitterPainter {
     int dy = parms.getEndToEndDeltaY();
     int dxEndSpine = parms.getEndToSpineDeltaX();
     int dyEndSpine = parms.getEndToSpineDeltaY();
+    int hx = dxEndSpine / 2;
+    int hy = dyEndSpine / 2;
+    int gap = attrs.spacing * 10;
 
-    Graphics g = context.getGraphics();
+    Graphics2D g = (Graphics2D) context.getGraphics();
     Color oldColor = g.getColor();
-    GraphicsUtil.switchToWidth(g, context.getWireWidth());
+    boolean curved = attrs.getCurved();
     for (int i = 0, n = attrs.fanout; i < n; i++) {
+      Value val = state.getValue(Location.create(x, y));
+      int stroke = context.getWireWidth(val.getWidth());
+      GraphicsUtil.switchToWidth(g, stroke);
       if (showState) {
-        Value val = state.getValue(Location.create(x, y));
         g.setColor(val.getColor());
       }
-      g.drawLine(x, y, x + dxEndSpine, y + dyEndSpine);
+      if (curved) {
+        int bx = x + hx, by = y + hy;
+        g.drawLine(x, y, bx, by);
+        int cx = bx + hx, cy = by + hy;
+        int ex = cx, ey = cy;
+        if (dy == 0)
+          ex = towards(ex, x0, gap);
+        else
+          ey = towards(ey, y0, gap);
+        g.draw(new QuadCurve2D.Float(bx, by, cx, cy, ex, ey));
+      }
+      else
+        g.drawLine(x, y, x + dxEndSpine, y + dyEndSpine);
       x += dx;
       y += dy;
     }
     GraphicsUtil.switchToWidth(g, context.getBusWidth());
     g.setColor(oldColor);
+    if (curved) {
+      int fanout = attrs.fanout;
+      int sx0 = x0 + parms.getEnd0X() + dxEndSpine;
+      int sy0 = y0 + parms.getEnd0Y() + dyEndSpine;
+      int sx1 = sx0 + (fanout - 1) * dx;
+      int sy1 = sy0 + (fanout - 1) * dy;
+      sx0 = towards(sx0, x0, gap);
+      sy0 = towards(sy0, y0, gap);
+      sx1 = towards(sx1, x0, gap);
+      sy1 = towards(sy1, y0, gap);
+      g.drawLine(x0, y0, sx0, sy0);
+      g.drawLine(x0, y0, sx1, sy1);
+      return;
+    }
     int spine0x = x0 + parms.getSpine0X();
     int spine0y = y0 + parms.getSpine0Y();
     int spine1x = x0 + parms.getSpine1X();
