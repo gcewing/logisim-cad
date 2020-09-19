@@ -14,8 +14,9 @@ some gate shapes have been adjusted slightly so that their outlines are
 aligned better with the grid. Port dots on component symbols are only
 displayed when a port does not have a wire attached to it.
 
-Some options have been added, on a new Schematics tab of the Project Options
-window:
+### Project Options
+
+These are on a new Schematics tab of the Project Options window.
 
 * Base Stroke Width
 
@@ -26,6 +27,13 @@ and other features are calculated relative to this.
 
 Prevents port dots from being displayed where two components connect
 directly without an intervening wire.
+
+### Splitter Attributes
+
+* Style
+
+*Angled* for the standard style with perpendicular branches, or *Curved*
+to render the branches as curving off from the spine.
 
 Improvements to the Appearance Editor
 -------------------------------------
@@ -75,8 +83,16 @@ A pin number can be assigned to an input or output. Both the pin label and the
 pin number can be automatically shown next to the port on the circuit symbol,
 with options for positioning.
 
-Standard Logisim-evolution will show the automatic pin labels (but not numbers)
-as ordinary text objects, not linked to the port.
+### Negation symbols
+
+There is a *Negation Style* port attribute for automatically decorating a
+port with either a negation circle or a bar over the port label. When one of
+these is used, and the pin label starts with "n" or "L_", that prefix is
+omitted from the displayed port label.
+
+Standard Logisim-evolution will show automatic pin labels and negation
+decorations as separate objects, not linked to the port. Pin numbers will
+not be shown.
 
 ### Variants
 
@@ -101,7 +117,7 @@ Variant.
 
 ### Enforce HDL Names option
 
-Syntax checking of circuit names is now optional, for those who have no
+Syntax checking of circuit names is optional, for those who have no
 intention of using any HDL features.
 
 File Formats and Extensions
