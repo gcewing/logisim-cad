@@ -36,6 +36,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.font.FontRenderContext;
 import java.awt.font.LineMetrics;
+import java.awt.geom.*;
 
 public class TextMetrics {
 
@@ -44,6 +45,16 @@ public class TextMetrics {
   public int leading;
   public int height; // = ascent + height + leading
   public int width; // valid only if constructor was given a string
+
+  public double ascentF;
+  public double descentF;
+  public double leadingF;
+  public double heightF; // = ascent + height + leading
+  public double widthF; // valid only if constructor was given a string
+  public double capHeightF;
+  
+  protected static FontRenderContext genericFontRenderContext =
+    new FontRenderContext(new AffineTransform(), true, true);
 
   public TextMetrics(Graphics g) {
     this(g, null, null);
@@ -58,36 +69,50 @@ public class TextMetrics {
   }
 
   public TextMetrics(Graphics g, Font font, String text) {
-    if (g == null) {
-      throw new IllegalStateException("need g");
+    if (font == null) {
+      if (g == null)
+        throw new IllegalStateException("need g");
+      font = g.getFont();
     }
-    if (font == null) font = g.getFont();
-    FontRenderContext fr = ((Graphics2D) g).getFontRenderContext();
+    FontRenderContext fr = (g != null)
+      ? ((Graphics2D) g).getFontRenderContext()
+      : genericFontRenderContext;
 
     if (text == null) {
       text = "ÄAy";
-      width = 0;
+      widthF = 0;
     } else {
-      width = (int) font.getStringBounds(text, fr).getWidth();
+      widthF = font.getStringBounds(text, fr).getWidth();
     }
 
     LineMetrics lm = font.getLineMetrics(text, fr);
-    ascent = (int) Math.ceil(lm.getAscent());
-    descent = (int) Math.ceil(lm.getDescent());
-    leading = (int) Math.ceil(lm.getLeading());
+    ascentF = lm.getAscent();
+    descentF = lm.getDescent();
+    leadingF = lm.getLeading();
+    heightF = ascentF + descentF + leadingF;
+    capHeightF = font.getStringBounds("X", fr).getHeight();
+    
+    ascent = (int) Math.ceil(ascentF);
+    descent = (int) Math.ceil(descentF);
+    leading = (int) Math.ceil(leadingF);
     height = ascent + descent + leading;
   }
 
   private static Canvas canvas = new Canvas();
-
-  public TextMetrics(Component c, Font font, String text) {
+  
+  private static Font defaultFont(Component c, Font font) {
     if (c == null) c = canvas;
     if (font == null) font = c.getFont();
-    FontMetrics fm = c.getFontMetrics(font);
-    width = (text != null ? fm.stringWidth(text) : 0);
-    ascent = fm.getAscent();
-    descent = fm.getDescent();
-    leading = 0;
-    height = ascent + descent + leading;
+    return font;
+  }
+
+  public TextMetrics(Component c, Font font, String text) {
+    this((Graphics)null, defaultFont(c, font), text);
+//     FontMetrics fm = c.getFontMetrics(font);
+//     width = (text != null ? fm.stringWidth(text) : 0);
+//     ascent = fm.getAscent();
+//     descent = fm.getDescent();
+//     leading = 0;
+//     height = ascent + descent + leading;
   }
 }

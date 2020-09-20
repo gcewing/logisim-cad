@@ -96,7 +96,7 @@ public class Probe extends InstanceFactory {
       int maxRows = 8;
       int rows = len / maxBitsPerRow;
       if (len > rows * maxBitsPerRow) rows++;
-      bwidth = (len < 2) ? 20 : (len >= maxBitsPerRow) ? maxBitsPerRow * 10 : len * 10;
+      bwidth = (len < 2) ? (NewLayout ? 20 : 10) : (len >= maxBitsPerRow) ? maxBitsPerRow * 10 : len * 10;
       bheight = (rows < 2) ? 20 : (rows >= maxRows) ? maxRows * 20 : rows * 20;
     } else {
       if (len < 2) bwidth = 20;
@@ -104,6 +104,7 @@ public class Probe extends InstanceFactory {
       bheight = 20;
     }
     if (NewLayout) bwidth += (len == 1) ? 20 : 25;
+    else bwidth += 10;
     bwidth = ((bwidth + 9) / 10) * 10;
     if (dir == Direction.EAST) {
       x = -bwidth;
@@ -160,7 +161,7 @@ public class Probe extends InstanceFactory {
         g.drawLine(x - 4, y, x + 4, y);
         return;
       }
-      int x0 = bds.getX() + bds.getWidth() - 5;
+      int x0 = bds.getX() + bds.getWidth() - 10;
       int compWidth = wid * 10;
       if (compWidth < bds.getWidth() - 3) {
         x0 = bds.getX() + (bds.getWidth() + compWidth) / 2 - 5;
@@ -174,7 +175,7 @@ public class Probe extends InstanceFactory {
         if (cur == 8) {
           cur = 0;
           cx = x0;
-          cy -= 14;
+          cy -= 20;
         } else {
           cx -= 10;
         }
@@ -182,7 +183,7 @@ public class Probe extends InstanceFactory {
     } else {
       String text = radix.toString(value);
       GraphicsUtil.drawCenteredText(
-          g, text, bds.getX() + bds.getWidth() / 2, bds.getY() + bds.getHeight() / 2 - 2);
+          g, text, bds.getX() + bds.getWidth() / 2, bds.getY() + bds.getHeight() / 2);
     }
   }
 
@@ -213,10 +214,10 @@ public class Probe extends InstanceFactory {
         int y = bds.getY();
         if (!IsOutput) {
           g.setColor(value.get(0).getColor());
-          g.fillOval(x + 5, y + 4, 11, 13);
+          g.fillOval(x + 3, y + 3, 14, 14);
         }
         if (!IsOutput) g.setColor(Color.WHITE);
-        GraphicsUtil.drawCenteredText(g, value.get(0).toDisplayString(), x + 10, y + 9);
+        GraphicsUtil.drawCenteredText(g, value.get(0).toDisplayString(), x + 10, y + 10);
       } else paintOldStyleValue(painter, value);
       return;
     }
@@ -242,7 +243,8 @@ public class Probe extends InstanceFactory {
         g.drawLine(x - 4, y, x + 4, y);
         return;
       }
-      int yoffset = 12;
+//       int yoffset = 12;
+      int yoffset = 10;
       int x0 = bds.getX() + bds.getWidth() - 20;
       int cx = x0;
       int cy = bds.getY() + bds.getHeight() - yoffset;
@@ -349,30 +351,30 @@ public class Probe extends InstanceFactory {
     int x = bds.getX();
     int y = bds.getY();
     Color back = new Color(0xff, 0xf0, 0x99);
-    if (value.getWidth() <= 1) {
-      g.setColor(back);
-      g.fillOval(x + 1, y + 1, bds.getWidth() - 2, bds.getHeight() - 2);
-      g.setColor(Color.lightGray);
-      g.drawOval(x + 1, y + 1, bds.getWidth() - 2, bds.getHeight() - 2);
-    } else {
+//     if (value.getWidth() <= 1) {
+//       g.setColor(back);
+//       g.fillOval(x + 1, y + 1, bds.getWidth() - 2, bds.getHeight() - 2);
+//       g.setColor(Color.lightGray);
+//       g.drawOval(x + 1, y + 1, bds.getWidth() - 2, bds.getHeight() - 2);
+//     } else {
       g.setColor(back);
       g.fillRoundRect(x + 1, y + 1, bds.getWidth() - 2, bds.getHeight() - 2, 20, 20);
       g.setColor(Color.lightGray);
       g.drawRoundRect(x + 1, y + 1, bds.getWidth() - 2, bds.getHeight() - 2, 20, 20);
-    }
+//     }
 
     g.setColor(Color.GRAY);
     painter.drawLabel();
     g.setColor(Color.DARK_GRAY);
 
     if (!painter.getShowState()) {
-      if (value.getWidth() > 0) {
-        GraphicsUtil.drawCenteredText(
-            g,
-            "x" + value.getWidth(),
-            bds.getX() + bds.getWidth() / 2,
-            bds.getY() + bds.getHeight() / 2);
-      }
+//       if (value.getWidth() > 0) {
+//         GraphicsUtil.drawCenteredText(
+//             g,
+//             "x" + value.getWidth(),
+//             bds.getX() + bds.getWidth() / 2,
+//             bds.getY() + bds.getHeight() / 2);
+//       }
     } else {
       paintValue(painter, value);
     }

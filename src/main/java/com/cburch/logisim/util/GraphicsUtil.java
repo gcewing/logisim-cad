@@ -38,8 +38,7 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Ellipse2D;
+import java.awt.geom.*;
 
 public class GraphicsUtil {
   public static void drawArrow(
@@ -141,24 +140,27 @@ public class GraphicsUtil {
 
   public static void drawText(Graphics g, String text, int x, int y, int halign, int valign) {
     if (text.length() == 0) return;
-    Rectangle bd = getTextBounds(g, text, x, y, halign, valign);
+    Rectangle2D bd = getTextBoundsF(g, text, x, y, halign, valign);
     TextMetrics tm = new TextMetrics(g, text);
-    g.drawString(text, bd.x, bd.y + tm.ascent);
+    drawTextRM((Graphics2D)g, text, bd, tm);
   }
 
   public static void drawText(
       Graphics g, String text, int x, int y, int halign, int valign, Color fg, Color bg) {
     if (text.length() == 0) return;
-    Rectangle bd = getTextBounds(g, text, x, y, halign, valign);
+    Rectangle2D bd = getTextBoundsF(g, text, x, y, halign, valign);
     TextMetrics tm = new TextMetrics(g, text);
-    if (g instanceof Graphics2D) {
-      ((Graphics2D) g).setPaint(bg);
-      g.fillRect(bd.x, bd.y, bd.width, bd.height);
-      ((Graphics2D) g).setPaint(fg);
-      ((Graphics2D) g).drawString(text, bd.x, bd.y + tm.ascent);
-    } else {
-      g.drawString(text, bd.x, bd.y + tm.ascent);
-    }
+    Graphics2D g2 = (Graphics2D) g;
+    g2.setPaint(bg);
+    g2.fill(bd);
+    g2.setPaint(fg);
+    drawTextRM(g2, text, bd, tm);
+  }
+  
+  protected static void drawTextRM(Graphics2D g2, String text, Rectangle2D bd, TextMetrics tm) {
+//     System.out.printf("GraphicsUtil.drawTextRM: %s ascent=%s descent=%s width=%s\n",
+//       bd, tm.ascentF, tm.descentF, tm.widthF);
+    g2.drawString(text, (float)bd.getX(), (float)(bd.getY() + tm.ascentF));
   }
 
   public static void outlineText(Graphics g, String text, int x, int y, Color fg, Color bg) {
@@ -173,32 +175,54 @@ public class GraphicsUtil {
     g2.fill(textShape);
     g2.setTransform(transform);
   }
-
+  
+  protected static Rectangle intRect(Rectangle2D r) {
+    return new Rectangle((int)r.getX(), (int)r.getY(), (int)r.getWidth(), (int)r.getHeight());
+  }
+  
   public static Rectangle getTextBounds(
+    Graphics g, Font font, String text, int x, int y, int halign, int valign)
+  {
+    return intRect(getTextBoundsF(g, font, text, x, y, halign, valign));
+  }
+  
+  public static Rectangle2D getTextBoundsF(
       Graphics g, Font font, String text, int x, int y, int halign, int valign) {
     if (g == null) return new Rectangle(x, y, 0, 0);
     Font oldfont = g.getFont();
     if (font != null) g.setFont(font);
-    Rectangle ret = getTextBounds(g, text, x, y, halign, valign);
+    Rectangle2D ret = getTextBoundsF(g, text, x, y, halign, valign);
     if (font != null) g.setFont(oldfont);
     return ret;
   }
 
   public static Rectangle getTextBounds(
-      Graphics g, String text, int x, int y, int halign, int valign) {
-    if (g == null) return new Rectangle(x, y, 0, 0);
-    TextMetrics tm = new TextMetrics(g, text);
-    int width = tm.width;
-    int ascent = tm.ascent;
-    int height = tm.height;
+    Graphics g, String text, int x, int y, int halign, int valign)
+  {
+    return intRect(getTextBoundsF(g, text, x, y, halign, valign));
+  }
+  
+  protected static void translate(Rectangle2D.Double r, double dx, double dy) {
+    r.x += dx;
+    r.y += dy;
+  }
 
-    Rectangle ret = new Rectangle(x, y, width, height);
+  public static Rectangle2D getTextBoundsF(
+      Graphics g, String text, int x, int y, int halign, int valign) {
+    if (g == null) return new Rectangle2D.Double(x, y, 0, 0);
+    TextMetrics tm = new TextMetrics(g, text);
+    double width = tm.widthF;
+    double ascent = tm.ascentF;
+    double height = tm.heightF;
+    double capHeight = tm.capHeightF;
+
+    Rectangle2D.Double ret = new Rectangle2D.Double(x, y, width, height);
     switch (halign) {
       case H_CENTER:
-        ret.translate(-(width / 2), 0);
+        translate(ret, -(width / 2), 0);
         break;
       case H_RIGHT:
-        ret.translate(-width, 0);
+        translate(ret, -width, 0);
         break;
       default:;
     }
@@ -206,16 +230,16 @@ public class GraphicsUtil {
       case V_TOP:
         break;
       case V_CENTER:
-//         ret.translate(0, -(ascent / 2));
-//         break;
+        translate(ret, 0, -(capHeight / 2));
+        break;
       case V_CENTER_OVERALL:
-        ret.translate(0, -(height / 2));
+        translate(ret, 0, -(height / 2));
         break;
       case V_BASELINE:
-        ret.translate(0, -ascent);
+        translate(ret, 0, -ascent);
         break;
       case V_BOTTOM:
-        ret.translate(0, -height);
+        translate(ret, 0, -height);
         break;
       default:;
     }
@@ -230,7 +254,11 @@ public class GraphicsUtil {
   }
   
   public static void fillCenteredCircle(Graphics g, double x, double y, double r) {
-    ((Graphics2D)g).fill(new Ellipse2D.Double(x - r, y - r, 2 * r, 2 * r));
+    fillCenteredEllipse(g, x, y, r, r);
+  }
+
+  public static void fillCenteredEllipse(Graphics g, double x, double y, double rx, double ry) {
+    ((Graphics2D)g).fill(new Ellipse2D.Double(x - rx, y - ry, 2 * rx, 2 * ry));
   }
 
   public static final int H_LEFT = -1;

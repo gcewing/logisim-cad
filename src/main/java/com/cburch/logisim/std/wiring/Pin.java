@@ -78,6 +78,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
 import java.awt.font.TextLayout;
+import java.awt.geom.*;
 import java.math.BigInteger;
 
 import javax.swing.BorderFactory;
@@ -498,7 +499,7 @@ public class Pin extends InstanceFactory {
                   + distance * (radix == RadixOption.RADIX_2 ? bitCaret % 8 : bitCaret / r);
           x = bds.getX() + 3 + (radix == RadixOption.RADIX_2 ? 20 * (bitCaret / 8) : 0);
         }
-        g.drawRect(x, y, bwidth, bheight);
+        g.drawRect(x - 2, y + 1, bwidth + 1, bheight - 1);
       } else {
         if (radix == RadixOption.RADIX_2) {
           x -= 2 + 10 * (bitCaret % 8);
@@ -737,12 +738,12 @@ public class Pin extends InstanceFactory {
       g2.translate(westTranslate, 0);
     }
     if (!painter.getShowState()) {
-      g.setColor(Color.BLACK);
-      GraphicsUtil.drawCenteredText(
-          g,
-          "x" + ((PinAttributes) painter.getAttributeSet()).width.getWidth(),
-          -15 - (width - 15) / 2,
-          0);
+//       g.setColor(Color.BLACK);
+//       GraphicsUtil.drawCenteredText(
+//           g,
+//           "x" + ((PinAttributes) painter.getAttributeSet()).width.getWidth(),
+//           -15 - (width - 15) / 2,
+//           0);
     } else {
       int labelYPos = height / 2 - 2;
       int LabelValueXOffset = (isOutput) ? -15 : -20;
@@ -768,12 +769,12 @@ public class Pin extends InstanceFactory {
         }
         int x0 = (isOutput) ? -20 : -25;
         int cx = x0;
-        int cy = height / 2 - 12;
+        int cy = height / 2 - 10;
         int cur = 0;
         for (int k = 0; k < wid; k++) {
           if (radix == RadixOption.RADIX_2 && !isOutput) {
             g.setColor(value.get(k).getColor());
-            g.fillOval(cx - 4, cy - 5, 9, 14);
+            GraphicsUtil.fillCenteredEllipse(g, cx, cy, 5, 7);
             g.setColor(Color.WHITE);
           }
           GraphicsUtil.drawCenteredText(g, value.get(k).toDisplayString(), cx, cy);
@@ -792,7 +793,7 @@ public class Pin extends InstanceFactory {
         int cx = (isOutput) ? -15 : -20;
         for (int k = text.length() - 1; k >= 0; k--) {
           GraphicsUtil.drawText(
-              g, text.substring(k, k + 1), cx, -2, GraphicsUtil.H_RIGHT, GraphicsUtil.H_CENTER);
+              g, text.substring(k, k + 1), cx, 0, GraphicsUtil.H_RIGHT, GraphicsUtil.H_CENTER);
           cx -= Pin.DIGIT_WIDTH;
         }
       }
@@ -816,14 +817,17 @@ public class Pin extends InstanceFactory {
     boolean NewShape = attrs.getValue(ProbeAttributes.PROBEAPPEARANCE) == ProbeAttributes.APPEAR_EVOLUTION_NEW;
     boolean isBus = attrs.getValue(StdAttr.WIDTH).getWidth() > 1;
     Direction dir = attrs.getValue(StdAttr.FACING);
-    Graphics g = painter.getGraphics();
+    Graphics2D g = (Graphics2D) painter.getGraphics();
     if (!NewShape) {
-      g.drawRect(x + 1, y + 1, width - 1, height - 1);
+      g.setColor(Color.WHITE);
+      g.fillRect(x, y + 1, width, height - 2);
+      g.setColor(Color.BLACK);
+      g.drawRect(x, y + 1, width, height - 2);
       if (!isGhost) {
         if (!painter.getShowState()) {
-          g.setColor(Color.BLACK);
-          GraphicsUtil.drawCenteredText(
-              g, "x" + attrs.width.getWidth(), x + width / 2, y + height / 2);
+//           g.setColor(Color.BLACK);
+//           GraphicsUtil.drawCenteredText(
+//               g, "x" + attrs.width.getWidth(), x + width / 2, y + height / 2);
         } else {
           Probe.paintValue(painter, getState(painter).intendedValue, !isBus);
         }
@@ -856,7 +860,7 @@ public class Pin extends InstanceFactory {
       g2.rotate(rotation);
       if (isBus) {
         GraphicsUtil.switchToWidth(g, context.getBusWidth());
-        g.drawLine(Wire.WIDTH_BUS / 2 - 5, 0, 0, 0);
+        g.drawLine(-5, 0, 0, 0);
         GraphicsUtil.switchToWidth(g, context.getStrokeWidth());
       } else {
         Color col = g.getColor();
@@ -867,11 +871,13 @@ public class Pin extends InstanceFactory {
         GraphicsUtil.switchToWidth(g, context.getStrokeWidth());
         g.setColor(col);
       }
-      g.drawLine(-15, -rheight / 2, -5, 0);
-      g.drawLine(-15, rheight / 2, -5, 0);
-      g.drawLine(-rwidth, -rheight / 2, -rwidth, rheight / 2);
-      g.drawLine(-rwidth, -rheight / 2, -15, -rheight / 2);
-      g.drawLine(-rwidth, rheight / 2, -15, rheight / 2);
+      int h = rheight / 2 - 1;
+      int a = -14;
+      g.drawLine(a, -h, -5, 0);
+      g.drawLine(a, h, -5, 0);
+      g.drawLine(-rwidth, -h, -rwidth, h);
+      g.drawLine(-rwidth, -h, a, -h);
+      g.drawLine(-rwidth, h, a, h);
       drawNewStyleValue(painter, rwidth, rheight, false, isGhost);
       g2.rotate(-rotation);
       g2.translate(-xpos, -ypos);
@@ -920,36 +926,42 @@ public class Pin extends InstanceFactory {
       g2.rotate(rotation);
       if (isBus) {
         GraphicsUtil.switchToWidth(g, context.getBusWidth());
-        g.drawLine(-3, 0, -Wire.WIDTH_BUS / 2, 0);
+//         g.drawLine(-4, 0, -Wire.WIDTH_BUS / 2, 0);
+        g.drawLine(-4, 0, 0, 0);
         GraphicsUtil.switchToWidth(g, context.getStrokeWidth());
       } else {
         Color col = g.getColor();
         if (painter.getShowState())
           g.setColor(LineColor);
         GraphicsUtil.switchToWidth(g, context.getWireWidth());
-        g.drawLine(-3, 0, 0, 0);
+        g.drawLine(-4, 0, 0, 0);
         GraphicsUtil.switchToWidth(g, context.getStrokeWidth());
         g.setColor(col);
       }
-      g.drawLine(10 - rwidth, -rheight / 2, -rwidth, 0);
-      g.drawLine(10 - rwidth, rheight / 2, -rwidth, 0);
-      g.drawLine(-5, -rheight / 2, -5, rheight / 2);
-      g.drawLine(-5, -rheight / 2, 10 - rwidth, -rheight / 2);
-      g.drawLine(-5, rheight / 2, 10 - rwidth, rheight / 2);
+      int h = rheight / 2 - 1;
+      int a = 9 - rwidth;
+      g.drawLine(a, -h, -rwidth, 0);
+      g.drawLine(a, h, -rwidth, 0);
+      g.drawLine(-5, -h, -5, h);
+      g.drawLine(-5, -h, a, -h);
+      g.drawLine(-5, h, a, h);
       drawNewStyleValue(painter, rwidth, rheight, true, isGhost);
       g2.rotate(-rotation);
       g2.translate(-xpos, -ypos);
     } else {
       if (!isBus) {
-        g.drawOval(x + 1, y + 1, width - 1, height - 1);
+        g.drawOval(x + 1, y + 1, width - 2, height - 2);
       } else {
-        g.drawRoundRect(x + 1, y + 1, width - 1, height - 1, 6, 6);
+        g.setColor(Color.WHITE);
+        g.fillRoundRect(x, y + 1, width, height - 2, 6, 6);
+        g.setColor(Color.BLACK);
+        g.drawRoundRect(x, y + 1, width, height - 2, 6, 6);
       }
       if (!isGhost) {
         if (!painter.getShowState()) {
-          g.setColor(Color.BLACK);
-          GraphicsUtil.drawCenteredText(
-              g, "x" + attrs.width.getWidth(), x + width / 2, y + height / 2);
+//           g.setColor(Color.BLACK);
+//           GraphicsUtil.drawCenteredText(
+//               g, "x" + attrs.width.getWidth(), x + width / 2, y + height / 2);
         } else {
           Probe.paintValue(painter, getState(painter).intendedValue, !isBus);
         }
@@ -1072,10 +1084,10 @@ public class Pin extends InstanceFactory {
     g.setColor(Color.black);
     if (IsOutput) {
       DrawOutputShape(
-          painter, x + 1, y + 1, bds.getWidth() - 1, bds.getHeight() - 1, found.getColor(), false);
+          painter, x, y, bds.getWidth(), bds.getHeight(), found.getColor(), false);
     } else {
       drawInputShape(
-          painter, x + 1, y + 1, bds.getWidth() - 1, bds.getHeight() - 1, found.getColor(), false);
+          painter, x, y, bds.getWidth(), bds.getHeight(), found.getColor(), false);
     }
     painter.drawLabel();
     painter.drawPorts();
