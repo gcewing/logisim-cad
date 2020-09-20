@@ -337,7 +337,7 @@ public class Probe extends InstanceFactory {
   public void paintGhost(InstancePainter painter) {
     Graphics g = painter.getGraphics();
     Bounds bds = painter.getOffsetBounds();
-    g.drawOval(bds.getX() + 1, bds.getY() + 1, bds.getWidth() - 1, bds.getHeight() - 1);
+    g.drawRoundRect(bds.getX() + 1, bds.getY() + 1, bds.getWidth() - 1, bds.getHeight() - 1, 20, 20);
   }
 
   @Override
