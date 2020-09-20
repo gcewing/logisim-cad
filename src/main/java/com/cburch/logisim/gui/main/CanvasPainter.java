@@ -145,15 +145,7 @@ class CanvasPainter implements PropertyChangeListener {
       GraphicsUtil.switchToWidth(g, 3);
       g.setColor(Canvas.HALO_COLOR);
       Bounds bds = haloedComponent.getBounds(g).expand(5);
-      int w = bds.getWidth();
-      int h = bds.getHeight();
-      double a = Canvas.SQRT_2 * w;
-      double b = Canvas.SQRT_2 * h;
-      g.drawOval(
-          (int) Math.round(bds.getX() + w / 2.0 - a / 2.0),
-          (int) Math.round(bds.getY() + h / 2.0 - b / 2.0),
-          (int) Math.round(a),
-          (int) Math.round(b));
+      g.drawRoundRect(bds.getX(), bds.getY(), bds.getWidth(), bds.getHeight(), 20, 20);
       GraphicsUtil.switchToWidth(g, 1);
       g.setColor(Color.BLACK);
     }
