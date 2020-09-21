@@ -91,6 +91,13 @@ tasks {
                     "LSHandlerRank" to "Owner",
                     "CFBundleTypeRole" to "Editor",
                     "LSIsAppleDefaultForType" to true
+                ),
+                mapOf(
+                    "LSItemContentTypes" to arrayOf("com.cburch.logisim.circ"),
+                    "CFBundleTypeName" to "Logisim-evolution circuit file",
+                    "LSHandlerRank" to "Alternate",
+                    "CFBundleTypeRole" to "Editor",
+                    "LSIsAppleDefaultForType" to false
                 )
             )
         )
