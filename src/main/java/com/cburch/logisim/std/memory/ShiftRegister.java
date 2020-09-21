@@ -53,6 +53,7 @@ import com.cburch.logisim.tools.key.JoinedConfigurator;
 import com.cburch.logisim.util.GraphicsUtil;
 import com.cburch.logisim.util.StringUtil;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 
 public class ShiftRegister extends InstanceFactory {
@@ -442,7 +443,11 @@ public class ShiftRegister extends InstanceFactory {
     }
   }
 
+  private static final Font PIN_FONT = new Font("SansSerif", Font.PLAIN, 7);
+
   private void paintInstanceClassic(InstancePainter painter) {
+    Graphics g = painter.getGraphics();
+
     // draw boundary, label
     painter.drawBounds();
     painter.drawLabel();
@@ -458,7 +463,7 @@ public class ShiftRegister extends InstanceFactory {
         if (wid <= 4) {
           ShiftRegisterData data = getData(painter);
           Bounds bds = painter.getBounds();
-          int x = bds.getX() + 20;
+          int x = bds.getX() + 15;
           int y = bds.getY();
           Object label = painter.getAttributeValue(StdAttr.LABEL);
           if (label == null || label.equals("")) {
@@ -466,7 +471,6 @@ public class ShiftRegister extends InstanceFactory {
           } else {
             y += 3 * bds.getHeight() / 4;
           }
-          Graphics g = painter.getGraphics();
           for (int i = 0; i < len; i++) {
             if (data != null && data.get(len - 1 - i) != null) {
               String s = data.get(len - 1 - i).toHexString();
@@ -480,7 +484,6 @@ public class ShiftRegister extends InstanceFactory {
         int x = bds.getX() + bds.getWidth() / 2;
         int y = bds.getY();
         int h = bds.getHeight();
-        Graphics g = painter.getGraphics();
         Object label = painter.getAttributeValue(StdAttr.LABEL);
         if (label == null || label.equals("")) {
           String a = S.get("shiftRegisterLabel1");
@@ -492,11 +495,20 @@ public class ShiftRegister extends InstanceFactory {
     }
 
     // draw input and output ports
+    Font oldFont = g.getFont();
+    g.setFont(PIN_FONT);
     int ports = painter.getInstance().getPorts().size();
-    for (int i = 0; i < ports; i++) {
-      if (i != CK) painter.drawPort(i);
+    painter.drawPort(OUT, "Q", Direction.WEST);
+    painter.drawPort(IN, "D", Direction.EAST);
+    painter.drawPort(SH, "S", Direction.EAST);
+    painter.drawPort(CLR, "R", Direction.SOUTH);
+    if (ports > 5) {
+      painter.drawPort(LD, "L", Direction.NORTH);
+      for (int i = 6; i < ports; i++)
+        painter.drawPort(i);
     }
     painter.drawClock(CK, Direction.EAST);
+    g.setFont(oldFont);
   }
 
   @Override

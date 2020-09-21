@@ -464,6 +464,8 @@ public class Counter extends InstanceFactory implements DynamicElementProvider {
     }
   }
 
+  private static final Font PIN_FONT = new Font("SansSerif", Font.PLAIN, 7);
+
   public void DrawCounterClassic(InstancePainter painter) {
     Graphics g = painter.getGraphics();
     Bounds bds = painter.getBounds();
@@ -494,6 +496,8 @@ public class Counter extends InstanceFactory implements DynamicElementProvider {
     painter.drawLabel();
 
     // draw input and output ports
+    Font oldFont = g.getFont();
+    g.setFont(PIN_FONT);
     if (b == null) {
       painter.drawPort(IN, "D", Direction.EAST);
       painter.drawPort(OUT, "Q", Direction.WEST);
@@ -509,6 +513,7 @@ public class Counter extends InstanceFactory implements DynamicElementProvider {
     painter.drawPort(EN, S.get("counterEnableLabel"), Direction.EAST);
     g.setColor(Color.BLACK);
     painter.drawClock(CK, Direction.NORTH);
+    g.setFont(oldFont);
 
     // draw contents
     if (b == null) {

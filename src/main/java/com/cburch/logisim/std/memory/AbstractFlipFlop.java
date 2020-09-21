@@ -53,6 +53,7 @@ import com.cburch.logisim.prefs.AppPreferences;
 import com.cburch.logisim.util.GraphicsUtil;
 import com.cburch.logisim.util.StringGetter;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -289,6 +290,8 @@ abstract class AbstractFlipFlop extends InstanceFactory {
     }
   }
 
+  private static final Font PIN_FONT = new Font("SansSerif", Font.PLAIN, 7);
+
   private void paintInstanceClassic(InstancePainter painter) {
     Graphics g = painter.getGraphics();
     painter.drawBounds();
@@ -307,6 +310,8 @@ abstract class AbstractFlipFlop extends InstanceFactory {
       }
     }
 
+    Font oldFont = g.getFont();
+    g.setFont(PIN_FONT);
     int n = numInputs;
     g.setColor(Color.GRAY);
     painter.drawPort(n + 3, "0", Direction.SOUTH);
@@ -318,6 +323,7 @@ abstract class AbstractFlipFlop extends InstanceFactory {
     painter.drawClock(n, Direction.EAST);
     painter.drawPort(n + 1, "Q", Direction.WEST);
     painter.drawPort(n + 2);
+    g.setFont(oldFont);
   }
 
   private void paintInstanceEvolution(InstancePainter painter) {

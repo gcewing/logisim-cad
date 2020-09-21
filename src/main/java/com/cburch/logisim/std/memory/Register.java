@@ -57,6 +57,7 @@ import com.cburch.logisim.tools.key.JoinedConfigurator;
 import com.cburch.logisim.util.GraphicsUtil;
 import com.cburch.logisim.util.StringUtil;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 
@@ -152,6 +153,8 @@ public class Register extends InstanceFactory implements DynamicElementProvider 
     }
   }
 
+  private static final Font PIN_FONT = new Font("SansSerif", Font.PLAIN, 7);
+
   public void DrawRegisterClassic(InstancePainter painter) {
     Graphics g = painter.getGraphics();
     Bounds bds = painter.getBounds();
@@ -183,6 +186,8 @@ public class Register extends InstanceFactory implements DynamicElementProvider 
     painter.drawLabel();
 
     // draw input and output ports
+    Font oldFont = g.getFont();
+    g.setFont(PIN_FONT);
     if (b == null) {
       painter.drawPort(IN, "D", Direction.EAST);
       painter.drawPort(OUT, "Q", Direction.WEST);
@@ -195,6 +200,7 @@ public class Register extends InstanceFactory implements DynamicElementProvider 
     painter.drawPort(EN, S.get("memEnableLabel"), Direction.EAST);
     g.setColor(Color.BLACK);
     painter.drawClock(CK, Direction.NORTH);
+    g.setFont(oldFont);
 
     // draw contents
     if (b == null) {

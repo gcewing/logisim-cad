@@ -53,6 +53,7 @@ import com.cburch.logisim.tools.key.BitWidthConfigurator;
 import com.cburch.logisim.util.GraphicsUtil;
 import com.cburch.logisim.util.StringUtil;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 
 public class Random extends InstanceFactory {
@@ -263,6 +264,8 @@ public class Random extends InstanceFactory {
     GraphicsUtil.switchToWidth(g, 1);
   }
 
+  private static final Font PIN_FONT = new Font("SansSerif", Font.PLAIN, 7);
+
   private void paintInstanceClassic(InstancePainter painter) {
     Graphics g = painter.getGraphics();
     Bounds bds = painter.getBounds();
@@ -294,6 +297,8 @@ public class Random extends InstanceFactory {
     painter.drawLabel();
 
     // draw input and output ports
+    Font oldFont = g.getFont();
+    g.setFont(PIN_FONT);
     if (b == null) painter.drawPort(OUT, "Q", Direction.WEST);
     else painter.drawPort(OUT);
     g.setColor(Color.GRAY);
@@ -301,6 +306,7 @@ public class Random extends InstanceFactory {
     painter.drawPort(NXT, S.get("memEnableLabel"), Direction.EAST);
     g.setColor(Color.BLACK);
     painter.drawClock(CK, Direction.NORTH);
+    g.setFont(oldFont);
 
     // draw contents
     if (b == null) {
