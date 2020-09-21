@@ -280,9 +280,21 @@ public class Circuit {
     Annotated = false;
     logiFile = file;
     staticAttrs.setValue(
-        CircuitAttributes.NAMED_CIRCUIT_BOX_FIXED_SIZE,
-        AppPreferences.NAMED_CIRCUIT_BOXES_FIXED_SIZE.getBoolean());
+      CircuitAttributes.NAMED_CIRCUIT_BOX_FIXED_SIZE,
+      AppPreferences.NAMED_CIRCUIT_BOXES_FIXED_SIZE.getBoolean());
     this.proj = proj;
+  }
+  
+  public void cloneAppearance(Circuit base) {
+    AttributeSet attrs = base.getStaticAttributes();
+    CircuitAppearance app = base.getAppearance();
+    for (Object o : attrs.getAttributes()) {
+      Attribute<Object> a = (Attribute<Object>) o;
+      staticAttrs.setValue(a, attrs.getValue(a));
+    }
+    appearance.setObjectsForce(app.getObjectsFromBottom());
+    if (!app.isDefaultAppearance())
+      appearance.setDefaultAppearance(false);
   }
 
   public void SetProject(Project proj) {

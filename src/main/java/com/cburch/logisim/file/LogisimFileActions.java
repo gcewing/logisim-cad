@@ -456,6 +456,7 @@ public class LogisimFileActions {
           }
           result.addAll(circ.getWires());
           result.execute();
+          NewCirc.cloneAppearance(circ);
           added.add(NewCirc);
         }
         for (int i = 0; i < added.size(); i++) {

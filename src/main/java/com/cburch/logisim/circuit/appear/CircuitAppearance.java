@@ -379,6 +379,7 @@ public class CircuitAppearance extends Drawing {
   }
 
   public void setDefaultAppearance(boolean value) {
+//     System.out.printf("CircuitAppearance.setDefaultAppearance(%s)\n", value);
     if (isDefault != value) {
       isDefault = value;
       if (value) {
