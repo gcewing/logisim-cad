@@ -208,11 +208,17 @@ class SplitterPainter {
     Color oldColor = g.getColor();
     boolean curved = attrs.getCurved();
     for (int i = 0, n = attrs.fanout; i < n; i++) {
-      Value val = state.getValue(Location.create(x, y));
-      int stroke = context.getWireWidth(val.getWidth());
-      GraphicsUtil.switchToWidth(g, stroke);
-      if (showState) {
-        g.setColor(val.getColor());
+      if (state != null) {
+        Value val = state.getValue(Location.create(x, y));
+        int stroke = context.getWireWidth(val.getWidth());
+        GraphicsUtil.switchToWidth(g, stroke);
+        if (showState) {
+          g.setColor(val.getColor());
+        }
+      }
+      else {
+        GraphicsUtil.switchToWidth(g, context.getWireWidth());
+        g.setColor(Color.BLACK);
       }
       if (curved) {
         int bx = x + hx, by = y + hy;
