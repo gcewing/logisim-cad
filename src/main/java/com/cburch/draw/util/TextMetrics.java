@@ -95,6 +95,7 @@ public class TextMetrics {
     ascent = (int) Math.ceil(ascentF);
     descent = (int) Math.ceil(descentF);
     leading = (int) Math.ceil(leadingF);
+    width = (int) widthF;
     height = ascent + descent + leading;
   }
 
