@@ -174,6 +174,11 @@ public class TextTool extends AbstractTool {
     boolean found = false;
     int mx = e.getX();
     int my = e.getY();
+    int mods = e.getModifiersEx();
+    if (shouldSnap(mods)) {
+      mx = canvas.snapX(mx);
+      my = canvas.snapY(my);
+    }
     Location mloc = Location.create(mx, my);
     for (CanvasObject o : canvas.getModel().getObjectsFromTop()) {
       if (o instanceof Text && o.contains(mloc, true)) {
