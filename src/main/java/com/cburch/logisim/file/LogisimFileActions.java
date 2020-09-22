@@ -411,14 +411,14 @@ public class LogisimFileActions {
     @Override
     public void doIt(Project proj) {
       for (Library lib : MergedLibs) {
-        if (lib instanceof LoadedLibrary) {
-          LoadedLibrary lib1 = (LoadedLibrary) lib;
-          if (lib1.getBase() instanceof LogisimFile) {
-            repair(proj, lib1.getBase());
-          }
-        } else if (lib instanceof LogisimFile) {
-          repair(proj, lib);
-        }
+//         if (lib instanceof LoadedLibrary) {
+//           LoadedLibrary lib1 = (LoadedLibrary) lib;
+//           if (lib1.getBase() instanceof LogisimFile) {
+//             repair(proj, lib1.getBase());
+//           }
+//         } else if (lib instanceof LogisimFile) {
+//           repair(proj, lib);
+//         }
         proj.getLogisimFile().addLibrary(lib);
       }
     }
