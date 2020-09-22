@@ -38,6 +38,7 @@ import com.cburch.logisim.file.LogisimFile;
 import com.cburch.logisim.gui.main.Frame;
 import com.cburch.logisim.gui.main.StatisticsDialog;
 import com.cburch.logisim.proj.Project;
+import com.cburch.logisim.proj.ProjectActions;
 import com.cburch.logisim.tools.AddTool;
 import com.cburch.logisim.tools.Library;
 import com.cburch.logisim.tools.Tool;
@@ -178,7 +179,16 @@ public class Popups {
         ProjectLibraryActions.doUnloadLibrary(proj, lib);
       } else if (src == reload) {
         Loader loader = proj.getLogisimFile().getLoader();
-        loader.reload((LoadedLibrary) lib);
+        LoadedLibrary llib = (LoadedLibrary) lib;
+        loader.reload(llib);
+        Library base = llib.getBase();
+        System.out.printf("Popups: actionPerformed: reload %s %s, base = %s %s\n",
+          lib.getClass().getName(), lib,
+          base.getClass().getName(), base);
+        if (base instanceof LogisimFile) {
+          LogisimFile file = (LogisimFile) base;
+          ProjectActions.updatecircs(file, proj);
+        }
       }
     }
   }

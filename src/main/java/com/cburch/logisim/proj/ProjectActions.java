@@ -264,8 +264,10 @@ public class ProjectActions {
     baseProject.doAction(LogisimFileActions.MergeFile(mergelib, baseProject.getLogisimFile()));
   }
 
-  private static void updatecircs(LogisimFile lib, Project proj) {
+  public static void updatecircs(LogisimFile lib, Project proj) {
+    System.out.printf("ProjectActions.updatecircs: %s with %s\n", lib, proj);
     for (Circuit circ : lib.getCircuits()) {
+      System.out.printf("Changing project of %s from %s to %s\n", circ, circ.getProject(), proj);
       circ.SetProject(proj);
     }
     for (Library libs : lib.getLibraries()) {
