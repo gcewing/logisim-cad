@@ -197,6 +197,16 @@ public class CircuitAttributes extends AbstractAttributeSet {
   public static final Attribute<String> VARIANT_ATTR =
       Attributes.forString("variant", S.getter("circuitVariant"));
 
+  public static final AttributeOption LABELPOS_INSIDE =
+    new AttributeOption("inside", S.getter("circuitLabelPosInsideOption"));
+  public static final AttributeOption LABELPOS_OUTSIDE =
+    new AttributeOption("outside", S.getter("circuitLabelPosOutsideOption"));
+  public static final Attribute<AttributeOption> LABEL_POSITION_ATTR =
+      Attributes.forOption(
+        "labelpos",
+        S.getter("circuitLabelPosAttr"),
+        new AttributeOption[] {LABELPOS_INSIDE, LABELPOS_OUTSIDE});
+
   // Computed attribute, not stored
   public static final Attribute<String> DISPLAYED_LABEL_ATTR =
       Attributes.forString("displayedlabel", S.getter(""));
@@ -225,6 +235,7 @@ public class CircuitAttributes extends AbstractAttributeSet {
             SERIAL_NO_ATTR,
             VARIANT_ATTR,
             LABEL_LOCATION_ATTR,
+            LABEL_POSITION_ATTR,
             StdAttr.LABEL_FONT,
             StdAttr.LABEL_VISIBILITY,
 //             NAME_ATTR,
@@ -240,6 +251,7 @@ public class CircuitAttributes extends AbstractAttributeSet {
   private Direction facing;
   private String label;
   private Direction labelLocation;
+  private AttributeOption labelPosition;
   private Font labelFont;
   private Boolean LabelVisable;
   private MyListener listener;
@@ -254,6 +266,7 @@ public class CircuitAttributes extends AbstractAttributeSet {
     facing = source.getAppearance().getFacing();
     label = "";
     labelLocation = Direction.NORTH;
+    labelPosition = LABELPOS_OUTSIDE;
     labelFont = StdAttr.DEFAULT_LABEL_FONT;
     LabelVisable = true;
     serialNo = "";
@@ -290,6 +303,7 @@ public class CircuitAttributes extends AbstractAttributeSet {
     if (attr == StdAttr.LABEL_FONT) return (E) labelFont;
     if (attr == StdAttr.LABEL_VISIBILITY) return (E) LabelVisable;
     if (attr == LABEL_LOCATION_ATTR) return (E) labelLocation;
+    if (attr == LABEL_POSITION_ATTR) return (E) labelPosition;
     if (attr == VARIANT_ATTR) return (E) variant;
     if (attr == DISPLAYED_LABEL_ATTR) return (E) getDisplayedLabel();
     if (attr == SERIAL_NO_ATTR) return (E) serialNo;
@@ -387,6 +401,11 @@ public class CircuitAttributes extends AbstractAttributeSet {
       if (labelLocation.equals(val)) return;
       labelLocation = val;
       fireAttributeValueChanged(LABEL_LOCATION_ATTR, val, null);
+    } else if (attr == LABEL_POSITION_ATTR) {
+      AttributeOption val = (AttributeOption) value;
+      if (labelPosition == val) return;
+      labelPosition = val;
+      fireAttributeValueChanged(LABEL_POSITION_ATTR, val, null);
     } else if (attr == VARIANT_ATTR) {
       String val = (String) value;
       if (variant == val) return;

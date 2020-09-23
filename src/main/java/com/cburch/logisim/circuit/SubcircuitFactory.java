@@ -169,22 +169,32 @@ public class SubcircuitFactory extends InstanceFactory {
   private void configureLabel(Instance instance) {
     Bounds bds = instance.getBounds();
     Direction loc = instance.getAttributeValue(CircuitAttributes.LABEL_LOCATION_ATTR);
+    boolean inside = instance.getAttributeValue(CircuitAttributes.LABEL_POSITION_ATTR) ==
+      CircuitAttributes.LABELPOS_INSIDE;
 
     int x = bds.getX() + bds.getWidth() / 2;
     int y = bds.getY() + bds.getHeight() / 2;
     int ha = GraphicsUtil.H_CENTER;
     int va = GraphicsUtil.V_CENTER;
     if (loc == Direction.EAST) {
-      x = bds.getX() + bds.getWidth() + 2;
+      int w = bds.getWidth();
+      if (inside)
+        w /= 2;
+      x = bds.getX() + w + 2;
       ha = GraphicsUtil.H_LEFT;
     } else if (loc == Direction.WEST) {
-      x = bds.getX() - 2;
+      int w = inside ? bds.getWidth() / 2 : 0;
+      x = bds.getX() + w - 2;
       ha = GraphicsUtil.H_RIGHT;
     } else if (loc == Direction.SOUTH) {
-      y = bds.getY() + bds.getHeight() + 2;
+      int h = bds.getHeight();
+      if (inside)
+        h /= 2;
+      y = bds.getY() +h + 2;
       va = GraphicsUtil.V_TOP;
     } else {
-      y = bds.getY() - 2;
+      int h = inside ? bds.getHeight() / 2 : 0;
+      y = bds.getY() + h - 2;
       va = GraphicsUtil.V_BASELINE;
     }
 //     instance.setTextField(StdAttr.LABEL, StdAttr.LABEL_FONT, x, y, ha, va);
@@ -355,6 +365,7 @@ public class SubcircuitFactory extends InstanceFactory {
       computePorts(instance);
     } else if (attr == StdAttr.LABEL
         || attr == CircuitAttributes.LABEL_LOCATION_ATTR
+        || attr == CircuitAttributes.LABEL_POSITION_ATTR
         || attr == CircuitAttributes.DESIGNATION_PREFIX_ATTR
         || attr == CircuitAttributes.SERIAL_NO_ATTR
         || attr == CircuitAttributes.VARIANT_ATTR) {
