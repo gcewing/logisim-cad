@@ -185,7 +185,12 @@ public class InstanceComponent implements Component, AttributeListener, ToolTipM
   }
 
   private boolean enforcingHdlSyntax() {
-    return instanceState.getCircuitState().getCircuit().getProject().enforcingHdlSyntax();
+    // This can get called while copy/pasting a component before its instanceState
+    // has been set. There should be no need to syntax-check its label in that case.
+    if (instanceState == null)
+      return false;
+    else
+      return instanceState.getCircuitState().getProject().enforcingHdlSyntax();
   }
   
   private void computeEnds() {
@@ -451,7 +456,7 @@ public class InstanceComponent implements Component, AttributeListener, ToolTipM
 
   public void setInstanceStateImpl(InstanceStateImpl instanceState) {
     this.instanceState = instanceState;
-  }
+ }
 
   void setPorts(Port[] ports) {
     Port[] portsCopy = ports.clone();
