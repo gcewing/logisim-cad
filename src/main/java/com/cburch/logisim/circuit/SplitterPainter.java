@@ -226,9 +226,9 @@ class SplitterPainter {
         int cx = bx + hx, cy = by + hy;
         int ex = cx, ey = cy;
         if (dy == 0)
-          ex = towards(ex, x0, gap);
+          ex = towards(ex, x0, 10);
         else
-          ey = towards(ey, y0, gap);
+          ey = towards(ey, y0, 10);
         g.draw(new QuadCurve2D.Float(bx, by, cx, cy, ex, ey));
       }
       else
@@ -244,10 +244,10 @@ class SplitterPainter {
       int sy0 = y0 + parms.getEnd0Y() + dyEndSpine;
       int sx1 = sx0 + (fanout - 1) * dx;
       int sy1 = sy0 + (fanout - 1) * dy;
-      sx0 = towards(sx0, x0, gap);
-      sy0 = towards(sy0, y0, gap);
-      sx1 = towards(sx1, x0, gap);
-      sy1 = towards(sy1, y0, gap);
+      sx0 = towards(sx0, x0, 10);
+      sy0 = towards(sy0, y0, 10);
+      sx1 = towards(sx1, x0, 10);
+      sy1 = towards(sy1, y0, 10);
       g.drawLine(x0, y0, sx0, sy0);
       g.drawLine(x0, y0, sx1, sy1);
       return;
