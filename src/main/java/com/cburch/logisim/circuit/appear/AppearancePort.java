@@ -236,10 +236,12 @@ public class AppearancePort extends AppearanceElement {
       labelled = pa.portShowLabel;
       if (labelled) {
         text = pin.getAttributeValue(StdAttr.LABEL);
-        if (text.startsWith("n"))
-          text = text.substring(1);
-        else if (text.startsWith("L_"))
-          text = text.substring(2);
+        if (dongle || overbar) {
+          if (text.startsWith("n"))
+            text = text.substring(1);
+          else if (text.startsWith("L_"))
+            text = text.substring(2);
+        }
         Font f = pa.portLabelFont;
         FontRenderContext c = (g != null) ? g.getFontRenderContext() : genericFRC;
         width = (float) f.getStringBounds(text, c).getWidth();
