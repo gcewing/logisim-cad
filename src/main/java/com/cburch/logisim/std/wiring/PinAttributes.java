@@ -183,9 +183,9 @@ public class PinAttributes extends ProbeAttributes {
 
   // Port attributes
 
-  static final Font defaultPortLabelFont = new Font("SansSerif", Font.PLAIN, 12);
+  static final Font defaultPortLabelFont = new Font("SansSerif", Font.PLAIN, 10);
   static final Color defaultPortLabelColor = Color.black;
-  static final Font defaultPinNumberFont = new Font("SansSerif", Font.PLAIN, 9);
+  static final Font defaultPinNumberFont = new Font("SansSerif", Font.PLAIN, 8);
   static final Color defaultPinNumberColor = Color.black;
 
   public boolean portShowLabel = true;
