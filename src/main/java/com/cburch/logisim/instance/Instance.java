@@ -78,6 +78,10 @@ public class Instance {
     return comp.getBounds();
   }
 
+  public Bounds getBoundsExcludingPorts() {
+    return comp.getBoundsExcludingPorts();
+  }
+
   public InstanceComponent getComponent() {
     return comp;
   }

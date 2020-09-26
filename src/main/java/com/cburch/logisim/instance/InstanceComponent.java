@@ -362,6 +362,10 @@ public class InstanceComponent implements Component, AttributeListener, ToolTipM
     return bounds;
   }
 
+  public Bounds getBoundsExcludingPorts() {
+    return factory.getOffsetBoundsExcludingPorts(attrs).translate(loc.getX(), loc.getY());
+  }
+
   public Bounds getBounds(Graphics g) {
     Bounds ret = bounds;
     InstanceTextField field = textField;

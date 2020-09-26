@@ -167,7 +167,7 @@ public class SubcircuitFactory extends InstanceFactory {
   }
 
   private void configureLabel(Instance instance) {
-    Bounds bds = instance.getBounds();
+    Bounds bds = instance.getBoundsExcludingPorts();
     Direction loc = instance.getAttributeValue(CircuitAttributes.LABEL_LOCATION_ATTR);
     boolean inside = instance.getAttributeValue(CircuitAttributes.LABEL_POSITION_ATTR) ==
       CircuitAttributes.LABELPOS_INSIDE;
@@ -317,10 +317,19 @@ public class SubcircuitFactory extends InstanceFactory {
 
   @Override
   public Bounds getOffsetBounds(AttributeSet attrs) {
+    return getOffsetBounds(attrs, false);
+  }
+
+  private Bounds getOffsetBounds(AttributeSet attrs, boolean excludePorts) {
     Direction facing = attrs.getValue(StdAttr.FACING);
     Direction defaultFacing = source.getAppearance().getFacing();
-    Bounds bds = source.getAppearance().getOffsetBounds();
+    Bounds bds = source.getAppearance().getOffsetBounds(excludePorts);
     return bds.rotate(defaultFacing, facing, 0, 0);
+  }
+
+  @Override
+  public Bounds getOffsetBoundsExcludingPorts(AttributeSet attrs) {
+    return getOffsetBounds(attrs, true);
   }
 
   public Circuit getSubcircuit() {

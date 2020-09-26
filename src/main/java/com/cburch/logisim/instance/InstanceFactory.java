@@ -232,6 +232,11 @@ public abstract class InstanceFactory extends AbstractComponentFactory {
     return ret;
   }
 
+  public Bounds getOffsetBoundsExcludingPorts(AttributeSet attrs) {
+    System.out.printf("%s.getOffsetBoundsExcludingPorts\n", getClass().getName());
+    return getOffsetBounds(attrs);
+  }
+
   public List<Port> getPorts() {
     return portList;
   }

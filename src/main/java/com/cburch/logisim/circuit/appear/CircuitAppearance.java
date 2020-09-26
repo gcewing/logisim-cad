@@ -177,10 +177,10 @@ public class CircuitAppearance extends Drawing {
   }
 
   public Bounds getAbsoluteBounds() {
-    return getBounds(false);
+    return getBounds(false, false);
   }
 
-  private Bounds getBounds(boolean relativeToAnchor) {
+  private Bounds getBounds(boolean relativeToAnchor, boolean excludePorts) {
     Bounds ret = null;
     Location offset = null;
     for (CanvasObject o : getObjectsFromBottom()) {
@@ -189,10 +189,12 @@ public class CircuitAppearance extends Drawing {
         if (o instanceof AppearanceAnchor) {
           offset = loc;
         }
-        if (ret == null) {
-          ret = Bounds.create(loc);
-        } else {
-          ret = ret.add(loc);
+        else if (!excludePorts) {
+          if (ret == null) {
+            ret = Bounds.create(loc);
+          } else {
+            ret = ret.add(loc);
+          }
         }
       } else {
         if (ret == null) {
@@ -230,7 +232,11 @@ public class CircuitAppearance extends Drawing {
   }
 
   public Bounds getOffsetBounds() {
-    return getBounds(true);
+    return getBounds(true, false);
+  }
+
+  public Bounds getOffsetBounds(boolean excludePorts) {
+    return getBounds(true, excludePorts);
   }
 
   public SortedMap<Location, Instance> getPortOffsets(Direction facing) {
