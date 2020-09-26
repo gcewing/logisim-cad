@@ -68,8 +68,8 @@ public class AppearancePort extends AppearanceElement {
   private static final int MINOR_RADIUS = 2;
   public static final Color COLOR = Color.BLUE;
 
-  private static final int labelMargin = 4;
-  private static final int labelLeading = 0;
+  private static final int labelMargin = 3;
+  private static final int labelLeading = 1;
   private static final int pinNumberMargin = 3;
   private static final int pinNumberLeading = 0;
   
@@ -266,7 +266,7 @@ public class AppearancePort extends AppearanceElement {
         if (facing == Direction.SOUTH) {
           ya = y0 - offset - labelLeading - descent;
           yr = ya;
-          valign = DrawAttr.VALIGN_BOTTOM;
+          valign = DrawAttr.VALIGN_BASELINE;
         }
         else if (facing == Direction.NORTH) {
           ya = y0 + offset + labelLeading + ascent;
