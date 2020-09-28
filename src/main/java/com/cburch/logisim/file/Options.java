@@ -66,7 +66,7 @@ public class Options {
   private static final Attribute<?>[] ATTRIBUTES = {ATTR_GATE_UNDEFINED, ATTR_SIM_LIMIT, ATTR_SIM_RAND,
     ATTR_STROKE_WIDTH, ATTR_HIDE_ABUTTED_PORTS, ATTR_ENFORCE_HDL};
   private static final Object[] DEFAULTS = {GATE_UNDEFINED_IGNORE, Integer.valueOf(1000), Integer.valueOf(0),
-    3, true, false};
+    1, true, false};
 
   private AttributeSet attrs;
   private MouseMappings mmappings;
