@@ -159,7 +159,6 @@ public class PainterShaped {
           Location cent = src.translate(facing, lengths[i] + 5);
           g.setColor(baseColor);
           painter.drawDongle(cent.getX(), cent.getY());
-          GraphicsUtil.switchToWidth(g, 3);
         }
       }
     }
