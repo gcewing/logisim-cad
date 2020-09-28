@@ -75,8 +75,10 @@ class MacOsAdapter {
         dt.setQuitHandler(
             new QuitHandler() {
               public void handleQuitRequestWith(QuitEvent e, QuitResponse response) {
-                ProjectActions.doQuit();
-                response.performQuit();
+                if (ProjectActions.doQuit())
+                  response.performQuit();
+                else
+                  response.cancelQuit();
               }
             });
       } catch (Exception e) {

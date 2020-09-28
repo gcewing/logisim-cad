@@ -404,14 +404,17 @@ public class ProjectActions {
     return ret;
   }
 
-  public static void doQuit() {
+  public static boolean doQuit() {
     Frame top = Projects.getTopFrame();
     top.savePreferences();
 
     for (Project proj : new ArrayList<Project>(Projects.getOpenProjects())) {
-      if (!proj.confirmClose(S.get("confirmQuitTitle"))) return;
+      if (!proj.confirmClose(S.get("confirmQuitTitle"))) {
+        return false;
+      }
     }
     System.exit(0);
+    return true;
   }
 
   public static boolean doSave(Project proj) {
