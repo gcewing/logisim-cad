@@ -81,6 +81,7 @@ class MenuProject extends Menu {
   private MenuItemImpl toggleLayoutAppearance = new MenuItemImpl(this,LogisimMenuBar.TOGGLE_APPEARANCE);
   private MenuItemImpl analyze = new MenuItemImpl(this, LogisimMenuBar.ANALYZE_CIRCUIT);
   private MenuItemImpl stats = new MenuItemImpl(this, LogisimMenuBar.CIRCUIT_STATS);
+  private MenuItemImpl number = new MenuItemImpl(this, LogisimMenuBar.NUMBER_CIRCUIT);
   private JMenuItem options = new JMenuItem();
 
   MenuProject(LogisimMenuBar menubar) {
@@ -105,6 +106,7 @@ class MenuProject extends Menu {
       menubar.registerItem(LogisimMenuBar.ANALYZE_CIRCUIT, analyze);
     }
     menubar.registerItem(LogisimMenuBar.CIRCUIT_STATS, stats);
+    menubar.registerItem(LogisimMenuBar.NUMBER_CIRCUIT, number);
     options.addActionListener(myListener);
 
     loadLibrary.add(loadBuiltin);
@@ -126,6 +128,7 @@ class MenuProject extends Menu {
     add(layout);
     add(appearance);
     addSeparator();
+    add(number);
     if (Main.ANALYZE) {
       add(analyze);
     }
@@ -157,6 +160,7 @@ class MenuProject extends Menu {
             || layout.hasListeners()
             || revertAppearance.hasListeners()
             || appearance.hasListeners()
+            || number.hasListeners()
             || analyze.hasListeners()
             || stats.hasListeners());
     menubar.fireEnableChanged();
@@ -179,6 +183,7 @@ class MenuProject extends Menu {
     revertAppearance.setText(S.get("projectRevertAppearanceItem"));
     layout.setText(S.get("projectEditCircuitLayoutItem"));
     appearance.setText(S.get("projectEditCircuitAppearanceItem"));
+    number.setText(S.get("projectNumberCircuitItem"));
     analyze.setText(S.get("projectAnalyzeCircuitItem"));
     stats.setText(S.get("projectGetCircuitStatisticsItem"));
     options.setText(S.get("projectOptionsItem"));

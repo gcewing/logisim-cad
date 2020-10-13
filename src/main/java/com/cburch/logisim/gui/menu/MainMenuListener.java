@@ -33,6 +33,7 @@ import com.cburch.draw.model.CanvasModelListener;
 import com.cburch.logisim.Main;
 import com.cburch.logisim.circuit.Circuit;
 import com.cburch.logisim.circuit.CircuitState;
+import com.cburch.logisim.circuit.ComponentNumbering;
 import com.cburch.logisim.circuit.Simulator;
 import com.cburch.logisim.file.LibraryEvent;
 import com.cburch.logisim.file.LibraryListener;
@@ -107,6 +108,8 @@ public class MainMenuListener extends MenuListener {
           frame.setEditorView(viewAppearance ? Frame.EDIT_LAYOUT : Frame.EDIT_APPEARANCE);
       } else if (src == LogisimMenuBar.REVERT_APPEARANCE) {
         proj.doAction(new RevertAppearanceAction(cur));
+      } else if (src == LogisimMenuBar.NUMBER_CIRCUIT) {
+        ComponentNumbering.doNumberCircuit(proj, cur);
       } else if (src == LogisimMenuBar.ANALYZE_CIRCUIT && Main.ANALYZE) {
         ProjectCircuitActions.doAnalyze(proj, cur);
       } else if (src == LogisimMenuBar.CIRCUIT_STATS) {
@@ -149,6 +152,7 @@ public class MainMenuListener extends MenuListener {
       menubar.setEnabled(LogisimMenuBar.EDIT_APPEARANCE, viewLayout);
       menubar.setEnabled(LogisimMenuBar.TOGGLE_APPEARANCE, true);
       menubar.setEnabled(LogisimMenuBar.REVERT_APPEARANCE, canRevert);
+      menubar.setEnabled(LogisimMenuBar.NUMBER_CIRCUIT, true);
       menubar.setEnabled(LogisimMenuBar.ANALYZE_CIRCUIT, true);
       menubar.setEnabled(LogisimMenuBar.CIRCUIT_STATS, true);
       fireEnableChanged();
@@ -225,6 +229,7 @@ public class MainMenuListener extends MenuListener {
       menubar.addActionListener(LogisimMenuBar.EDIT_APPEARANCE, this);
       menubar.addActionListener(LogisimMenuBar.TOGGLE_APPEARANCE, this);
       menubar.addActionListener(LogisimMenuBar.REVERT_APPEARANCE, this);
+       menubar.addActionListener(LogisimMenuBar.NUMBER_CIRCUIT, this);
       menubar.addActionListener(LogisimMenuBar.ANALYZE_CIRCUIT, this);
       menubar.addActionListener(LogisimMenuBar.CIRCUIT_STATS, this);
 

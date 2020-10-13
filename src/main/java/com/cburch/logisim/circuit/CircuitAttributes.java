@@ -191,6 +191,9 @@ public class CircuitAttributes extends AbstractAttributeSet {
   public static final Attribute<String> DESIGNATION_PREFIX_ATTR =
       Attributes.forString("designationprefix", S.getter("circuitDesignationPrefix"));
 
+  public static final Attribute<Integer> STARTING_SERIAL_NO_ATTR =
+      Attributes.forInteger("startingserialno", S.getter("circuitStartingSerialNo"));
+
   public static final Attribute<String> SERIAL_NO_ATTR =
       Attributes.forString("serialno", S.getter("circuitSerialNumber"));
 
@@ -215,6 +218,7 @@ public class CircuitAttributes extends AbstractAttributeSet {
     NAME_ATTR,
     DESIGNATION_PREFIX_ATTR,
     VARIANT_LIST_ATTR,
+    STARTING_SERIAL_NO_ATTR,
     CIRCUIT_LABEL_ATTR,
     CIRCUIT_LABEL_FACING_ATTR,
     CIRCUIT_LABEL_FONT_ATTR,
@@ -224,7 +228,7 @@ public class CircuitAttributes extends AbstractAttributeSet {
   };
 
   private static final Object[] STATIC_DEFAULTS = {
-    "", "", Attributes.emptyStringArray, "", Direction.EAST, StdAttr.DEFAULT_LABEL_FONT, APPEAR_CLASSIC, false, ""
+    "", "", Attributes.emptyStringArray, "", 1, Direction.EAST, StdAttr.DEFAULT_LABEL_FONT, APPEAR_CLASSIC, false, ""
   };
 
   private static final List<Attribute<?>> INSTANCE_ATTRS =
