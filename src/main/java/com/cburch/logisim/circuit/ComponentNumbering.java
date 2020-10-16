@@ -247,8 +247,20 @@ public class ComponentNumbering {
       }
     }
     
+    private Comparator<Instance> compareByLocation = new Comparator<>() {
+      public int compare(Instance i1, Instance i2) {
+        Location loc1 = i1.getLocation();
+        Location loc2 = i2.getLocation();
+        int result = loc1.getY() - loc2.getY();
+        if (result == 0)
+          result = loc1.getX() - loc2.getX();
+        return result;
+      }
+    };
+
     public void numberAll() {
       int candNo = circ.getStaticAttributes().getValue(CircuitAttributes.STARTING_SERIAL_NO_ATTR);
+      Collections.sort(unnumbered, compareByLocation);
       for (Instance inst : unnumbered) {
         if (!numberUsingSpare(inst))
           while (!numberUsingSerial(inst, candNo))
