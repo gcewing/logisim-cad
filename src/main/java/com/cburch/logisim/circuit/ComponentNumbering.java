@@ -38,6 +38,7 @@ import com.cburch.logisim.data.*;
 import com.cburch.logisim.instance.*;
 import com.cburch.logisim.proj.Project;
 import com.cburch.logisim.tools.*;
+import com.cburch.logisim.util.*;
 
 public class ComponentNumbering {
 
@@ -85,38 +86,65 @@ public class ComponentNumbering {
 
   private static class VariantSet {
     public int serialNo;
+    public InstanceFactory factory;
     public String type;
     public String[] variantList;
     public Set<String> variantsUsed;
+    public Map<String, Location> variantLocs = new HashMap<>();
     
     public VariantSet(Instance inst, int serialNo) {
       this.serialNo = serialNo;
-      type = getType(inst);
+      factory = inst.getFactory();
+      type = factory.getName();
       variantList = inst.getAttributeValue(CircuitAttributes.VARIANT_LIST_ATTR);
       variantsUsed = new HashSet<String>();
       add(inst);
     }
-    
+
     public boolean add(Instance inst) {
       if (!type.equals(getType(inst)))
         return false;
       String variant = inst.getAttributeValue(CircuitAttributes.VARIANT_ATTR);
       if (variantsUsed.contains(variant))
         return false;
-      variantsUsed.add(variant);
+      addVariant(inst, variant);
       return true;
     }
-    
+
+    private void addVariant(Instance inst, String variant) {
+      variantsUsed.add(variant);
+      variantLocs.put(variant, inst.getLocation());
+    }
+
     public boolean allocateVariant(Instance inst, SetAttributeAction act) {
       for (String variant : variantList)
         if (!variantsUsed.contains(variant)) {
-          setVariant(inst, variant, act);
-          variantsUsed.add(variant);
+          assignVariant(inst, variant, act);
           return true;
         }
       return false;
     }
-  
+
+    public void assignVariant(Instance inst, String variant, SetAttributeAction act) {
+      setVariant(inst, variant, act);
+      addVariant(inst, variant);
+    }
+
+    public String pickUnusedVariant() {
+      for (String variant : variantList)
+        if (!variantsUsed.contains(variant))
+          return variant;
+      return null;
+    }
+
+    public List<String> findUnusedVariants() {
+      List<String> result = new ArrayList<>();
+      for (String variant : variantList)
+        if (!variantsUsed.contains(variant))
+          result.add(variant);
+      return result;
+    }
+
   } // VariantSet
 
   //----------------------------------------------------------------------------------------
@@ -190,7 +218,7 @@ public class ComponentNumbering {
     private SetAttributeAction act;
     private String prefix;
     private List<Instance> unnumbered = new ArrayList<Instance>();
-    private VariantSetMap variantSets = new VariantSetMap();
+    public VariantSetMap variantSets = new VariantSetMap();
     
     Numberer(Circuit circ, SetAttributeAction act, String prefix) {
       this.circ = circ;
@@ -236,12 +264,30 @@ public class ComponentNumbering {
           return true;
       }
       String type = getType(inst);
-      for (VariantSet vset : variantSets.values())
-        if (type.equals(vset.type))
-          if (vset.allocateVariant(inst, act)) {
-            setSerialNo(inst, vset.serialNo, act);
-            return true;
-          }
+      Location iloc = inst.getLocation();
+      VariantSet bestVSet = null;
+      String bestVariant = null;
+      Location bestLoc = null;
+      int bestDist = 0;
+      for (VariantSet vset : variantSets.getType(type)) {
+        String newVariant = vset.pickUnusedVariant();
+        if (newVariant != null)
+          for (String existingVariant : vset.variantsUsed) {
+            Location vloc = vset.variantLocs.get(existingVariant);
+            int dist = iloc.manhattanDistanceTo(vloc);
+            if (bestVSet == null || dist < bestDist) {
+              bestVSet = vset;
+              bestVariant = newVariant;
+              bestLoc = vloc;
+              bestDist = dist;
+            }
+        }
+      }
+      if (bestVSet != null) {
+        setSerialNo(inst, bestVSet.serialNo, act);
+        bestVSet.assignVariant(inst, bestVariant, act);
+        return true;
+      }
       return false;
     }
     
@@ -308,6 +354,85 @@ public class ComponentNumbering {
   
   public static boolean debug = false;
 
+  private static void reportUnused(Circuit circ, PrefixMap numberers, List<String> report) {
+    report.add("Unused in " + circ.getName());
+    for (String prefix : numberers.keySet()) {
+      if (debug)
+        System.out.printf("Prefix '%s':\n", prefix);
+      Numberer numb = numberers.get(prefix);
+      if (debug)
+        numb.dump();
+      numb.numberAll();
+      numb.reportUnused(report);
+    }
+  }
+
+  private static int rd(int i) {
+    return 10 * (int)Math.floor(i / 10.0);
+  }
+
+  private static int ru(int i) {
+    return 10 * (int)Math.ceil(i / 10.0);
+  }
+
+  private static void instantiateUnused(Project proj, Circuit circ, PrefixMap numberers) {
+    int spacing = 30;
+    Bounds cbounds = circ.getBounds();
+    int x0 = rd(cbounds.getX());
+    int x1 = ru(cbounds.getX() + cbounds.getWidth());
+    int y = ru(cbounds.getY() + cbounds.getHeight()) + spacing;
+    int x = x0;
+    int maxh = 0;
+    CircuitMutation mut = new CircuitMutation(circ);
+    for (String prefix : numberers.keySet()) {
+      Numberer numb = numberers.get(prefix);
+      VariantSetMap vmap = numb.variantSets;
+      for (String type : vmap.typeSet()) {
+        for (VariantSet vset : vmap.getType(type)) {
+          for (String variant : vset.findUnusedVariants()) {
+            InstanceFactory fact = vset.factory;
+            AttributeSet attrs = fact.createAttributeSet();
+            attrs.setValue(CircuitAttributes.SERIAL_NO_ATTR, Integer.toString(vset.serialNo));
+            attrs.setValue(CircuitAttributes.VARIANT_ATTR, variant);
+            Bounds fbounds = fact.getOffsetBounds(attrs);
+            int l = rd(fbounds.getX());
+            int r = ru(fbounds.getX() + fbounds.getWidth());
+            int t = rd(fbounds.getY());
+            int b = ru(fbounds.getY() + fbounds.getHeight());
+            int w = r - l;
+            int h = b - t;
+            if (x + w > x1) {
+              x = x0;
+              y += maxh + spacing;
+              maxh = 0;
+            }
+            Location loc = Location.create(x - l, y - t);
+            if (debug)
+              System.out.printf("Instantiate %s at %s\n", fact, loc);
+            Component c = fact.createComponent(loc, attrs);
+            mut.add(c);
+            x += w + spacing;
+            if (h > maxh)
+              maxh = h;
+          }
+        }
+      }
+    }
+    proj.doAction(mut.toAction(S.getter("addUnusedComponentsAction")));
+  }
+
+  public static void showReport(Circuit circ, List<String> report) {
+    if (debug)
+      for (String line : report)
+        System.out.printf("%s\n", line);
+    JTextArea rta = new JTextArea(String.join("\n", report), 30, 40);
+    JScrollPane rsp = new JScrollPane(rta);
+    JFrame rfr = new JFrame(circ.getName() + " - Numbering Report");
+    rfr.add(rsp);
+    rfr.pack();
+    rfr.setVisible(true);
+  }
+
   public static void doNumberCircuit(Project proj, Circuit circ) {
     if (debug)
       System.out.printf("ProjectCircuitActions.doNumberCircuit(%s, %s)\n", proj, circ);
@@ -330,26 +455,10 @@ public class ComponentNumbering {
       }
     }
     List<String> report = new ArrayList<>();
-    report.add("Unused in " + circ.getName());
-    for (String prefix : numberers.keySet()) {
-      if (debug)
-        System.out.printf("Prefix '%s':\n", prefix);
-      Numberer numb = numberers.get(prefix);
-      if (debug)
-        numb.dump();
-      numb.numberAll();
-      numb.reportUnused(report);
-    }
+    reportUnused(circ, numberers, report);
     proj.doAction(act);
-    if (debug)
-      for (String line : report)
-        System.out.printf("%s\n", line);
-    JTextArea rta = new JTextArea(String.join("\n", report), 80, 30);
-    JScrollPane rsp = new JScrollPane(rta);
-    JFrame rfr = new JFrame(circ.getName() + " - Numbering Report");
-    rfr.add(rsp);
-    rfr.pack();
-    rfr.setVisible(true);
+    instantiateUnused(proj, circ, numberers);
+    showReport(circ, report);
   }
 
 }
