@@ -30,6 +30,7 @@ package com.cburch.logisim.circuit;
 
 import static com.cburch.logisim.circuit.Strings.S;
 
+import java.awt.event.*;
 import java.util.*;
 import javax.swing.*;
 import com.cburch.logisim.circuit.*;
@@ -433,16 +434,51 @@ public class ComponentNumbering {
     proj.doAction(mut.toAction(S.getter("addUnusedComponentsAction")));
   }
 
-  public static void showReport(Circuit circ, List<String> report) {
-    if (debug)
-      for (String line : report)
-        System.out.printf("%s\n", line);
-    JTextArea rta = new JTextArea(String.join("\n", report), 30, 40);
-    JScrollPane rsp = new JScrollPane(rta);
-    JFrame rfr = new JFrame(circ.getName() + " - Numbering Report");
-    rfr.add(rsp);
-    rfr.pack();
-    rfr.setVisible(true);
+  private static class NumberingReportDialog extends JDialog {
+    private Project proj;
+    private Circuit circ;
+    private PrefixMap numberers;
+    private List<String> report;
+
+    public NumberingReportDialog(Project proj, Circuit circ, PrefixMap numberers,
+      List<String> report)
+    {
+      super(proj.getFrame(), circ.getName() + " - Numbering Report", true);
+      this.proj = proj;
+      this.circ = circ;
+      this.numberers = numberers;
+      this.report = report;
+      if (debug)
+       for (String line : report)
+         System.out.printf("%s\n", line);
+      JTextArea textArea = new JTextArea(String.join("\n", report), 30, 40);
+      JScrollPane textPane = new JScrollPane(textArea);
+      JPanel textPanel = new JPanel();
+      textPanel.setBorder(BorderFactory.createEmptyBorder());
+      textPanel.add(textPane);
+      JButton addButton = new JButton("Add Unused");
+      addButton.addActionListener(new InstantiateUnusedAction());
+      Box buttons = new Box(BoxLayout.X_AXIS);
+      buttons.add(addButton);
+      buttons.add(Box.createHorizontalGlue());
+      Box vbox = new Box(BoxLayout.Y_AXIS);
+      vbox.add(textPanel);
+      vbox.add(buttons);
+      add(vbox);
+      pack();
+      setVisible(true);
+    }
+
+    private class InstantiateUnusedAction implements ActionListener {
+      public void actionPerformed(ActionEvent e) {
+        instantiateUnused(proj, circ, numberers);
+        NumberingReportDialog.this.dispose();
+      }
+    }
+
+  } // NumberingReportDialog
+
+  private static void showReport(Project proj, Circuit circ, PrefixMap numberers, List<String> report) {
   }
 
   public static void doNumberCircuit(Project proj, Circuit circ) {
@@ -469,8 +505,7 @@ public class ComponentNumbering {
     List<String> report = new ArrayList<>();
     reportUnused(circ, numberers, report);
     proj.doAction(act);
-    instantiateUnused(proj, circ, numberers);
-    showReport(circ, report);
+    new NumberingReportDialog(proj, circ, numberers, report);
   }
 
 }
