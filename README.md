@@ -130,6 +130,10 @@ result in a conflict.
 This command ignores components without a Designation Prefix, with a
 non-numeric Serial No. or with an explicit Label.
 
+After numbering, a report of unused variants is shown. On the report
+window there is an "Add Unused" button that will add components to the
+circuit corresponding to these unused variants.
+
 ### Enforce HDL Names option
 
 Syntax checking of circuit names is optional, for those who have no
