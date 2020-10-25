@@ -228,7 +228,7 @@ public class CircuitAttributes extends AbstractAttributeSet {
   };
 
   private static final Object[] STATIC_DEFAULTS = {
-    "", "", Attributes.emptyStringArray, "", 1, Direction.EAST, StdAttr.DEFAULT_LABEL_FONT, APPEAR_CLASSIC, false, ""
+    "", "", Attributes.emptyStringArray, 1, "", Direction.EAST, StdAttr.DEFAULT_LABEL_FONT, APPEAR_CLASSIC, false, ""
   };
 
   private static final List<Attribute<?>> INSTANCE_ATTRS =
