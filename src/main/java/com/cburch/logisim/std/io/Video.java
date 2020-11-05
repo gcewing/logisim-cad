@@ -106,10 +106,14 @@ class Video extends ManagedComponent implements ToolTipMaker, AttributeListener 
       Attributes.forOption("reset", S.getter("rgbVideoReset"), RESET_OPTIONS);
   public static final Attribute COLOR_OPTION =
       Attributes.forOption("color", S.getter("rgbVideoColor"), COLOR_OPTIONS);
+//   public static final Attribute<Integer> WIDTH_OPTION =
+//       Attributes.forOption("width", S.getter("rgbVideoWidth"), SIZE_OPTIONS);
+//   public static final Attribute<Integer> HEIGHT_OPTION =
+//       Attributes.forOption("height", S.getter("rgbVideoHeight"), SIZE_OPTIONS);
   public static final Attribute<Integer> WIDTH_OPTION =
-      Attributes.forOption("width", S.getter("rgbVideoWidth"), SIZE_OPTIONS);
+      Attributes.forInteger("width", S.getter("rgbVideoWidth"));
   public static final Attribute<Integer> HEIGHT_OPTION =
-      Attributes.forOption("height", S.getter("rgbVideoHeight"), SIZE_OPTIONS);
+      Attributes.forInteger("height", S.getter("rgbVideoHeight"));
   public static final Attribute<Integer> SCALE_OPTION =
       Attributes.forIntegerRange("scale", S.getter("rgbVideoScale"), 1, 8);
 
@@ -480,12 +484,19 @@ class Video extends ManagedComponent implements ToolTipMaker, AttributeListener 
   public void attributeValueChanged(AttributeEvent e) {
     configureComponent();
   }
+  
+  private int bitsForSize(int size) {
+    int bits = 1;
+    while (bits < 32 && (1 << bits) < size)
+      bits += 1;
+    return bits;
+  }
 
   void configureComponent() {
     AttributeSet attrs = getAttributeSet();
     int bpp = getColorModel(attrs.getValue(COLOR_OPTION)).getPixelSize();
-    int xs = 31 - Integer.numberOfLeadingZeros(attrs.getValue(WIDTH_OPTION));
-    int ys = 31 - Integer.numberOfLeadingZeros(attrs.getValue(HEIGHT_OPTION));
+    int xs = bitsForSize(attrs.getValue(WIDTH_OPTION));
+    int ys = bitsForSize(attrs.getValue(HEIGHT_OPTION));
     setEnd(P_X, getLocation().translate(40, 0), BitWidth.create(xs), EndData.INPUT_ONLY);
     setEnd(P_Y, getLocation().translate(50, 0), BitWidth.create(ys), EndData.INPUT_ONLY);
     setEnd(P_DATA, getLocation().translate(60, 0), BitWidth.create(bpp), EndData.INPUT_ONLY);
