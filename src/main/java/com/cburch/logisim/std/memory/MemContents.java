@@ -363,10 +363,15 @@ public class MemContents implements Cloneable, HexModel {
     count = (int)Math.min(count, getLastOffset() - start + 1);
     if (count <= 0)
       return;
-    if (src.addrBits != width)
+//     if (src.addrBits != width)
+    if (src.addrBits != addrBits)
       throw new IllegalArgumentException(String.format(
-              "memory width mismatch: src is %d bits wide, dest is %d bits wide",
+              "memory address width mismatch: src is %d bits wide, dest is %d bits wide",
               src.addrBits, addrBits));
+    if (src.width != width)
+      throw new IllegalArgumentException(String.format(
+              "memory data width mismatch: src is %d bits wide, dest is %d bits wide",
+              src.width, width));
     if (offs + count - 1 > src.getLastOffset())
       throw new IllegalArgumentException(String.format(
     		  "memory offset out of range: offset 0x%x count 0x%x exceeds last valid offset 0x%x",
