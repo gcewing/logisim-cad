@@ -139,6 +139,12 @@ circuit corresponding to these unused variants.
 Syntax checking of circuit names is optional, for those who have no
 intention of using any HDL features.
 
+Improvements to Components
+--------------------------
+
+The RGB Video component may have any width and height, instead of
+being restricted to powers of two.
+
 File Formats and Extensions
 ---------------------------
 
